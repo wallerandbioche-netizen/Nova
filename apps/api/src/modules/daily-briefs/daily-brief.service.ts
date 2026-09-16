@@ -6,7 +6,12 @@ import type {
   PersonalizedNewsItem,
   Statement,
 } from '@nova/types';
-import { BRIEF_THRESHOLDS, DEMO_DATA_EXPLANATION, getPlan } from '@nova/config';
+import {
+  BRIEF_THRESHOLDS,
+  DEMO_DATA_EXPLANATION,
+  NEWS_CATEGORY_LABELS,
+  getPlan,
+} from '@nova/config';
 import type { Cache } from '../../infrastructure/cache/index.js';
 import { cacheKey } from '../../infrastructure/cache/index.js';
 import type { Database } from '../../infrastructure/database/prisma.js';
@@ -99,7 +104,9 @@ export class DailyBriefService {
     const context =
       relevanceReason !== null
         ? `Cela peut concerner votre portefeuille : ${relevanceReason.toLowerCase()}.`
-        : `Information de catégorie « ${item.category} », à lire pour le contexte de marché.`;
+        : `Information de catégorie « ${
+            NEWS_CATEGORY_LABELS[item.category] ?? item.category
+          } », à lire pour le contexte de marché.`;
     return `${factual.trim()}${factual.trim().endsWith('.') ? '' : '.'} ${context}`;
   }
 

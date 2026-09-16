@@ -459,6 +459,20 @@ export class AiService {
     };
     const relevance = this.personalization.computeRelevance(scored, options.exposure);
 
+    // The relevance engine works on symbols; the user reads names.
+    const nameBySymbol = new Map(news.affectedAssets.map((asset) => [asset.symbol, asset.name]));
+    const exposure = relevance.exposure.map((entry) =>
+      entry.kind === 'asset'
+        ? {
+            ...entry,
+            label: entry.label
+              .split(', ')
+              .map((symbol) => nameBySymbol.get(symbol) ?? symbol)
+              .join(', '),
+          }
+        : entry,
+    );
+
     const context = await this.buildContext({
       userId: options.userId,
       intent: 'news',
@@ -515,8 +529,8 @@ export class AiService {
       whyItMatters: { kind: 'analysis', text: explanation.whyItMatters },
       affectedAssets: news.affectedAssets,
       affectedSectors: news.affectedSectors,
-      yourExposure: relevance.exposure,
-      yourExposureSummary: buildExposureSummary(relevance.exposure),
+      yourExposure: exposure,
+      yourExposureSummary: buildExposureSummary(exposure),
       whyItConcernsYou: personalStatements.portfolioRelevance
         ? [{ kind: 'hypothesis', text: personalStatements.portfolioRelevance }]
         : [

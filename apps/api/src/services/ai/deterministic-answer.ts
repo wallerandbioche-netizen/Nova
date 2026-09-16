@@ -1,4 +1,4 @@
-import { AI_DISCLAIMER, NO_DATA_ANSWER } from '@nova/config';
+import { AI_DISCLAIMER, NEWS_CATEGORY_LABELS, NO_DATA_ANSWER } from '@nova/config';
 import type { LlmAnswer, LlmNewsExplanation } from '@nova/validation';
 import type { AiContext } from './context.js';
 import { findGlossaryEntry } from './glossary.js';
@@ -77,8 +77,11 @@ export function deterministicNewsExplanation(context: AiContext): LlmNewsExplana
 
   const { directSymbols, sectorMatches } = intersectionWithHoldings(context);
 
+  const categoryLabel =
+    NEWS_CATEGORY_LABELS[news.category as keyof typeof NEWS_CATEGORY_LABELS] ?? news.category;
+
   const whyItMatters = [
-    `Cette information relève de la catégorie « ${news.category} », dont l’horizon de lecture habituel est ${horizonLabel(news.horizon)}.`,
+    `Cette information relève de la catégorie « ${categoryLabel} », dont l’horizon de lecture habituel est ${horizonLabel(news.horizon)}.`,
     news.affectedSectors.length > 0
       ? `Les secteurs identifiés comme concernés sont : ${news.affectedSectors.join(', ')}.`
       : 'Aucun secteur spécifique n’a été identifié comme directement concerné.',
@@ -135,7 +138,12 @@ export function deterministicChatAnswer(context: AiContext): LlmAnswer {
   const depth = context.investor?.depth ?? 'simple';
   const glossaryEntry = context.glossary ? null : findGlossaryEntry(question);
 
-  // 1. Definition question — answered from the human-written glossary.
+  // 1. Advice request — declined explicitly, and redirected to what NOVA can actually do.
+  if (isAdviceRequest(question)) {
+    return adviceRefusal(context);
+  }
+
+  // 2. Definition question — answered from the human-written glossary.
   if (context.glossary || glossaryEntry) {
     const term = context.glossary?.term ?? glossaryEntry?.term ?? '';
     const definition =
@@ -156,12 +164,12 @@ export function deterministicChatAnswer(context: AiContext): LlmAnswer {
     };
   }
 
-  // 2. Portfolio question — answered from computed exposure only.
+  // 3. Portfolio question — answered from computed exposure only.
   if (context.portfolio && mentionsPortfolio(question)) {
     return deterministicPortfolioAnswer(context);
   }
 
-  // 3. News question.
+  // 4. News question.
   if (context.news) {
     const explanation = deterministicNewsExplanation(context);
     return {
@@ -179,7 +187,7 @@ export function deterministicChatAnswer(context: AiContext): LlmAnswer {
     };
   }
 
-  // 4. Nothing in context matches the question: say so rather than improvise.
+  // 5. Nothing in context matches the question: say so rather than improvise.
   return {
     shortAnswer: NO_DATA_ANSWER,
     whatWeKnow: [],
@@ -191,6 +199,37 @@ export function deterministicChatAnswer(context: AiContext): LlmAnswer {
     ],
     sources: [],
     confidence: 0.2,
+  };
+}
+
+/**
+ * Detects a request for investment advice.
+ *
+ * "Dois-je acheter ?" is not a data gap — it is a question NOVA deliberately does not answer.
+ * Saying "je n'ai pas assez de données" would be misleading: the honest answer is that giving a
+ * personalised buy or sell recommendation is outside what NOVA does (rule #17).
+ */
+function isAdviceRequest(question: string): boolean {
+  return /\b(?:dois[- ]je|devrais[- ]je|faut[- ]il|est[- ]ce que je dois|je devrais)\b.*\b(?:acheter|vendre|investir|placer|sortir|renforcer|alléger)\b|\b(?:quoi|que) (?:acheter|vendre)\b|\bbon moment pour (?:acheter|vendre|investir)\b|\bque me conseillez[- ]vous\b|\bvotre conseil\b/i.test(
+    question,
+  );
+}
+
+function adviceRefusal(context: AiContext): LlmAnswer {
+  const exposure = exposureSentences(context);
+  return {
+    shortAnswer:
+      'NOVA ne donne pas de recommandation d’achat ou de vente. Je peux en revanche vous aider à comprendre ce qui est en jeu.',
+    whatWeKnow: exposure,
+    whyItMatters:
+      'Une décision d’investissement dépend de votre situation personnelle, de votre horizon et de votre tolérance aux fluctuations — des éléments que NOVA ne peut pas apprécier à votre place. Ce que NOVA peut faire : vous montrer votre exposition actuelle, expliquer les mécanismes en jeu et détailler ce qui reste incertain.',
+    portfolioRelevance: exposure.length > 0 ? exposure.join(' ') : null,
+    uncertainties: [
+      'Personne ne connaît l’évolution future du prix d’un actif.',
+      'Une décision qui convient à une personne peut ne pas convenir à une autre.',
+    ],
+    sources: context.sources,
+    confidence: 0.9,
   };
 }
 

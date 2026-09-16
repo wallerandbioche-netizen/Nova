@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { pino } from 'pino';
 import { buildApp } from '../app.js';
 import { parseEnv, setEnv, type Env } from '../config/env.js';
+import type { NovaContainer } from '../container.js';
 import { MemoryCache } from '../infrastructure/cache/index.js';
 import { createPrismaClient, type Database } from '../infrastructure/database/prisma.js';
 
@@ -10,6 +11,8 @@ export interface TestContext {
   db: Database;
   env: Env;
   cache: MemoryCache;
+  /** The composed services, so a test can exercise a job or a maintenance task directly. */
+  container: NovaContainer;
 }
 
 let context: TestContext | null = null;
@@ -30,7 +33,7 @@ export async function createTestContext(
   const app = await buildApp({ env, db, cache, logger, withDocs: false });
   await app.ready();
 
-  context = { app, db, env, cache };
+  context = { app, db, env, cache, container: app.nova };
   return context;
 }
 
