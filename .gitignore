@@ -45,3 +45,11 @@ Thumbs.db
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# next.js
+.next/
+next-env.d.ts
+.vercel/
+
+# scan-trade local object storage (development driver)
+apps/scan-trade/.storage/

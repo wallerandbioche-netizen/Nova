@@ -1,0 +1,376 @@
+// Scan Trade — PostgreSQL schema.
+//
+// Ownership rule enforced by the application layer: every row that can be read
+// back by a request is reachable from a `userId`. Nothing in this schema is
+// shared between users.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  image        String?
+  // Null for accounts created through an OAuth provider only.
+  passwordHash String?
+  emailVerified DateTime?
+
+  // Onboarding answers. Used to phrase the analysis prompt, never to invent
+  // information that is not visible on the chart (§23).
+  marketPreference MarketType?
+  tradingStyle     TradingStyle?
+  onboardedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts            Account[]
+  sessions            Session[]
+  subscription        Subscription?
+  analyses            Analysis[]
+  passwordResetTokens PasswordResetToken[]
+  usageEvents         UsageEvent[]
+
+  @@index([createdAt])
+  @@map("users")
+}
+
+// Auth.js tables (OAuth providers). Credentials accounts do not create rows here.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+/// Only the SHA-256 hash of a reset token is stored: a database leak must not
+/// hand out working reset links.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+// ---------------------------------------------------------------------------
+// Billing — Stripe is the source of truth. No card data ever lands here.
+// ---------------------------------------------------------------------------
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?            @unique
+  stripePriceId        String?
+  status               SubscriptionStatus @default(NONE)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([currentPeriodEnd])
+  @@map("subscriptions")
+}
+
+enum SubscriptionStatus {
+  NONE
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  UNPAID
+  CANCELED
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  PAUSED
+}
+
+/// Every Stripe event id we have already processed. Stripe retries deliveries,
+/// so the webhook must be idempotent.
+model ProcessedStripeEvent {
+  id          String   @id
+  type        String
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
+  @@map("processed_stripe_events")
+}
+
+// ---------------------------------------------------------------------------
+// Analyses
+// ---------------------------------------------------------------------------
+
+model Analysis {
+  id     String @id @default(cuid())
+  userId String
+
+  /// Object-storage key, never a public URL: images live in a private bucket and
+  /// are served through short-lived signed URLs (§42).
+  imageKey      String
+  imageMimeType String
+  imageBytes    Int
+  imageWidth    Int?
+  imageHeight   Int?
+
+  // Optional hints supplied by the trader before the scan.
+  requestedAsset     String?
+  requestedTimeframe String?
+  requestedMarket    MarketType?
+
+  status AnalysisStatus @default(PENDING)
+
+  // Everything below is filled from a validated model response only.
+  asset        String?
+  timeframe    String?
+  market       MarketType?
+  chartType    String?
+  approxPrice  Float?
+  bias         MarketBias?
+  entryMin     Float?
+  entryMax     Float?
+  stopLoss     Float?
+  takeProfit1  Float?
+  takeProfit2  Float?
+  riskReward   Float?
+  confidence   ConfidenceLevel?
+  summary      String?          @db.Text
+  invalidation String?          @db.Text
+  warnings     String[]         @default([])
+
+  /// Machine-readable reason when `status` is FAILED — surfaced to the user as a
+  /// plain sentence, never as a stack trace.
+  failureCode String?
+  durationMs  Int?
+  /// Provider + model that produced the result, for observability and audits.
+  provider String?
+  model    String?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  levels    AnalysisLevel[]
+  reasoning AnalysisReasoning[]
+  technical TechnicalObservation[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, status])
+  @@index([createdAt])
+  @@map("analyses")
+}
+
+enum AnalysisStatus {
+  /// Image uploaded, scan not started yet.
+  PENDING
+  /// A scan is currently running.
+  PROCESSING
+  /// A trade scenario was produced and passed validation.
+  COMPLETED
+  /// The model deliberately declined to produce a setup.
+  NO_TRADE
+  /// The chart did not carry enough readable information.
+  INSUFFICIENT_DATA
+  /// Provider error, timeout, or a response that failed coherence checks.
+  FAILED
+}
+
+enum MarketBias {
+  LONG
+  SHORT
+  NEUTRAL
+}
+
+enum ConfidenceLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum MarketType {
+  CRYPTO
+  FOREX
+  INDICES
+  STOCKS
+  COMMODITIES
+  OTHER
+}
+
+enum TradingStyle {
+  SCALPING
+  DAY_TRADING
+  SWING_TRADING
+  OTHER
+}
+
+model AnalysisLevel {
+  id         String    @id @default(cuid())
+  analysisId String
+  type       LevelType
+  price      Float?
+  priceMax   Float?
+  label      String?
+  position   Int       @default(0)
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@map("analysis_levels")
+}
+
+enum LevelType {
+  SUPPORT_PRIMARY
+  SUPPORT_SECONDARY
+  RESISTANCE_PRIMARY
+  RESISTANCE_SECONDARY
+  ENTRY_ZONE
+  INVALIDATION
+  TAKE_PROFIT_1
+  TAKE_PROFIT_2
+}
+
+model AnalysisReasoning {
+  id         String            @id @default(cuid())
+  analysisId String
+  category   ReasoningCategory
+  content    String            @db.Text
+  position   Int               @default(0)
+  createdAt  DateTime          @default(now())
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@map("analysis_reasoning")
+}
+
+enum ReasoningCategory {
+  /// What is literally visible on the screenshot.
+  OBSERVATION
+  /// The reading drawn from those observations.
+  INTERPRETATION
+  /// What would confirm the scenario.
+  CONFIRMATION
+  /// What would invalidate it.
+  INVALIDATION
+  /// Why the confidence level is what it is.
+  CONFIDENCE
+  /// Limits of reading a single screenshot.
+  LIMITATION
+}
+
+model TechnicalObservation {
+  id         String        @id @default(cuid())
+  analysisId String
+  category   TechnicalArea
+  title      String
+  detail     String        @db.Text
+  position   Int           @default(0)
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId])
+  @@map("technical_observations")
+}
+
+enum TechnicalArea {
+  TREND
+  MARKET_STRUCTURE
+  SUPPORT_RESISTANCE
+  MOMENTUM
+  INDICATORS
+  VOLUME
+  OTHER
+}
+
+// ---------------------------------------------------------------------------
+// Usage & rate limiting
+// ---------------------------------------------------------------------------
+
+/// One row per billable/limitable action. The MVP has no quota, but the counter
+/// is recorded so credits or monthly caps can be switched on without a backfill.
+model UsageEvent {
+  id        String    @id @default(cuid())
+  userId    String
+  kind      UsageKind
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, kind, createdAt])
+  @@map("usage_events")
+}
+
+enum UsageKind {
+  ANALYSIS_SCAN
+  ANALYSIS_UPLOAD
+}
+
+/// Fixed-window rate-limit counters. Stored in Postgres so the limit holds
+/// across serverless instances, where an in-process map would not.
+model RateLimitCounter {
+  /// "<bucket>:<subject>:<windowStart>"
+  key         String   @id
+  count       Int      @default(0)
+  windowStart DateTime
+  expiresAt   DateTime
+
+  @@index([expiresAt])
+  @@map("rate_limit_counters")
+}
