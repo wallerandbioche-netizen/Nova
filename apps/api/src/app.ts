@@ -1,4 +1,4 @@
-import Fastify, { type FastifyInstance } from 'fastify';
+import Fastify, { type FastifyInstance, type FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
 import compress from '@fastify/compress';
 import cors from '@fastify/cors';
@@ -53,6 +53,23 @@ export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyIn
     bodyLimit: 1_000_000,
     ajv: { customOptions: { removeAdditional: 'all' } },
   }) as unknown as FastifyInstance;
+
+  /**
+   * Keep the raw JSON body alongside the parsed one.
+   *
+   * A provider webhook signature covers the exact bytes that were sent: re-serialising the
+   * parsed object would produce different bytes (key order, spacing) and the signature would
+   * never verify. The body limit above bounds what this retains.
+   */
+  app.addContentTypeParser('application/json', { parseAs: 'string' }, (request, body, done) => {
+    (request as FastifyRequest & { rawBody?: string }).rawBody = body as string;
+    try {
+      done(null, (body as string).length > 0 ? JSON.parse(body as string) : {});
+    } catch (error) {
+      (error as Error & { statusCode?: number }).statusCode = 400;
+      done(error as Error, undefined);
+    }
+  });
 
   await app.register(containerPlugin(container));
   await app.register(requestContextPlugin);
