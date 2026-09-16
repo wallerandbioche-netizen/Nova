@@ -1,0 +1,646 @@
+// NOVA database schema.
+//
+// Conventions (see docs/03-database-schema.md):
+//  - UUID primary keys, never sequential ids exposed to clients.
+//  - Decimal(24, 8) for anything monetary — Float is never used on financial data.
+//  - `isDemo` is carried by every table that can hold demonstration data and propagated to the UI.
+//  - Everything attached to a user cascades on delete, so account deletion is truly effective.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ExperienceLevel {
+  beginner
+  intermediate
+  advanced
+}
+
+enum InvestmentGoal {
+  build_wealth
+  prepare_retirement
+  long_term_investing
+  generate_income
+  fund_a_project
+  other
+}
+
+enum InvestmentHorizon {
+  under_2_years
+  two_to_5_years
+  five_to_10_years
+  ten_to_20_years
+  over_20_years
+}
+
+enum RiskTolerance {
+  very_cautious
+  cautious
+  balanced
+  opportunistic
+}
+
+enum AssetType {
+  stock
+  etf
+  bond
+  fund
+  crypto
+  commodity
+  cash
+}
+
+enum Region {
+  north_america
+  europe
+  asia
+  emerging
+  global
+  other
+}
+
+enum NewsCategory {
+  macro
+  central_banks
+  company
+  sector
+  geopolitics
+  regulation
+  commodities
+  currencies
+  markets
+}
+
+enum TimeHorizon {
+  short_term
+  medium_term
+  long_term
+}
+
+enum JournalAction {
+  buy
+  sell
+  hold
+  watch
+  note
+}
+
+enum ConvictionLevel {
+  low
+  medium
+  high
+}
+
+enum LessonStatus {
+  not_started
+  in_progress
+  completed
+}
+
+enum NotificationType {
+  daily_brief
+  important_news
+  learning
+  system
+}
+
+enum SubscriptionPlan {
+  free
+  premium
+}
+
+enum SubscriptionStatus {
+  active
+  trialing
+  past_due
+  canceled
+  incomplete
+}
+
+enum ThemePreference {
+  system
+  light
+  dark
+}
+
+enum ContentDepth {
+  simple
+  detailed
+}
+
+enum DevicePlatform {
+  ios
+  android
+  web
+}
+
+model User {
+  id                    String    @id @default(uuid()) @db.Uuid
+  email                 String    @unique
+  passwordHash          String
+  firstName             String
+  locale                String    @default("fr")
+  theme                 ThemePreference @default(system)
+  contentDepth          ContentDepth    @default(simple)
+  acceptedTermsAt       DateTime?
+  onboardingCompletedAt DateTime?
+  lastLoginAt           DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  // Soft delete: the row is anonymised immediately and purged by the retention job.
+  deletedAt             DateTime?
+
+  investorProfile         InvestorProfile?
+  notificationPreference  NotificationPreference?
+  subscription            Subscription?
+  portfolios              Portfolio[]
+  dailyBriefs             DailyBrief[]
+  journalEntries          JournalEntry[]
+  learningProgress        LearningProgress[]
+  notifications           Notification[]
+  devices                 Device[]
+  refreshTokens           RefreshToken[]
+  passwordResetTokens     PasswordResetToken[]
+  aiConversations         AiConversation[]
+  auditLogs               AuditLog[]
+
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model InvestorProfile {
+  id                   String            @id @default(uuid()) @db.Uuid
+  userId               String            @unique @db.Uuid
+  user                 User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  investmentGoal       InvestmentGoal
+  investmentHorizon    InvestmentHorizon
+  experienceLevel      ExperienceLevel
+  riskTolerance        RiskTolerance
+  knowledgeLevel       ExperienceLevel   @default(beginner)
+  interestedAssetTypes AssetType[]
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@map("investor_profiles")
+}
+
+model NotificationPreference {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String   @unique @db.Uuid
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dailyBrief      Boolean  @default(true)
+  importantNews   Boolean  @default(true)
+  learning        Boolean  @default(true)
+  quietHoursStart Int      @default(22)
+  quietHoursEnd   Int      @default(7)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("notification_preferences")
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Only the hash is stored: a database dump never yields usable session tokens.
+  tokenHash  String    @unique
+  // Rotation chain, so reuse of a revoked token can be detected and the family revoked.
+  familyId   String    @db.Uuid
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  userAgent  String?
+  ipHash     String?
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model Device {
+  id        String         @id @default(uuid()) @db.Uuid
+  userId    String         @db.Uuid
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String         @unique
+  platform  DevicePlatform
+  createdAt DateTime       @default(now())
+  lastSeenAt DateTime      @default(now())
+
+  @@index([userId])
+  @@map("devices")
+}
+
+model Sector {
+  id       String  @id @default(uuid()) @db.Uuid
+  key      String  @unique
+  label    String
+  assets   Asset[]
+  newsLinks NewsSector[]
+
+  @@map("sectors")
+}
+
+model Asset {
+  id        String    @id @default(uuid()) @db.Uuid
+  symbol    String    @unique
+  name      String
+  assetType AssetType
+  exchange  String?
+  currency  String    @default("EUR")
+  country   String?
+  region    Region    @default(global)
+  sectorId  String?   @db.Uuid
+  sector    Sector?   @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+  isin      String?   @unique
+  isDemo    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  positions      Position[]
+  prices         MarketPrice[]
+  newsLinks      NewsAsset[]
+  journalEntries JournalEntry[]
+
+  @@index([assetType])
+  @@index([sectorId])
+  @@index([name])
+  @@map("assets")
+}
+
+model MarketPrice {
+  id        String   @id @default(uuid()) @db.Uuid
+  assetId   String   @db.Uuid
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  timestamp DateTime
+  open      Decimal  @db.Decimal(24, 8)
+  high      Decimal  @db.Decimal(24, 8)
+  low       Decimal  @db.Decimal(24, 8)
+  close     Decimal  @db.Decimal(24, 8)
+  volume    Decimal? @db.Decimal(24, 4)
+  isDemo    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@unique([assetId, timestamp])
+  @@index([assetId, timestamp(sort: Desc)])
+  @@index([timestamp])
+  @@map("market_prices")
+}
+
+model MarketIndex {
+  id       String  @id @default(uuid()) @db.Uuid
+  key      String  @unique
+  label    String
+  currency String  @default("EUR")
+  region   Region  @default(global)
+  quotes   MarketIndexQuote[]
+
+  @@map("market_indices")
+}
+
+model MarketIndexQuote {
+  id            String      @id @default(uuid()) @db.Uuid
+  indexId       String      @db.Uuid
+  index         MarketIndex @relation(fields: [indexId], references: [id], onDelete: Cascade)
+  timestamp     DateTime
+  value         Decimal     @db.Decimal(24, 8)
+  previousClose Decimal?    @db.Decimal(24, 8)
+  isDemo        Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+
+  @@unique([indexId, timestamp])
+  @@index([indexId, timestamp(sort: Desc)])
+  @@map("market_index_quotes")
+}
+
+model FxRate {
+  id        String   @id @default(uuid()) @db.Uuid
+  currency  String
+  // Value of one unit of `currency` expressed in the pivot currency (EUR).
+  rate      Decimal  @db.Decimal(24, 8)
+  timestamp DateTime
+  isDemo    Boolean  @default(false)
+
+  @@unique([currency, timestamp])
+  @@index([currency, timestamp(sort: Desc)])
+  @@map("fx_rates")
+}
+
+model Portfolio {
+  id           String     @id @default(uuid()) @db.Uuid
+  userId       String     @db.Uuid
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  baseCurrency String     @default("EUR")
+  isDefault    Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  positions      Position[]
+  journalEntries JournalEntry[]
+
+  @@index([userId])
+  @@map("portfolios")
+}
+
+model Position {
+  id           String    @id @default(uuid()) @db.Uuid
+  portfolioId  String    @db.Uuid
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  assetId      String    @db.Uuid
+  asset        Asset     @relation(fields: [assetId], references: [id], onDelete: Restrict)
+  quantity     Decimal   @db.Decimal(24, 8)
+  averagePrice Decimal   @db.Decimal(24, 8)
+  currency     String    @default("EUR")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([portfolioId, assetId])
+  @@index([portfolioId])
+  @@map("positions")
+}
+
+model News {
+  id          String       @id @default(uuid()) @db.Uuid
+  title       String
+  summary     String
+  body        String?
+  source      String
+  sourceUrl   String?
+  // Identifier from the upstream provider, when available, for idempotent ingestion.
+  externalId  String?      @unique
+  // SHA-256 of the normalised title + source: the deduplication key.
+  contentHash String       @unique
+  publishedAt DateTime
+  category    NewsCategory
+  language    String       @default("fr")
+  isDemo      Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+
+  analysis    NewsAnalysis?
+  assets      NewsAsset[]
+  sectors     NewsSector[]
+  briefItems  DailyBriefItem[]
+
+  @@index([publishedAt(sort: Desc)])
+  @@index([category, publishedAt(sort: Desc)])
+  @@map("news")
+}
+
+model NewsAsset {
+  newsId    String @db.Uuid
+  news      News   @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  assetId   String @db.Uuid
+  asset     Asset  @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  relevance Int    @default(50)
+
+  @@id([newsId, assetId])
+  @@index([assetId])
+  @@map("news_assets")
+}
+
+model NewsSector {
+  newsId    String @db.Uuid
+  news      News   @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  sectorId  String @db.Uuid
+  sector    Sector @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+  relevance Int    @default(50)
+
+  @@id([newsId, sectorId])
+  @@index([sectorId])
+  @@map("news_sectors")
+}
+
+model NewsAnalysis {
+  id              String      @id @default(uuid()) @db.Uuid
+  newsId          String      @unique @db.Uuid
+  news            News        @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  importanceScore Int
+  confidenceScore Int
+  horizon         TimeHorizon @default(short_term)
+  themeKeys       String[]
+  // Deterministic, non-personalised analysis produced by the scoring engine.
+  analysis        Json
+  // Version of the scoring engine that produced this row, so rankings stay explainable.
+  scoringVersion  String      @default("nova-scoring-v1")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([importanceScore(sort: Desc)])
+  @@map("news_analysis")
+}
+
+model DailyBrief {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date       DateTime @db.Date
+  content    Json
+  // Data cut-off, distinct from generatedAt: the UI never shows stale data as current.
+  dataAsOf   DateTime
+  generatedAt DateTime @default(now())
+  isFallback Boolean  @default(false)
+  isDemo     Boolean  @default(false)
+
+  items DailyBriefItem[]
+
+  @@unique([userId, date])
+  @@index([userId, date(sort: Desc)])
+  @@map("daily_briefs")
+}
+
+model DailyBriefItem {
+  id                      String     @id @default(uuid()) @db.Uuid
+  briefId                 String     @db.Uuid
+  brief                   DailyBrief @relation(fields: [briefId], references: [id], onDelete: Cascade)
+  newsId                  String     @db.Uuid
+  news                    News       @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  rank                    Int
+  takeaway                String
+  relevanceReason         String?
+  portfolioRelevanceScore Int        @default(0)
+
+  @@unique([briefId, newsId])
+  @@index([briefId, rank])
+  @@map("daily_brief_items")
+}
+
+model LearningLesson {
+  id               String   @id @default(uuid()) @db.Uuid
+  slug             String   @unique
+  title            String
+  description      String
+  content          Json
+  difficulty       ExperienceLevel
+  estimatedMinutes Int      @default(2)
+  category         String
+  themeKeys        String[]
+  orderIndex       Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  progress LearningProgress[]
+
+  @@index([difficulty, orderIndex])
+  @@map("learning_lessons")
+}
+
+model LearningProgress {
+  id          String         @id @default(uuid()) @db.Uuid
+  userId      String         @db.Uuid
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String         @db.Uuid
+  lesson      LearningLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status      LessonStatus   @default(not_started)
+  quizScore   Int?
+  startedAt   DateTime?
+  completedAt DateTime?
+  updatedAt   DateTime       @updatedAt
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@map("learning_progress")
+}
+
+model JournalEntry {
+  id          String             @id @default(uuid()) @db.Uuid
+  userId      String             @db.Uuid
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  portfolioId String?            @db.Uuid
+  portfolio   Portfolio?         @relation(fields: [portfolioId], references: [id], onDelete: SetNull)
+  assetId     String?            @db.Uuid
+  asset       Asset?             @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  action      JournalAction
+  quantity    Decimal?           @db.Decimal(24, 8)
+  price       Decimal?           @db.Decimal(24, 8)
+  currency    String?
+  reason      String
+  horizon     InvestmentHorizon?
+  conviction  ConvictionLevel?
+  occurredAt  DateTime           @default(now())
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, occurredAt(sort: Desc)])
+  @@map("journal_entries")
+}
+
+model Notification {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @db.Uuid
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+model Subscription {
+  id                     String             @id @default(uuid()) @db.Uuid
+  userId                 String             @unique @db.Uuid
+  user                   User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider               String             @default("none")
+  providerCustomerId     String?
+  providerSubscriptionId String?            @unique
+  plan                   SubscriptionPlan   @default(free)
+  // Written only by the backend from a verified provider webhook — never by the client.
+  status                 SubscriptionStatus @default(active)
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean            @default(false)
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  @@index([providerCustomerId])
+  @@map("subscriptions")
+}
+
+model AiConversation {
+  id        String      @id @default(uuid()) @db.Uuid
+  userId    String      @db.Uuid
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String      @default("Conversation")
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  messages AiMessage[]
+
+  @@index([userId, updatedAt(sort: Desc)])
+  @@map("ai_conversations")
+}
+
+model AiMessage {
+  id             String         @id @default(uuid()) @db.Uuid
+  conversationId String         @db.Uuid
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String
+  content        String
+  // Structured, validated answer. Null for user messages.
+  answer         Json?
+  provider       String?
+  model          String?
+  isFallback     Boolean        @default(false)
+  promptTokens   Int?
+  completionTokens Int?
+  latencyMs      Int?
+  createdAt      DateTime       @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("ai_messages")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String?  @db.Uuid
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String
+  resource   String
+  resourceId String?
+  // Never contains credentials, tokens or portfolio amounts.
+  metadata   Json?
+  ipHash     String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([action, createdAt(sort: Desc)])
+  @@map("audit_logs")
+}
+
+model JobRun {
+  id         String    @id @default(uuid()) @db.Uuid
+  jobName    String
+  status     String
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  durationMs Int?
+  error      String?
+  metadata   Json?
+
+  @@index([jobName, startedAt(sort: Desc)])
+  @@map("job_runs")
+}
