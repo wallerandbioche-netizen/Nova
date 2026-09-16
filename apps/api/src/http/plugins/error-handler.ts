@@ -77,7 +77,11 @@ export const errorHandlerPlugin = fp(async (app: FastifyInstance) => {
       }
     }
 
-    if (typeof error.statusCode === 'number' && error.statusCode === 429) {
+    const statusCode = typeof (error as { statusCode?: unknown }).statusCode === 'number'
+      ? ((error as { statusCode: number }).statusCode)
+      : null;
+
+    if (statusCode === 429) {
       return reply.status(429).send({
         error: {
           code: 'RATE_LIMITED',
@@ -87,11 +91,11 @@ export const errorHandlerPlugin = fp(async (app: FastifyInstance) => {
       });
     }
 
-    if (typeof error.statusCode === 'number' && error.statusCode < 500) {
-      return reply.status(error.statusCode).send({
+    if (statusCode !== null && statusCode >= 400 && statusCode < 500) {
+      return reply.status(statusCode).send({
         error: {
-          code: error.statusCode === 401 ? 'UNAUTHORIZED' : 'VALIDATION_ERROR',
-          message: error.message || 'Requête invalide',
+          code: statusCode === 401 ? 'UNAUTHORIZED' : 'VALIDATION_ERROR',
+          message: (error as Error).message || 'Requête invalide',
           requestId: request.requestId,
         },
       });

@@ -8,6 +8,7 @@ import { UserService } from './modules/users/user.service.js';
 import { AssetService } from './modules/assets/asset.service.js';
 import { PortfolioService } from './modules/portfolios/portfolio.service.js';
 import { MarketDataService } from './services/market-data/market-data.service.js';
+import { MarketRadarService } from './services/market-data/market-radar.service.js';
 import { NewsService } from './services/news/news.service.js';
 import { ScoringService } from './services/news/scoring.service.js';
 import { PersonalizationService } from './services/personalization/personalization.service.js';
@@ -26,6 +27,7 @@ import { createLlmProvider } from './services/ai/providers/index.js';
 import { createNotificationProvider } from './services/notifications/providers/index.js';
 import { createPaymentProvider } from './services/payments/providers/index.js';
 import { createStorageProvider } from './services/storage/providers/index.js';
+import { createMailProvider } from './services/mail/providers/index.js';
 
 /**
  * Composition root.
@@ -44,6 +46,7 @@ export interface NovaContainer {
   assets: AssetService;
   portfolios: PortfolioService;
   marketData: MarketDataService;
+  marketRadar: MarketRadarService;
   news: NewsService;
   scoring: ScoringService;
   personalization: PersonalizationService;
@@ -75,15 +78,17 @@ export function buildContainer({ env, db, cache, logger }: ContainerDeps): NovaC
   const notificationProvider = createNotificationProvider(env, logger);
   const paymentProvider = createPaymentProvider(env, logger);
   const storageProvider = createStorageProvider(env, logger);
+  const mailProvider = createMailProvider(env, logger);
 
   const auth = new AuthService(db, env, logger, auditLog);
-  const users = new UserService(db, auditLog);
+  const users = new UserService(db, auditLog, env, mailProvider);
   const assets = new AssetService(db);
   const marketData = new MarketDataService(db, cache, marketDataProvider, logger);
   const portfolios = new PortfolioService(db, cache, marketData, assets, logger);
   const scoring = new ScoringService();
-  const news = new NewsService(db, cache, newsProvider, scoring, assets, logger);
+  const news = new NewsService(db, cache, newsProvider, scoring, logger);
   const personalization = new PersonalizationService(db, portfolios, scoring, logger);
+  const marketRadar = new MarketRadarService(db, cache, personalization, logger);
   const subscriptions = new SubscriptionService(db, env, paymentProvider, auditLog, logger);
   const ai = new AiService(db, env, llmProvider, personalization, portfolios, news, cache, logger);
   const learning = new LearningService(db, cache);
@@ -124,6 +129,7 @@ export function buildContainer({ env, db, cache, logger }: ContainerDeps): NovaC
     assets,
     portfolios,
     marketData,
+    marketRadar,
     news,
     scoring,
     personalization,

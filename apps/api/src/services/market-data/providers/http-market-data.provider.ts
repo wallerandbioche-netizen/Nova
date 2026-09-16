@@ -97,20 +97,23 @@ export class HttpMarketDataProvider implements MarketDataProvider {
   async getQuotes(symbols: string[]): Promise<ProviderQuote[]> {
     if (symbols.length === 0) return [];
     const query = encodeURIComponent(symbols.join(','));
-    return this.request(`/quotes?symbols=${query}`, z.array(quoteSchema));
+    const quotes = await this.request(`/quotes?symbols=${query}`, z.array(quoteSchema));
+    return quotes.map((quote) => ({ ...quote, previousClose: quote.previousClose ?? null }));
   }
 
   async getIndexQuotes(keys: string[]): Promise<ProviderIndexQuote[]> {
     if (keys.length === 0) return [];
     const query = encodeURIComponent(keys.join(','));
-    return this.request(`/indices?keys=${query}`, z.array(indexQuoteSchema));
+    const quotes = await this.request(`/indices?keys=${query}`, z.array(indexQuoteSchema));
+    return quotes.map((quote) => ({ ...quote, previousClose: quote.previousClose ?? null }));
   }
 
   async getCandles(symbol: string, range: PriceRange): Promise<ProviderCandle[]> {
-    return this.request(
+    const candles = await this.request(
       `/candles?symbol=${encodeURIComponent(symbol)}&range=${range}`,
       z.array(candleSchema),
     );
+    return candles.map((candle) => ({ ...candle, volume: candle.volume ?? null }));
   }
 
   async getFxRates(currencies: string[]): Promise<Record<string, number>> {
@@ -124,7 +127,13 @@ export class HttpMarketDataProvider implements MarketDataProvider {
   }
 
   async searchAssets(query: string): Promise<ProviderAssetSearchResult[]> {
-    return this.request(`/search?q=${encodeURIComponent(query)}`, z.array(searchSchema));
+    const results = await this.request(`/search?q=${encodeURIComponent(query)}`, z.array(searchSchema));
+    return results.map((result) => ({
+      ...result,
+      exchange: result.exchange ?? null,
+      country: result.country ?? null,
+      isin: result.isin ?? null,
+    }));
   }
 
   async healthCheck(): Promise<boolean> {

@@ -98,6 +98,8 @@ export interface PortfolioExposure {
   byRegion: Record<string, number>;
   byAssetType: Record<string, number>;
   byTheme: Record<MarketThemeKey, number>;
+  /** Weight of each held symbol in the portfolio, in percent. */
+  weightsBySymbol: Record<string, number>;
   assetIds: string[];
   symbols: string[];
   totalValue: number;

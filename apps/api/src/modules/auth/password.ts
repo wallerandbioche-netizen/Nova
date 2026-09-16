@@ -1,7 +1,15 @@
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
 
-const scrypt = promisify(scryptCallback);
+/**
+ * `promisify` loses scrypt's options overload, so the typed wrapper is declared explicitly.
+ */
+const scrypt = promisify(scryptCallback) as (
+  password: string,
+  salt: Buffer,
+  keylen: number,
+  options: { N: number; r: number; p: number; maxmem: number },
+) => Promise<Buffer>;
 
 /**
  * Password hashing with scrypt from Node's standard library.
@@ -18,13 +26,13 @@ const SALT_BYTES = 16;
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(SALT_BYTES);
   const { N, r, p, keyLength } = DEFAULT_PARAMS;
-  const derived = (await scrypt(password.normalize('NFKC'), salt, keyLength, {
+  const derived = await scrypt(password.normalize('NFKC'), salt, keyLength, {
     N,
     r,
     p,
     // scrypt needs roughly 128 * N * r bytes; raise the default limit accordingly.
     maxmem: 256 * N * r,
-  })) as Buffer;
+  });
   return [
     'scrypt',
     N,
@@ -47,12 +55,12 @@ export async function verifyPassword(password: string, stored: string): Promise<
 
     const salt = Buffer.from(saltRaw, 'base64url');
     const expected = Buffer.from(keyRaw, 'base64url');
-    const derived = (await scrypt(password.normalize('NFKC'), salt, expected.length, {
+    const derived = await scrypt(password.normalize('NFKC'), salt, expected.length, {
       N,
       r,
       p,
       maxmem: 256 * N * r,
-    })) as Buffer;
+    });
 
     // Constant-time comparison: a length check alone would leak information through timing.
     return derived.length === expected.length && timingSafeEqual(derived, expected);

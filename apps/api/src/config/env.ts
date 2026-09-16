@@ -54,6 +54,12 @@ const envSchema = z
     LLM_TIMEOUT_MS: z.coerce.number().int().min(1000).max(120000).default(20000),
     LLM_MAX_OUTPUT_TOKENS: z.coerce.number().int().min(100).max(8000).default(1200),
 
+    MAIL_PROVIDER: z.enum(['log', 'http']).default('log'),
+    MAIL_API_URL: z.string().optional(),
+    MAIL_API_KEY: z.string().optional(),
+    MAIL_FROM: z.string().default('NOVA <no-reply@nova.app>'),
+    APP_DEEP_LINK_BASE: z.string().default('nova://'),
+
     NOTIFICATION_PROVIDER: z.enum(['demo', 'expo']).default('demo'),
     EXPO_ACCESS_TOKEN: z.string().optional(),
 
@@ -91,6 +97,7 @@ const envSchema = z
     };
     requireUrl(env.MARKET_DATA_PROVIDER, 'http', env.MARKET_DATA_API_URL, 'MARKET_DATA_API_URL');
     requireUrl(env.NEWS_PROVIDER, 'http', env.NEWS_API_URL, 'NEWS_API_URL');
+    requireUrl(env.MAIL_PROVIDER, 'http', env.MAIL_API_URL, 'MAIL_API_URL');
 
     if (env.LLM_PROVIDER !== 'demo' && !env.LLM_API_KEY) {
       ctx.addIssue({
@@ -112,6 +119,14 @@ const envSchema = z
           code: z.ZodIssueCode.custom,
           path: ['JWT_SECRET'],
           message: 'JWT_SECRET still holds a placeholder value; generate a real secret',
+        });
+      }
+      if (env.MAIL_PROVIDER === 'log') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['MAIL_PROVIDER'],
+          message:
+            'MAIL_PROVIDER=log cannot be used in production: password reset emails would never be delivered',
         });
       }
       if (!env.REDIS_URL) {

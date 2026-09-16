@@ -53,42 +53,36 @@ export class DemoMarketDataProvider implements MarketDataProvider {
 
   async getQuotes(symbols: string[]): Promise<ProviderQuote[]> {
     const now = this.now();
-    return symbols
-      .map((symbol) => {
-        const asset = DEMO_ASSETS.find((candidate) => candidate.symbol === symbol);
-        // Unknown symbol: no invented price. The caller reports the position as unvalued.
-        if (!asset) return null;
-        const { price, previousClose } = this.priceFor(symbol, now);
-        return {
-          symbol,
-          price,
-          previousClose,
-          currency: asset.currency,
-          timestamp: now,
-        } satisfies ProviderQuote;
-      })
-      .filter((quote): quote is ProviderQuote => quote !== null);
+    const quotes: ProviderQuote[] = [];
+    for (const symbol of symbols) {
+      const asset = DEMO_ASSETS.find((candidate) => candidate.symbol === symbol);
+      // Unknown symbol: no invented price. The caller reports the position as unvalued.
+      if (!asset) continue;
+      const { price, previousClose } = this.priceFor(symbol, now);
+      quotes.push({ symbol, price, previousClose, currency: asset.currency, timestamp: now });
+    }
+    return quotes;
   }
 
   async getIndexQuotes(keys: string[]): Promise<ProviderIndexQuote[]> {
     const now = this.now();
-    return keys
-      .map((key) => {
-        const definition = MARKET_INDICES.find((index) => index.key === key);
-        const base = DEMO_INDEX_LEVELS[key];
-        if (!definition || base === undefined) return null;
-        const dayIndex = Math.floor(now.getTime() / 86_400_000);
-        const todayNoise = this.noise(`index:${key}:${dayIndex}`) - 0.5;
-        const yesterdayNoise = this.noise(`index:${key}:${dayIndex - 1}`) - 0.5;
-        return {
-          key,
-          value: Number((base * (1 + todayNoise * 0.03)).toFixed(2)),
-          previousClose: Number((base * (1 + yesterdayNoise * 0.03)).toFixed(2)),
-          currency: definition.currency,
-          timestamp: now,
-        } satisfies ProviderIndexQuote;
-      })
-      .filter((quote): quote is ProviderIndexQuote => quote !== null);
+    const quotes: ProviderIndexQuote[] = [];
+    for (const key of keys) {
+      const definition = MARKET_INDICES.find((index) => index.key === key);
+      const base = DEMO_INDEX_LEVELS[key];
+      if (!definition || base === undefined) continue;
+      const dayIndex = Math.floor(now.getTime() / 86_400_000);
+      const todayNoise = this.noise(`index:${key}:${dayIndex}`) - 0.5;
+      const yesterdayNoise = this.noise(`index:${key}:${dayIndex - 1}`) - 0.5;
+      quotes.push({
+        key,
+        value: Number((base * (1 + todayNoise * 0.03)).toFixed(2)),
+        previousClose: Number((base * (1 + yesterdayNoise * 0.03)).toFixed(2)),
+        currency: definition.currency,
+        timestamp: now,
+      });
+    }
+    return quotes;
   }
 
   async getCandles(symbol: string, range: PriceRange): Promise<ProviderCandle[]> {
