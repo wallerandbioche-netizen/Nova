@@ -80,9 +80,18 @@ export default function DashboardScreen() {
           </Text>
 
           {data.brief ? (
-            <Card onPress={() => router.push(`/brief/${data.brief?.id}`)} accessibilityLabel="Ouvrir votre briefing du jour">
+            <Card
+              onPress={() => router.push(`/brief/${data.brief?.id}`)}
+              accessibilityLabel="Ouvrir votre briefing du jour"
+            >
               <View style={{ gap: theme.spacing.sm }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
                   <Text variant="smallStrong" color="accent">
                     Votre briefing du jour
                   </Text>
@@ -119,7 +128,10 @@ export default function DashboardScreen() {
               />
             </Card>
           ) : (
-            <Card onPress={() => router.push('/(app)/portfolio')} accessibilityLabel="Ouvrir votre portefeuille">
+            <Card
+              onPress={() => router.push('/(app)/portfolio')}
+              accessibilityLabel="Ouvrir votre portefeuille"
+            >
               <View style={{ gap: theme.spacing.xs }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                   <Text variant="caption" color="secondary">
@@ -192,7 +204,11 @@ export default function DashboardScreen() {
               </Card>
             ) : (
               data.topNews.map((item) => (
-                <NewsCard key={item.id} item={item} onPress={() => router.push(`/news/${item.id}`)} />
+                <NewsCard
+                  key={item.id}
+                  item={item}
+                  onPress={() => router.push(`/news/${item.id}`)}
+                />
               ))
             )}
           </View>
@@ -238,7 +254,11 @@ export default function DashboardScreen() {
             <Text variant="small" color="secondary">
               « Pourquoi mon portefeuille baisse aujourd’hui ? », « Qu’est-ce qu’un ETF ? »
             </Text>
-            <Button label="Poser une question" variant="secondary" onPress={() => router.push('/coach')} />
+            <Button
+              label="Poser une question"
+              variant="secondary"
+              onPress={() => router.push('/coach')}
+            />
           </View>
         </Card>
       </View>

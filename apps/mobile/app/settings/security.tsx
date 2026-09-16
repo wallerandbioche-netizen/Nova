@@ -106,8 +106,7 @@ export default function SecurityScreen() {
                 avec scrypt est conservée.
               </Text>
               <Text variant="small" color="secondary">
-                • Vos jetons de session sont conservés dans le trousseau sécurisé de votre
-                appareil.
+                • Vos jetons de session sont conservés dans le trousseau sécurisé de votre appareil.
               </Text>
               <Text variant="small" color="secondary">
                 • Les accès sensibles à votre compte sont journalisés, sans jamais enregistrer de

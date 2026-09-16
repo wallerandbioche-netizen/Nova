@@ -194,10 +194,7 @@ export function computePortfolio(
 ): PortfolioComputation {
   const valuations = positions.map((position) => valuePosition(position, baseCurrency, rates));
 
-  const totalValue = round(
-    sum(valuations.map((valuation) => valuation.marketValue ?? 0)),
-    2,
-  );
+  const totalValue = round(sum(valuations.map((valuation) => valuation.marketValue ?? 0)), 2);
   const totalCostBasis = round(sum(valuations.map((valuation) => valuation.costBasis)), 2);
 
   // Only positions that could be valued contribute to the unrealized gain, otherwise the
@@ -218,7 +215,10 @@ export function computePortfolio(
     positionsWithPreviousValue.length === valuations.filter((v) => !v.isUnvalued).length;
 
   const previousTotal = hasCompletePreviousDay
-    ? round(sum(positionsWithPreviousValue.map((valuation) => valuation.previousValue as number)), 2)
+    ? round(
+        sum(positionsWithPreviousValue.map((valuation) => valuation.previousValue as number)),
+        2,
+      )
     : null;
   const dayChange = previousTotal === null ? null : round(totalValue - previousTotal, 2);
   const dayChangePercent =
@@ -280,7 +280,9 @@ export function computePortfolio(
 }
 
 /** Converts allocation slices into a `{ key: percent }` map, used by the scoring engine. */
-export function toPercentMap<K extends string>(slices: AllocationSlice<K>[]): Record<string, number> {
+export function toPercentMap<K extends string>(
+  slices: AllocationSlice<K>[],
+): Record<string, number> {
   const map: Record<string, number> = {};
   for (const slice of slices) {
     map[slice.key] = slice.percent;
@@ -314,7 +316,8 @@ export function computeThemeExposure(
 export function describeThemeExposure(theme: MarketThemeKey, percent: number): string {
   const label = THEME_LABELS[theme] ?? theme;
   if (percent <= 0) return `Aucune exposition identifiée au thème « ${label} ».`;
-  if (percent < 10) return `Exposition faible au thème « ${label} » (environ ${round(percent, 0)} %).`;
+  if (percent < 10)
+    return `Exposition faible au thème « ${label} » (environ ${round(percent, 0)} %).`;
   if (percent < 30)
     return `Exposition modérée au thème « ${label} » (environ ${round(percent, 0)} %).`;
   return `Exposition significative au thème « ${label} » (environ ${round(percent, 0)} %).`;

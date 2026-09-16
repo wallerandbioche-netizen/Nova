@@ -20,7 +20,7 @@ export const TERMS_SECTIONS = [
   },
   {
     heading: 'Votre compte',
-    body: "Vous êtes responsable de la confidentialité de vos identifiants. Vous pouvez à tout moment exporter vos données ou supprimer votre compte depuis les paramètres.",
+    body: 'Vous êtes responsable de la confidentialité de vos identifiants. Vous pouvez à tout moment exporter vos données ou supprimer votre compte depuis les paramètres.',
   },
   {
     heading: 'Limites de responsabilité',
@@ -35,7 +35,7 @@ export const TERMS_SECTIONS = [
 export const PRIVACY_SECTIONS = [
   {
     heading: 'Données que nous collectons',
-    body: "Votre adresse e-mail et votre prénom, votre profil investisseur (objectif, horizon, expérience, tolérance aux fluctuations), les positions que vous saisissez, vos entrées de journal, votre progression pédagogique et vos préférences.",
+    body: 'Votre adresse e-mail et votre prénom, votre profil investisseur (objectif, horizon, expérience, tolérance aux fluctuations), les positions que vous saisissez, vos entrées de journal, votre progression pédagogique et vos préférences.',
   },
   {
     heading: 'Pourquoi nous les collectons',
@@ -74,7 +74,7 @@ export const HELP_SECTIONS = [
   },
   {
     heading: 'Que fait exactement l’IA ?',
-    body: "Elle rédige les explications à partir de données déjà calculées par NOVA. Elle ne décide pas de ce qui est important, ne consulte pas Internet et ne peut pas citer une source qui ne lui a pas été fournie. Si sa réponse ne respecte pas ce cadre, NOVA la remplace par une explication produite directement à partir de vos données.",
+    body: 'Elle rédige les explications à partir de données déjà calculées par NOVA. Elle ne décide pas de ce qui est important, ne consulte pas Internet et ne peut pas citer une source qui ne lui a pas été fournie. Si sa réponse ne respecte pas ce cadre, NOVA la remplace par une explication produite directement à partir de vos données.',
   },
   {
     heading: 'Mon portefeuille est-il connecté à ma banque ?',
@@ -82,6 +82,6 @@ export const HELP_SECTIONS = [
   },
   {
     heading: 'Comment supprimer mon compte ?',
-    body: "Profil → Paramètres → Supprimer mon compte. La suppression demande votre mot de passe et une confirmation explicite.",
+    body: 'Profil → Paramètres → Supprimer mon compte. La suppression demande votre mot de passe et une confirmation explicite.',
   },
 ];

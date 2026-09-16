@@ -167,7 +167,9 @@ export default function NewsDetailScreen() {
                         <Text variant="caption" color="secondary">
                           Actifs
                         </Text>
-                        <View style={{ flexDirection: 'row', gap: theme.spacing.sm, flexWrap: 'wrap' }}>
+                        <View
+                          style={{ flexDirection: 'row', gap: theme.spacing.sm, flexWrap: 'wrap' }}
+                        >
                           {detail.affectedAssets.map((asset) => (
                             <Badge key={asset.assetId} label={asset.name} tone="neutral" />
                           ))}
@@ -180,7 +182,9 @@ export default function NewsDetailScreen() {
                         <Text variant="caption" color="secondary">
                           Secteurs
                         </Text>
-                        <View style={{ flexDirection: 'row', gap: theme.spacing.sm, flexWrap: 'wrap' }}>
+                        <View
+                          style={{ flexDirection: 'row', gap: theme.spacing.sm, flexWrap: 'wrap' }}
+                        >
                           {detail.affectedSectors.map((sector) => (
                             <Badge key={sector.sectorKey} label={sector.label} tone="neutral" />
                           ))}
@@ -281,10 +285,13 @@ export default function NewsDetailScreen() {
                 </Text>
                 <ScoreRow label="Importance" value={detail.importanceScore} />
                 <ScoreRow label="Confiance dans la source" value={detail.confidenceScore} />
-                <ScoreRow label="Lien avec votre portefeuille" value={detail.portfolioRelevanceScore} />
+                <ScoreRow
+                  label="Lien avec votre portefeuille"
+                  value={detail.portfolioRelevanceScore}
+                />
                 <Text variant="caption" color="tertiary">
-                  Ces scores expriment une priorité de lecture. Ils ne constituent pas une
-                  prévision de performance.
+                  Ces scores expriment une priorité de lecture. Ils ne constituent pas une prévision
+                  de performance.
                 </Text>
               </View>
             </Card>
@@ -313,7 +320,10 @@ function Block({
         <Text variant="h2" accessibilityRole="header">
           {title}
         </Text>
-        <Badge label={kind} tone={kind === 'Fait' ? 'info' : kind === 'Analyse' ? 'neutral' : 'warning'} />
+        <Badge
+          label={kind}
+          tone={kind === 'Fait' ? 'info' : kind === 'Analyse' ? 'neutral' : 'warning'}
+        />
       </View>
       {children}
     </View>

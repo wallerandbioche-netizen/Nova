@@ -51,7 +51,9 @@ export function formatCachedAt(iso: string | null | undefined, now = new Date())
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return null;
 
-  const time = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(date);
+  const time = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(
+    date,
+  );
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const startOfDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
   const dayDiff = Math.round((startOfToday - startOfDate) / 86_400_000);

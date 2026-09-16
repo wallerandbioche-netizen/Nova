@@ -89,7 +89,11 @@ export default function LessonScreen() {
       lastUpdatedLabel={lesson.cachedAtLabel}
       footer={
         corrections ? (
-          <Button label="Revenir aux leçons" fullWidth onPress={() => router.push('/(app)/learn')} />
+          <Button
+            label="Revenir aux leçons"
+            fullWidth
+            onPress={() => router.push('/(app)/learn')}
+          />
         ) : data.quiz.length > 0 ? (
           <Button
             label="Valider mes réponses"
@@ -99,7 +103,12 @@ export default function LessonScreen() {
             onPress={complete}
           />
         ) : (
-          <Button label="Marquer comme terminée" fullWidth loading={submitting} onPress={complete} />
+          <Button
+            label="Marquer comme terminée"
+            fullWidth
+            loading={submitting}
+            onPress={complete}
+          />
         )
       }
     >

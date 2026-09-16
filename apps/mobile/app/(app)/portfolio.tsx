@@ -233,10 +233,13 @@ export default function PortfolioScreen() {
                       label="Trois premières lignes"
                       value={`${analytics.concentration.topThreePercent.toFixed(1).replace('.', ',')} %`}
                     />
-                    <Row label="Nombre de positions" value={String(analytics.concentration.positionCount)} />
+                    <Row
+                      label="Nombre de positions"
+                      value={String(analytics.concentration.positionCount)}
+                    />
                     <Text variant="caption" color="tertiary">
-                      Une concentration élevée signifie qu’une seule information peut avoir un
-                      effet important sur la valeur de votre portefeuille.
+                      Une concentration élevée signifie qu’une seule information peut avoir un effet
+                      important sur la valeur de votre portefeuille.
                     </Text>
                   </View>
                 </Card>
@@ -245,7 +248,10 @@ export default function PortfolioScreen() {
 
             {/* -------------------------------------------------------- Positions */}
             <View>
-              <SectionHeader title="Positions" subtitle={`${positions.length} ligne${positions.length > 1 ? 's' : ''}`} />
+              <SectionHeader
+                title="Positions"
+                subtitle={`${positions.length} ligne${positions.length > 1 ? 's' : ''}`}
+              />
               <View style={{ gap: theme.spacing.md }}>
                 {positions.map((position) => (
                   <AssetCard

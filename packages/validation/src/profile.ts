@@ -27,7 +27,10 @@ export const investorProfileSchema = z.object({
   experienceLevel: experienceLevelSchema,
   riskTolerance: riskToleranceSchema,
   knowledgeLevel: experienceLevelSchema.optional(),
-  interestedAssetTypes: z.array(assetTypeSchema).min(1, 'Sélectionnez au moins un type d’actif').max(7),
+  interestedAssetTypes: z
+    .array(assetTypeSchema)
+    .min(1, 'Sélectionnez au moins un type d’actif')
+    .max(7),
 });
 export type InvestorProfileInput = z.infer<typeof investorProfileSchema>;
 

@@ -1,5 +1,10 @@
 import type { FastifyInstance } from 'fastify';
-import { aiChatSchema, explainNewsSchema, explainPortfolioSchema, uuidSchema } from '@nova/validation';
+import {
+  aiChatSchema,
+  explainNewsSchema,
+  explainPortfolioSchema,
+  uuidSchema,
+} from '@nova/validation';
 import { requireUser } from '../../http/plugins/authenticate.js';
 import { parseInput } from '../../http/validate.js';
 import { rateLimitConfig } from '../../http/plugins/rate-limit.js';

@@ -19,7 +19,10 @@ describe('password hashing', () => {
   });
 
   it('produces a different hash for the same password (random salt)', async () => {
-    const [a, b] = await Promise.all([hashPassword('meme-phrase-42'), hashPassword('meme-phrase-42')]);
+    const [a, b] = await Promise.all([
+      hashPassword('meme-phrase-42'),
+      hashPassword('meme-phrase-42'),
+    ]);
     expect(a).not.toBe(b);
     expect(await verifyPassword('meme-phrase-42', a)).toBe(true);
     expect(await verifyPassword('meme-phrase-42', b)).toBe(true);

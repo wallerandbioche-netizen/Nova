@@ -59,9 +59,13 @@ export function startScheduler(container: NovaContainer): SchedulerHandle {
   };
 
   scheduleDaily(briefHour, () => runDailyPipeline(container), 'daily-pipeline');
-  scheduleDaily(3, async () => {
-    await runJob(container, 'retention:purge');
-  }, 'retention-purge');
+  scheduleDaily(
+    3,
+    async () => {
+      await runJob(container, 'retention:purge');
+    },
+    'retention-purge',
+  );
 
   // Intraday market refresh so the dashboard is not a day behind during the session.
   const intraday = setInterval(

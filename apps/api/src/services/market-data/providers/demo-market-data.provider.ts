@@ -98,7 +98,9 @@ export class DemoMarketDataProvider implements MarketDataProvider {
 
       const { price } = this.priceFor(symbol, timestamp);
       if (!Number.isFinite(price)) continue;
-      const intradayNoise = this.noise(`${symbol}:intraday:${timestamp.toISOString().slice(0, 10)}`);
+      const intradayNoise = this.noise(
+        `${symbol}:intraday:${timestamp.toISOString().slice(0, 10)}`,
+      );
       const high = Number((price * (1 + intradayNoise * 0.01)).toFixed(4));
       const low = Number((price * (1 - intradayNoise * 0.01)).toFixed(4));
       candles.push({

@@ -55,9 +55,10 @@ export class MemoryCache implements Cache {
     const next = current + 1;
     const existing = this.store.get(key);
     // Keep the original expiry so a quota window is not extended by usage.
-    const expiresAt = existing && existing.expiresAt > Date.now()
-      ? existing.expiresAt
-      : Date.now() + ttlSeconds * 1000;
+    const expiresAt =
+      existing && existing.expiresAt > Date.now()
+        ? existing.expiresAt
+        : Date.now() + ttlSeconds * 1000;
     this.store.set(key, { value: next, expiresAt });
     return next;
   }

@@ -60,7 +60,8 @@ export class PersonalizationService {
     const directSymbols = news.affectedSymbols.filter((symbol) => heldSymbols.has(symbol));
 
     // Direct exposure: the share of the portfolio held in the named assets.
-    const directPercent = directSymbols.length > 0 ? this.directPercent(exposure, directSymbols) : 0;
+    const directPercent =
+      directSymbols.length > 0 ? this.directPercent(exposure, directSymbols) : 0;
 
     const sectorPercent = news.affectedSectorKeys.reduce(
       (total, sectorKey) => total + (exposure.bySector[sectorKey] ?? 0),
@@ -117,7 +118,8 @@ export class PersonalizationService {
       score,
       reason: this.buildReason(directSymbols, breakdown),
       exposure: breakdown.slice(0, 5),
-      exposurePercent: breakdown.length > 0 ? round(Math.max(...breakdown.map((b) => b.percent)), 2) : null,
+      exposurePercent:
+        breakdown.length > 0 ? round(Math.max(...breakdown.map((b) => b.percent)), 2) : null,
     };
   }
 
@@ -129,10 +131,7 @@ export class PersonalizationService {
     );
   }
 
-  private buildReason(
-    directSymbols: string[],
-    breakdown: NewsExposureBreakdown[],
-  ): string | null {
+  private buildReason(directSymbols: string[], breakdown: NewsExposureBreakdown[]): string | null {
     if (directSymbols.length > 0) {
       return `Vous détenez ${directSymbols.join(', ')}`;
     }

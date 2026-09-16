@@ -97,7 +97,10 @@ export class PortfolioService {
     await this.getOwned(portfolioId, userId);
     const portfolio = await this.db.portfolio.update({
       where: { id: portfolioId },
-      data: { ...(input.name ? { name: input.name } : {}), ...(input.baseCurrency ? { baseCurrency: input.baseCurrency } : {}) },
+      data: {
+        ...(input.name ? { name: input.name } : {}),
+        ...(input.baseCurrency ? { baseCurrency: input.baseCurrency } : {}),
+      },
     });
     await this.invalidate(userId, portfolioId);
     return portfolio;
@@ -259,9 +262,9 @@ export class PortfolioService {
     });
 
     const { positions } = await this.loadPricedPositions(portfolioId);
-    const rates = await this.marketData.getFxRates(
-      [...new Set(positions.map((position) => position.currency))],
-    );
+    const rates = await this.marketData.getFxRates([
+      ...new Set(positions.map((position) => position.currency)),
+    ]);
     const computed = computePortfolio(positions, portfolio.baseCurrency, rates);
 
     return rows.map((row) => {
@@ -297,9 +300,9 @@ export class PortfolioService {
     const analytics = await this.getAnalytics(portfolioId, userId);
     const { positions, asOf } = await this.loadPricedPositions(portfolioId);
     void asOf;
-    const rates = await this.marketData.getFxRates(
-      [...new Set(positions.map((position) => position.currency))],
-    );
+    const rates = await this.marketData.getFxRates([
+      ...new Set(positions.map((position) => position.currency)),
+    ]);
     const computed = computePortfolio(positions, portfolio.baseCurrency, rates);
 
     // Real per-symbol weights, so "vous détenez X" can be quantified exactly rather than
@@ -307,8 +310,10 @@ export class PortfolioService {
     const weightsBySymbol: Record<string, number> = {};
     for (const valuation of computed.valuations) {
       if (valuation.weightPercent === null) continue;
-      weightsBySymbol[valuation.symbol] =
-        round((weightsBySymbol[valuation.symbol] ?? 0) + valuation.weightPercent, 2);
+      weightsBySymbol[valuation.symbol] = round(
+        (weightsBySymbol[valuation.symbol] ?? 0) + valuation.weightPercent,
+        2,
+      );
     }
 
     const bySector = toPercentMap(analytics.bySector);

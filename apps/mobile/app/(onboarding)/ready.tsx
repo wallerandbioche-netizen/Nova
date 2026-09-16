@@ -67,12 +67,7 @@ export default function ReadyStep() {
   return (
     <Screen
       footer={
-        <Button
-          label="Découvrir mon espace"
-          fullWidth
-          loading={submitting}
-          onPress={finish}
-        />
+        <Button label="Découvrir mon espace" fullWidth loading={submitting} onPress={finish} />
       }
     >
       <View style={{ gap: theme.spacing.xl, paddingTop: theme.spacing['2xl'] }}>

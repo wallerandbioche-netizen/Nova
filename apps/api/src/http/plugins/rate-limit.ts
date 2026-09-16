@@ -25,23 +25,26 @@ export function rateLimitConfig(env: Env, name: RateLimitName) {
   return { rateLimit: limits[name] };
 }
 
-export const rateLimitPlugin = fp(async (app: FastifyInstance) => {
-  const { env } = app.nova;
+export const rateLimitPlugin = fp(
+  async (app: FastifyInstance) => {
+    const { env } = app.nova;
 
-  await app.register(rateLimit, {
-    global: true,
-    max: env.RATE_LIMIT_GLOBAL_MAX,
-    timeWindow: env.RATE_LIMIT_GLOBAL_WINDOW,
-    // Authenticated traffic is counted per user; anonymous traffic per IP.
-    keyGenerator: (request: FastifyRequest) => request.user?.id ?? request.ip,
-    // Rate limiting must never be the reason a legitimate request fails open silently.
-    skipOnError: false,
-    errorResponseBuilder: (request, context) => ({
-      error: {
-        code: 'RATE_LIMITED',
-        message: `Trop de requêtes. Réessayez dans ${context.after}.`,
-        requestId: request.requestId,
-      },
-    }),
-  });
-}, { name: 'rate-limit', dependencies: ['request-context'] });
+    await app.register(rateLimit, {
+      global: true,
+      max: env.RATE_LIMIT_GLOBAL_MAX,
+      timeWindow: env.RATE_LIMIT_GLOBAL_WINDOW,
+      // Authenticated traffic is counted per user; anonymous traffic per IP.
+      keyGenerator: (request: FastifyRequest) => request.user?.id ?? request.ip,
+      // Rate limiting must never be the reason a legitimate request fails open silently.
+      skipOnError: false,
+      errorResponseBuilder: (request, context) => ({
+        error: {
+          code: 'RATE_LIMITED',
+          message: `Trop de requêtes. Réessayez dans ${context.after}.`,
+          requestId: request.requestId,
+        },
+      }),
+    });
+  },
+  { name: 'rate-limit', dependencies: ['request-context'] },
+);

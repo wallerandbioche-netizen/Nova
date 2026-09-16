@@ -42,7 +42,9 @@ export default function JournalScreen() {
       refreshing={journal.isRefetching}
       offline={journal.isFromCache}
       lastUpdatedLabel={journal.cachedAtLabel}
-      footer={<Button label="Nouvelle entrée" fullWidth onPress={() => router.push('/journal/new')} />}
+      footer={
+        <Button label="Nouvelle entrée" fullWidth onPress={() => router.push('/journal/new')} />
+      }
     >
       {journal.isLoading ? (
         <View style={{ gap: theme.spacing.md }}>

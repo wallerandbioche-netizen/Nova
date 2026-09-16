@@ -98,7 +98,10 @@ export function Button({
         ) : icon ? (
           <View style={{ marginRight: theme.spacing.sm }}>{icon}</View>
         ) : null}
-        <Text variant={size === 'small' ? 'smallStrong' : 'bodyStrong'} color={labelColors[variant]}>
+        <Text
+          variant={size === 'small' ? 'smallStrong' : 'bodyStrong'}
+          color={labelColors[variant]}
+        >
           {label}
         </Text>
       </View>

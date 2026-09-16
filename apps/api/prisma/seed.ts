@@ -271,7 +271,11 @@ async function seedDemoUser() {
   });
 
   const portfolio = await prisma.portfolio.upsert({
-    where: { id: (await prisma.portfolio.findFirst({ where: { userId: user.id } }))?.id ?? '00000000-0000-0000-0000-000000000000' },
+    where: {
+      id:
+        (await prisma.portfolio.findFirst({ where: { userId: user.id } }))?.id ??
+        '00000000-0000-0000-0000-000000000000',
+    },
     create: {
       userId: user.id,
       name: 'Portefeuille de démonstration',
@@ -340,7 +344,9 @@ async function main() {
   await seedNews();
   await seedLessons();
   await seedDemoUser();
-  console.log('\nSeed terminé. Les données de marché et d’actualité sont des DONNÉES DE DÉMONSTRATION.');
+  console.log(
+    '\nSeed terminé. Les données de marché et d’actualité sont des DONNÉES DE DÉMONSTRATION.',
+  );
 }
 
 main()

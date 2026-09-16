@@ -30,13 +30,22 @@ export class HttpNewsProvider implements NewsProvider {
   private readonly baseUrl: string;
   private readonly apiKey: string | undefined;
 
-  constructor(env: Env, private readonly logger: Logger) {
+  constructor(
+    env: Env,
+    private readonly logger: Logger,
+  ) {
     this.baseUrl = (env.NEWS_API_URL ?? '').replace(/\/$/, '');
     this.apiKey = env.NEWS_API_KEY;
     this.name = new URL(this.baseUrl).hostname;
   }
 
-  async fetchLatest({ since, limit = 50 }: { since?: Date; limit?: number }): Promise<RawNewsItem[]> {
+  async fetchLatest({
+    since,
+    limit = 50,
+  }: {
+    since?: Date;
+    limit?: number;
+  }): Promise<RawNewsItem[]> {
     const params = new URLSearchParams({ limit: String(limit) });
     if (since) params.set('since', since.toISOString());
 
@@ -54,7 +63,10 @@ export class HttpNewsProvider implements NewsProvider {
 
     const parsed = responseSchema.safeParse(await response.json());
     if (!parsed.success) {
-      this.logger.error({ issues: parsed.error.issues }, 'news provider returned an unexpected payload');
+      this.logger.error(
+        { issues: parsed.error.issues },
+        'news provider returned an unexpected payload',
+      );
       throw upstreamUnavailable('Réponse inattendue du fournisseur d’actualités');
     }
 

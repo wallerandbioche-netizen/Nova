@@ -33,10 +33,7 @@ import type { PortfolioService } from '../../modules/portfolios/portfolio.servic
 import type { NewsService } from '../news/news.service.js';
 import type { PersonalizationService } from '../personalization/personalization.service.js';
 import { renderContext, valueBand, type AiContext } from './context.js';
-import {
-  deterministicChatAnswer,
-  deterministicNewsExplanation,
-} from './deterministic-answer.js';
+import { deterministicChatAnswer, deterministicNewsExplanation } from './deterministic-answer.js';
 import { findGlossaryEntry } from './glossary.js';
 import {
   ANSWER_FORMAT_INSTRUCTION,
@@ -290,7 +287,13 @@ export class AiService {
             riskTolerance: profile.riskTolerance,
             depth,
           }
-        : { experienceLevel: 'beginner', knowledgeLevel: 'beginner', investmentHorizon: '5_to_10_years' as never, riskTolerance: 'balanced', depth },
+        : {
+            experienceLevel: 'beginner',
+            knowledgeLevel: 'beginner',
+            investmentHorizon: '5_to_10_years' as never,
+            riskTolerance: 'balanced',
+            depth,
+          },
       portfolio: portfolioContext,
       news: options.news
         ? {
@@ -597,15 +600,13 @@ export class AiService {
       title: conversation.title,
       createdAt: conversation.createdAt.toISOString(),
       updatedAt: conversation.updatedAt.toISOString(),
-      messages: messages.map(
-        (message): AiMessage => ({
-          id: message.id,
-          role: message.role === 'user' ? 'user' : 'assistant',
-          content: message.content,
-          answer: (message.answer as AiAnswer | null) ?? null,
-          createdAt: message.createdAt.toISOString(),
-        }),
-      ),
+      messages: messages.map((message): AiMessage => ({
+        id: message.id,
+        role: message.role === 'user' ? 'user' : 'assistant',
+        content: message.content,
+        answer: (message.answer as AiAnswer | null) ?? null,
+        createdAt: message.createdAt.toISOString(),
+      })),
     };
   }
 

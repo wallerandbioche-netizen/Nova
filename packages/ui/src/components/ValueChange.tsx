@@ -27,8 +27,10 @@ export function ValueChange({
 }: ValueChangeProps) {
   const theme = useTheme();
 
-  const direction = percent === null ? 'unknown' : percent > 0 ? 'up' : percent < 0 ? 'down' : 'flat';
-  const arrow = direction === 'up' ? '▲' : direction === 'down' ? '▼' : direction === 'flat' ? '■' : '—';
+  const direction =
+    percent === null ? 'unknown' : percent > 0 ? 'up' : percent < 0 ? 'down' : 'flat';
+  const arrow =
+    direction === 'up' ? '▲' : direction === 'down' ? '▼' : direction === 'flat' ? '■' : '—';
   const color =
     direction === 'up' ? 'positive' : direction === 'down' ? 'negative' : ('secondary' as const);
 
@@ -40,7 +42,12 @@ export function ValueChange({
       accessibilityLabel={spoken}
       style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.xs }}
     >
-      <Text variant={variant} color={color} accessibilityElementsHidden importantForAccessibility="no">
+      <Text
+        variant={variant}
+        color={color}
+        accessibilityElementsHidden
+        importantForAccessibility="no"
+      >
         {arrow}
       </Text>
       <Text

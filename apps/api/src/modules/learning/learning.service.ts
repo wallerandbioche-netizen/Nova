@@ -32,7 +32,15 @@ export class LearningService {
   ) {}
 
   private toSummary(
-    row: { id: string; slug: string; title: string; description: string; difficulty: string; estimatedMinutes: number; category: string },
+    row: {
+      id: string;
+      slug: string;
+      title: string;
+      description: string;
+      difficulty: string;
+      estimatedMinutes: number;
+      category: string;
+    },
     status: LessonSummary['status'],
   ): LessonSummary {
     return {
@@ -68,17 +76,22 @@ export class LearningService {
     const level = profile?.knowledgeLevel ?? 'beginner';
     const levelOrder = { beginner: 0, intermediate: 1, advanced: 2 } as const;
 
-    return lessons
-      .map((lesson) =>
-        this.toSummary(lesson, (statusByLesson.get(lesson.id) ?? 'not_started') as LessonSummary['status']),
-      )
-      // Lessons at or below the user's level first, harder ones after: nothing is hidden,
-      // but the order matches where they are.
-      .sort((a, b) => {
-        const distanceA = Math.abs(levelOrder[a.difficulty] - levelOrder[level]);
-        const distanceB = Math.abs(levelOrder[b.difficulty] - levelOrder[level]);
-        return distanceA - distanceB;
-      });
+    return (
+      lessons
+        .map((lesson) =>
+          this.toSummary(
+            lesson,
+            (statusByLesson.get(lesson.id) ?? 'not_started') as LessonSummary['status'],
+          ),
+        )
+        // Lessons at or below the user's level first, harder ones after: nothing is hidden,
+        // but the order matches where they are.
+        .sort((a, b) => {
+          const distanceA = Math.abs(levelOrder[a.difficulty] - levelOrder[level]);
+          const distanceB = Math.abs(levelOrder[b.difficulty] - levelOrder[level]);
+          return distanceA - distanceB;
+        })
+    );
   }
 
   async getById(lessonId: string, userId: string): Promise<Lesson> {
@@ -114,7 +127,11 @@ export class LearningService {
     lessonId: string,
     userId: string,
     answers: Record<string, string> = {},
-  ): Promise<{ status: 'completed'; score: number | null; corrections: { questionId: string; correct: boolean; explanation: string }[] }> {
+  ): Promise<{
+    status: 'completed';
+    score: number | null;
+    corrections: { questionId: string; correct: boolean; explanation: string }[];
+  }> {
     const lesson = await this.db.learningLesson.findUnique({ where: { id: lessonId } });
     if (!lesson) throw notFound('Leçon introuvable');
 
@@ -128,7 +145,9 @@ export class LearningService {
     const answered = corrections.filter((correction) => answers[correction.questionId]);
     const score =
       answered.length > 0
-        ? Math.round((answered.filter((correction) => correction.correct).length / answered.length) * 100)
+        ? Math.round(
+            (answered.filter((correction) => correction.correct).length / answered.length) * 100,
+          )
         : null;
 
     await this.db.learningProgress.upsert({
@@ -176,7 +195,11 @@ export class LearningService {
     todaysNews: PersonalizedNewsItem[] = [],
   ): Promise<{ id: string; title: string; estimatedMinutes: number } | null> {
     const key = cacheKey('learning', 'suggestion', userId, new Date().toISOString().slice(0, 10));
-    const cached = await this.cache.get<{ id: string; title: string; estimatedMinutes: number } | null>(key);
+    const cached = await this.cache.get<{
+      id: string;
+      title: string;
+      estimatedMinutes: number;
+    } | null>(key);
     if (cached !== null) return cached;
 
     const [lessons, progress, profile] = await Promise.all([

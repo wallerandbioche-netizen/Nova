@@ -76,9 +76,9 @@ describe('news, analysis and AI coach', () => {
       );
       expect(relevant.length).toBeGreaterThan(0);
       // The user holds AAPL and an ETF, so at least one item must state a reason.
-      expect(relevant.some((item: { relevanceReason: string | null }) => item.relevanceReason)).toBe(
-        true,
-      );
+      expect(
+        relevant.some((item: { relevanceReason: string | null }) => item.relevanceReason),
+      ).toBe(true);
     });
 
     it('serves the feed to an anonymous caller without personalisation', async () => {

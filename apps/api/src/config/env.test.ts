@@ -28,15 +28,15 @@ describe('parseEnv', () => {
   });
 
   it('requires an endpoint when a real provider is selected', () => {
-    expect(() =>
-      parseEnv({ ...base, NEWS_PROVIDER: 'http' } as NodeJS.ProcessEnv),
-    ).toThrow(/NEWS_API_URL/);
+    expect(() => parseEnv({ ...base, NEWS_PROVIDER: 'http' } as NodeJS.ProcessEnv)).toThrow(
+      /NEWS_API_URL/,
+    );
   });
 
   it('requires an API key when a real LLM provider is selected', () => {
-    expect(() =>
-      parseEnv({ ...base, LLM_PROVIDER: 'anthropic' } as NodeJS.ProcessEnv),
-    ).toThrow(/LLM_API_KEY/);
+    expect(() => parseEnv({ ...base, LLM_PROVIDER: 'anthropic' } as NodeJS.ProcessEnv)).toThrow(
+      /LLM_API_KEY/,
+    );
   });
 
   it('refuses a placeholder secret in production', () => {
@@ -52,7 +52,11 @@ describe('parseEnv', () => {
 
   it('requires Redis in production', () => {
     expect(() =>
-      parseEnv({ ...base, NODE_ENV: 'production', JWT_SECRET: 'b'.repeat(40) } as NodeJS.ProcessEnv),
+      parseEnv({
+        ...base,
+        NODE_ENV: 'production',
+        JWT_SECRET: 'b'.repeat(40),
+      } as NodeJS.ProcessEnv),
     ).toThrow(/REDIS_URL/);
   });
 

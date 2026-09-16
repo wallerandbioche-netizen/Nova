@@ -111,7 +111,10 @@ export class ScoringService {
       .toLowerCase();
 
     const themes: MarketThemeKey[] = [];
-    for (const [theme, keywords] of Object.entries(THEME_KEYWORDS) as [MarketThemeKey, string[]][]) {
+    for (const [theme, keywords] of Object.entries(THEME_KEYWORDS) as [
+      MarketThemeKey,
+      string[],
+    ][]) {
       const matched = keywords.some((keyword) =>
         text.includes(keyword.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()),
       );

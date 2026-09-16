@@ -1,4 +1,9 @@
-import type { ContentDepth, ExperienceLevel, InvestmentHorizon, SourceReference } from '@nova/types';
+import type {
+  ContentDepth,
+  ExperienceLevel,
+  InvestmentHorizon,
+  SourceReference,
+} from '@nova/types';
 
 /**
  * The structured context handed to the LLM.

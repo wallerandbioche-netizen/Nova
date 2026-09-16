@@ -106,7 +106,12 @@ export default function PortfolioStep() {
                 {error}
               </Text>
             ) : null}
-            <Button label="Ajouter cette position" variant="secondary" fullWidth onPress={addPosition} />
+            <Button
+              label="Ajouter cette position"
+              variant="secondary"
+              fullWidth
+              onPress={addPosition}
+            />
           </View>
         </Card>
 
@@ -122,7 +127,8 @@ export default function PortfolioStep() {
                   <View style={{ flex: 1 }}>
                     <Text variant="bodyStrong">{position.symbol}</Text>
                     <Text variant="caption" color="secondary">
-                      {position.quantity.toLocaleString('fr-FR')} × {position.averagePrice.toLocaleString('fr-FR')} €
+                      {position.quantity.toLocaleString('fr-FR')} ×{' '}
+                      {position.averagePrice.toLocaleString('fr-FR')} €
                     </Text>
                   </View>
                   <Button

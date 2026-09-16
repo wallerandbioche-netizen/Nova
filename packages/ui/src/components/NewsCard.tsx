@@ -43,7 +43,14 @@ export function NewsCard({ item, onPress, compact = false }: NewsCardProps) {
       }`}
     >
       <View style={{ gap: theme.spacing.sm }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm, flexWrap: 'wrap' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: theme.spacing.sm,
+            flexWrap: 'wrap',
+          }}
+        >
           <Badge
             label={NEWS_CATEGORY_LABELS[item.category as NewsCategory] ?? item.category}
             tone="neutral"

@@ -4,16 +4,7 @@ import { View } from 'react-native';
 import { JOURNAL_ACTION_LABELS } from '@nova/config';
 import { formatPercent } from '@nova/finance';
 import type { JournalLookback } from '@nova/types';
-import {
-  Badge,
-  Button,
-  Card,
-  ErrorState,
-  Screen,
-  SkeletonCard,
-  Text,
-  useTheme,
-} from '@nova/ui';
+import { Badge, Button, Card, ErrorState, Screen, SkeletonCard, Text, useTheme } from '@nova/ui';
 import { useNovaQuery } from '../../src/hooks/use-nova-query';
 import { formatDate, freshnessLabel } from '../../src/lib/format';
 import { useAuth } from '../../src/state/auth-context';
@@ -96,9 +87,7 @@ export default function JournalEntryScreen() {
           </Text>
           <Text variant="caption" color="tertiary">
             Écrit le {formatDate(entry.createdAt)}
-            {monthsElapsed > 0
-              ? ` · il y a ${monthsElapsed} mois`
-              : ''}
+            {monthsElapsed > 0 ? ` · il y a ${monthsElapsed} mois` : ''}
           </Text>
         </View>
 
@@ -138,8 +127,8 @@ export default function JournalEntryScreen() {
                 {freshnessLabel(priceAsOf)}
               </Text>
               <Text variant="caption" color="tertiary">
-                NOVA affiche cet écart à titre factuel. Il ne juge pas votre décision : une
-                décision peut être bonne et mal tomber, ou l’inverse.
+                NOVA affiche cet écart à titre factuel. Il ne juge pas votre décision : une décision
+                peut être bonne et mal tomber, ou l’inverse.
               </Text>
             </View>
           </Card>

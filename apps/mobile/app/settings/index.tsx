@@ -113,8 +113,7 @@ export default function SettingsScreen() {
               />
             </View>
             <Text variant="caption" color="tertiary" style={{ marginTop: theme.spacing.md }}>
-              NOVA n’envoie jamais de notification destinée à provoquer une décision dans
-              l’urgence.
+              NOVA n’envoie jamais de notification destinée à provoquer une décision dans l’urgence.
             </Text>
           </Card>
         </View>
@@ -157,7 +156,12 @@ export default function SettingsScreen() {
           </Card>
         </View>
 
-        <Button label="Se déconnecter" variant="secondary" fullWidth onPress={() => void signOut()} />
+        <Button
+          label="Se déconnecter"
+          variant="secondary"
+          fullWidth
+          onPress={() => void signOut()}
+        />
       </View>
     </Screen>
   );

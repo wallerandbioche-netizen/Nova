@@ -33,35 +33,38 @@ function extractBearer(request: FastifyRequest): string | null {
  * `request.user` is derived exclusively from the signed token. A `userId` present in a body,
  * a query string or a header is never trusted (rule #31).
  */
-export const authenticatePlugin = fp(async (app: FastifyInstance) => {
-  const { env, db } = app.nova;
+export const authenticatePlugin = fp(
+  async (app: FastifyInstance) => {
+    const { env, db } = app.nova;
 
-  app.decorate('authenticate', async (request: FastifyRequest) => {
-    const token = extractBearer(request);
-    if (!token) throw unauthorized('Authentification requise');
+    app.decorate('authenticate', async (request: FastifyRequest) => {
+      const token = extractBearer(request);
+      if (!token) throw unauthorized('Authentification requise');
 
-    const claims = await verifyAccessToken(env, token);
+      const claims = await verifyAccessToken(env, token);
 
-    // A deleted account keeps valid tokens until they expire; check the account each time.
-    const user = await db.user.findFirst({
-      where: { id: claims.sub, deletedAt: null },
-      select: { id: true, email: true },
+      // A deleted account keeps valid tokens until they expire; check the account each time.
+      const user = await db.user.findFirst({
+        where: { id: claims.sub, deletedAt: null },
+        select: { id: true, email: true },
+      });
+      if (!user) throw unauthorized('Session invalide. Reconnectez-vous.');
+
+      request.user = user;
     });
-    if (!user) throw unauthorized('Session invalide. Reconnectez-vous.');
 
-    request.user = user;
-  });
-
-  app.decorate('optionalAuthenticate', async (request: FastifyRequest) => {
-    if (!extractBearer(request)) return;
-    try {
-      await app.authenticate(request);
-    } catch {
-      // An invalid token on a public route means "anonymous", not an error.
-      request.user = undefined;
-    }
-  });
-}, { name: 'authenticate' });
+    app.decorate('optionalAuthenticate', async (request: FastifyRequest) => {
+      if (!extractBearer(request)) return;
+      try {
+        await app.authenticate(request);
+      } catch {
+        // An invalid token on a public route means "anonymous", not an error.
+        request.user = undefined;
+      }
+    });
+  },
+  { name: 'authenticate' },
+);
 
 /** Returns the authenticated user or throws — never returns undefined to a handler. */
 export function requireUser(request: FastifyRequest): AuthenticatedUser {

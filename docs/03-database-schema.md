@@ -41,21 +41,21 @@ MarketTheme ─1:n─ MarketThemeReading (Market Radar : taux, inflation, énerg
 
 ## 3. Index
 
-| Table | Index | Raison |
-| --- | --- | --- |
-| `users` | `email` unique | login |
-| `assets` | `symbol`, `isin` unique nullable, `(assetType)`, `(sectorId)` | recherche & agrégats |
-| `market_prices` | `(assetId, timestamp)` unique, `(timestamp)` | séries temporelles, dernier prix |
-| `market_index_quotes` | `(indexId, timestamp)` unique, `(timestamp)` | overview marchés |
-| `news` | `(publishedAt)`, `(category, publishedAt)`, `externalId` unique nullable, `contentHash` unique | tri, dédoublonnage |
-| `news_assets` | `(newsId, assetId)` unique, `(assetId)` | jointure exposition |
-| `news_analysis` | `newsId` unique, `(importanceScore)` | sélection du top 5 |
-| `daily_briefs` | `(userId, date)` unique | 1 brief / jour / utilisateur |
-| `positions` | `(portfolioId, assetId)` unique | pas de doublon de ligne |
-| `journal_entries` | `(userId, createdAt)` | pagination |
-| `notifications` | `(userId, createdAt)`, `(userId, readAt)` | badge non-lus |
-| `audit_logs` | `(userId, createdAt)`, `(action, createdAt)` | investigation |
-| `refresh_tokens` | `tokenHash` unique, `(userId)` | rotation & révocation |
+| Table                 | Index                                                                                          | Raison                           |
+| --------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------- |
+| `users`               | `email` unique                                                                                 | login                            |
+| `assets`              | `symbol`, `isin` unique nullable, `(assetType)`, `(sectorId)`                                  | recherche & agrégats             |
+| `market_prices`       | `(assetId, timestamp)` unique, `(timestamp)`                                                   | séries temporelles, dernier prix |
+| `market_index_quotes` | `(indexId, timestamp)` unique, `(timestamp)`                                                   | overview marchés                 |
+| `news`                | `(publishedAt)`, `(category, publishedAt)`, `externalId` unique nullable, `contentHash` unique | tri, dédoublonnage               |
+| `news_assets`         | `(newsId, assetId)` unique, `(assetId)`                                                        | jointure exposition              |
+| `news_analysis`       | `newsId` unique, `(importanceScore)`                                                           | sélection du top 5               |
+| `daily_briefs`        | `(userId, date)` unique                                                                        | 1 brief / jour / utilisateur     |
+| `positions`           | `(portfolioId, assetId)` unique                                                                | pas de doublon de ligne          |
+| `journal_entries`     | `(userId, createdAt)`                                                                          | pagination                       |
+| `notifications`       | `(userId, createdAt)`, `(userId, readAt)`                                                      | badge non-lus                    |
+| `audit_logs`          | `(userId, createdAt)`, `(action, createdAt)`                                                   | investigation                    |
+| `refresh_tokens`      | `tokenHash` unique, `(userId)`                                                                 | rotation & révocation            |
 
 ## 4. Règles d'intégrité métier
 
@@ -68,11 +68,11 @@ MarketTheme ─1:n─ MarketThemeReading (Market Radar : taux, inflation, énerg
 
 ## 5. Rétention / RGPD
 
-| Donnée | Rétention |
-| --- | --- |
-| Compte supprimé | anonymisation immédiate (`deletedAt`, email haché) puis purge à J+30 |
-| `audit_logs` | 12 mois |
-| `market_prices` | 5 ans |
-| `news` | 24 mois |
-| `refresh_tokens` expirés | purge quotidienne |
-| Export utilisateur | JSON complet à la demande (`GET /account/export`) |
+| Donnée                   | Rétention                                                            |
+| ------------------------ | -------------------------------------------------------------------- |
+| Compte supprimé          | anonymisation immédiate (`deletedAt`, email haché) puis purge à J+30 |
+| `audit_logs`             | 12 mois                                                              |
+| `market_prices`          | 5 ans                                                                |
+| `news`                   | 24 mois                                                              |
+| `refresh_tokens` expirés | purge quotidienne                                                    |
+| Export utilisateur       | JSON complet à la demande (`GET /account/export`)                    |

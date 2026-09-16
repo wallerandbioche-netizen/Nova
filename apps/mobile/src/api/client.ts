@@ -60,7 +60,8 @@ export interface RequestOptions {
 const DEFAULT_BASE_URL = 'http://localhost:4000/v1';
 
 export function resolveBaseUrl(): string {
-  const configured = (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)?.apiBaseUrl;
+  const configured = (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)
+    ?.apiBaseUrl;
   return configured ?? DEFAULT_BASE_URL;
 }
 

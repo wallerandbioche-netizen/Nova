@@ -30,9 +30,15 @@ export function MetricCard({
   const theme = useTheme();
 
   return (
-    <Card onPress={onPress} accessibilityLabel={`${label} : ${value}`} style={compact ? { minWidth: 150 } : undefined}>
+    <Card
+      onPress={onPress}
+      accessibilityLabel={`${label} : ${value}`}
+      style={compact ? { minWidth: 150 } : undefined}
+    >
       <View style={{ gap: theme.spacing.xs }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View
+          style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+        >
           <Text variant="caption" color="secondary">
             {label}
           </Text>
@@ -42,7 +48,11 @@ export function MetricCard({
           {value}
         </Text>
         {changePercent !== undefined ? (
-          <ValueChange percent={changePercent} absolute={changeAbsolute} accessibilityPrefix={label} />
+          <ValueChange
+            percent={changePercent}
+            absolute={changeAbsolute}
+            accessibilityPrefix={label}
+          />
         ) : null}
         {caption ? (
           <Text variant="caption" color="tertiary">

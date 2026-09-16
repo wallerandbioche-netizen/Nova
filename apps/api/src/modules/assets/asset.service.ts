@@ -17,7 +17,9 @@ type AssetRow = Awaited<ReturnType<Database['asset']['findFirst']>>;
 export class AssetService {
   constructor(private readonly db: Database) {}
 
-  toDto(asset: NonNullable<AssetRow> & { sector?: { id: string; key: string; label: string } | null }): Asset {
+  toDto(
+    asset: NonNullable<AssetRow> & { sector?: { id: string; key: string; label: string } | null },
+  ): Asset {
     return {
       id: asset.id,
       symbol: asset.symbol,

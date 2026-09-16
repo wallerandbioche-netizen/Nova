@@ -86,7 +86,9 @@ describe('importance scoring', () => {
 
   it('ranks a central bank decision above a single company item', () => {
     const central = service.score(input({ category: 'central_banks' }));
-    const company = service.score(input({ category: 'company', affectedAssetCount: 1, affectedSectorCount: 0 }));
+    const company = service.score(
+      input({ category: 'company', affectedAssetCount: 1, affectedSectorCount: 0 }),
+    );
     expect(central.importanceScore).toBeGreaterThan(company.importanceScore);
   });
 
@@ -123,7 +125,9 @@ describe('confidence scoring', () => {
 
   it('lowers confidence on hedged or rumoured reporting', () => {
     const confirmed = service.score(input({ title: 'La BCE confirme sa décision' }));
-    const rumoured = service.score(input({ title: 'La BCE pourrait envisager une baisse selon des sources' }));
+    const rumoured = service.score(
+      input({ title: 'La BCE pourrait envisager une baisse selon des sources' }),
+    );
     expect(rumoured.confidenceScore).toBeLessThan(confirmed.confidenceScore);
   });
 });

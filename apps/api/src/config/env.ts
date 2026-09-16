@@ -17,7 +17,9 @@ const envSchema = z
     API_HOST: z.string().default('0.0.0.0'),
     API_PORT: z.coerce.number().int().min(1).max(65535).default(4000),
     CORS_ORIGINS: z.string().default(''),
-    LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
+    LOG_LEVEL: z
+      .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+      .default('info'),
 
     DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
     TEST_DATABASE_URL: z.string().optional(),
@@ -86,7 +88,12 @@ const envSchema = z
   .superRefine((env, ctx) => {
     // A provider selected without its endpoint would silently degrade to demo data in
     // production, which is exactly the situation absolute rule #58 forbids.
-    const requireUrl = (provider: string, selected: string, url: string | undefined, key: string) => {
+    const requireUrl = (
+      provider: string,
+      selected: string,
+      url: string | undefined,
+      key: string,
+    ) => {
       if (provider === selected && !url) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,

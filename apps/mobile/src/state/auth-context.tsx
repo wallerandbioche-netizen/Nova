@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import type { InvestorProfile, PublicUser, SubscriptionState } from '@nova/types';
 import { ApiClient, ApiError } from '../api/client';
 import { createEndpoints, type NovaApi } from '../api/endpoints';

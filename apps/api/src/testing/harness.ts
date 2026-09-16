@@ -15,7 +15,9 @@ export interface TestContext {
 let context: TestContext | null = null;
 
 /** Builds the app once per test file, against the test database and demo providers. */
-export async function createTestContext(overrides: Partial<NodeJS.ProcessEnv> = {}): Promise<TestContext> {
+export async function createTestContext(
+  overrides: Partial<NodeJS.ProcessEnv> = {},
+): Promise<TestContext> {
   if (context) return context;
 
   const env = parseEnv({ ...process.env, ...overrides });

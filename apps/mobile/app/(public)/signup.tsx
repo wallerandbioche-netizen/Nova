@@ -40,7 +40,11 @@ export default function SignupScreen() {
 
     setSubmitting(true);
     try {
-      await signUp({ firstName: parsed.data.firstName, email: parsed.data.email, password: parsed.data.password });
+      await signUp({
+        firstName: parsed.data.firstName,
+        email: parsed.data.email,
+        password: parsed.data.password,
+      });
     } catch (caught) {
       setErrors({
         form:

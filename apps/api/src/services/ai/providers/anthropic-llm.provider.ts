@@ -32,7 +32,10 @@ export class AnthropicLlmProvider implements LlmProvider {
   private readonly timeoutMs: number;
   private readonly maxOutputTokens: number;
 
-  constructor(env: Env, private readonly logger: Logger) {
+  constructor(
+    env: Env,
+    private readonly logger: Logger,
+  ) {
     this.model = env.LLM_MODEL;
     this.apiKey = env.LLM_API_KEY ?? '';
     this.baseUrl = (env.LLM_API_URL ?? 'https://api.anthropic.com').replace(/\/$/, '');

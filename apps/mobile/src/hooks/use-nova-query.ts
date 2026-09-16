@@ -1,6 +1,7 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { ApiError } from '../api/client';
+import type { ApiError } from '../api/client';
 import { formatCachedAt, readCache, writeCache } from '../lib/offline-cache';
 
 /**
@@ -50,14 +51,14 @@ export function useNovaQuery<T>(options: {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Only the cache key matters here: the payload is read once, to be ready if the request
+    // fails. Re-running on every render of the options object would re-read on each render.
   }, [options.cacheKey]);
 
   useEffect(() => {
     if (options.cacheKey && query.data !== undefined) {
       void writeCache(options.cacheKey, query.data);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.data, options.cacheKey]);
 
   const failed = query.isError;

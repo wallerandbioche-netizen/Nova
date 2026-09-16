@@ -14,7 +14,13 @@ export class DemoNewsProvider implements NewsProvider {
 
   constructor(private readonly now: () => Date = () => new Date()) {}
 
-  async fetchLatest({ since, limit = 40 }: { since?: Date; limit?: number }): Promise<RawNewsItem[]> {
+  async fetchLatest({
+    since,
+    limit = 40,
+  }: {
+    since?: Date;
+    limit?: number;
+  }): Promise<RawNewsItem[]> {
     const reference = this.now();
     const items = DEMO_NEWS.map((item, index) => {
       const publishedAt = new Date(reference.getTime() - item.hoursAgo * 3_600_000);

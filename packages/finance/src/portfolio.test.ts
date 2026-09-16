@@ -164,7 +164,10 @@ describe('computePortfolio', () => {
 
   it('excludes unvalued positions from the gain percentage but reports them', () => {
     const mixed = computePortfolio(
-      [position(), position({ id: 'p9', assetId: 'a9', lastPrice: null, averagePrice: 100, quantity: 10 })],
+      [
+        position(),
+        position({ id: 'p9', assetId: 'a9', lastPrice: null, averagePrice: 100, quantity: 10 }),
+      ],
       'EUR',
       RATES,
     );

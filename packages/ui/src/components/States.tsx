@@ -69,7 +69,8 @@ export function ErrorState({
   const theme = useTheme();
 
   const resolvedTitle =
-    title ?? (offline ? 'Impossible de récupérer les dernières données.' : 'Une erreur est survenue.');
+    title ??
+    (offline ? 'Impossible de récupérer les dernières données.' : 'Une erreur est survenue.');
   const resolvedDescription =
     description ??
     (offline

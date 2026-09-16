@@ -1,8 +1,5 @@
 import type { AiContext } from '../context.js';
-import {
-  deterministicChatAnswer,
-  deterministicNewsExplanation,
-} from '../deterministic-answer.js';
+import { deterministicChatAnswer, deterministicNewsExplanation } from '../deterministic-answer.js';
 import type { LlmCompletionRequest, LlmCompletionResult, LlmProvider } from './llm-provider.js';
 
 /**

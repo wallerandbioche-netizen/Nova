@@ -36,7 +36,9 @@ export const llmBriefSchema = z.object({
   marketSummary: z.string().trim().min(1).max(800),
   portfolioSummary: z.string().trim().max(800).nullable().default(null),
   takeaways: z
-    .array(z.object({ newsId: z.string().trim().min(1), takeaway: z.string().trim().min(1).max(400) }))
+    .array(
+      z.object({ newsId: z.string().trim().min(1), takeaway: z.string().trim().min(1).max(400) }),
+    )
     .max(10)
     .default([]),
   uncertainties: z.array(z.string().trim().min(1).max(400)).max(6).default([]),

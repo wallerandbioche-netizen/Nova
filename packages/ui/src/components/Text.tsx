@@ -4,7 +4,17 @@ import type { TypographyVariant } from '../theme/tokens.js';
 
 export interface TextProps extends RNTextProps {
   variant?: TypographyVariant;
-  color?: 'primary' | 'secondary' | 'tertiary' | 'inverse' | 'accent' | 'positive' | 'negative' | 'warning' | 'info' | 'demo';
+  color?:
+    | 'primary'
+    | 'secondary'
+    | 'tertiary'
+    | 'inverse'
+    | 'accent'
+    | 'positive'
+    | 'negative'
+    | 'warning'
+    | 'info'
+    | 'demo';
   align?: TextStyle['textAlign'];
   /** Renders numbers with tabular figures so values do not jitter when they update. */
   tabular?: boolean;

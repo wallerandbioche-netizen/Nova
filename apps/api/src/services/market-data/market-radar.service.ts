@@ -1,5 +1,10 @@
 import type { Logger } from 'pino';
-import { MARKET_THEMES, type MarketRadar, type MarketRadarTheme, type MarketThemeKey } from '@nova/types';
+import {
+  MARKET_THEMES,
+  type MarketRadar,
+  type MarketRadarTheme,
+  type MarketThemeKey,
+} from '@nova/types';
 import { CACHE_TTL, THEME_LABELS } from '@nova/config';
 import { round } from '@nova/finance';
 import type { Cache } from '../../infrastructure/cache/index.js';
@@ -49,9 +54,9 @@ export class MarketRadarService {
           : Math.min(
               100,
               Math.round(
-                related.reduce((total, analysis) => total + analysis.importanceScore, 0) /
+                (related.reduce((total, analysis) => total + analysis.importanceScore, 0) /
                   Math.max(related.length, 1) /
-                  100 *
+                  100) *
                   (60 + Math.min(related.length, 8) * 5),
               ),
             );

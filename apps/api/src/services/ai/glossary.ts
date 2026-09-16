@@ -79,7 +79,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     key: 'interest_rates',
     term: 'Taux d’intérêt',
-    aliases: ['taux', 'taux d’intérêt', 'taux d\'interet', 'taux directeur', 'bce', 'fed'],
+    aliases: ['taux', 'taux d’intérêt', "taux d'interet", 'taux directeur', 'bce', 'fed'],
     simple:
       'Le taux d’intérêt est le prix de l’argent emprunté. Quand les banques centrales relèvent leurs taux, emprunter coûte plus cher.',
     detailed:
@@ -102,7 +102,9 @@ export const GLOSSARY: GlossaryEntry[] = [
       'Le prix d’une obligation déjà émise évolue en sens inverse des taux d’intérêt. La duration mesure la sensibilité de ce prix à une variation des taux : plus elle est élevée, plus le prix bouge. S’ajoute le risque de crédit, c’est-à-dire la capacité de l’émetteur à rembourser.',
     whyItMatters:
       'Les obligations occupent souvent une place stabilisatrice dans un portefeuille, mais elles ne sont pas sans risque.',
-    uncertainties: ['Le comportement futur des taux et la qualité de crédit des émetteurs peuvent changer.'],
+    uncertainties: [
+      'Le comportement futur des taux et la qualité de crédit des émetteurs peuvent changer.',
+    ],
     relatedLessonSlug: 'les-obligations',
   },
   {
@@ -115,7 +117,9 @@ export const GLOSSARY: GlossaryEntry[] = [
       'Avec un rendement annuel r sur n années, un capital C devient C × (1 + r)^n. L’effet est faible les premières années puis s’accentue avec le temps, ce qui rend la durée d’investissement déterminante. Les frais se composent de la même manière, en sens inverse.',
     whyItMatters:
       'La durée pendant laquelle vous restez investi a souvent plus d’effet que le choix du point d’entrée.',
-    uncertainties: ['Le rendement futur est inconnu ; la formule suppose un rendement constant, ce qui n’arrive pas.'],
+    uncertainties: [
+      'Le rendement futur est inconnu ; la formule suppose un rendement constant, ce qui n’arrive pas.',
+    ],
     relatedLessonSlug: 'les-interets-composes',
   },
   {
@@ -174,22 +178,20 @@ export const GLOSSARY: GlossaryEntry[] = [
     key: 'dividend',
     term: 'Dividende',
     aliases: ['dividende', 'dividendes', 'revenus'],
-    simple:
-      'Un dividende est une part du bénéfice qu’une entreprise verse à ses actionnaires.',
+    simple: 'Un dividende est une part du bénéfice qu’une entreprise verse à ses actionnaires.',
     detailed:
       'Le versement d’un dividende réduit mécaniquement le cours de l’action du même montant le jour du détachement. Un rendement du dividende élevé peut refléter une politique de distribution généreuse comme un cours qui a beaucoup baissé.',
     whyItMatters:
       'Les dividendes ne sont ni garantis ni obligatoires : une entreprise peut les réduire ou les suspendre.',
-    uncertainties: ['Le niveau futur des dividendes dépend des résultats et des décisions de l’entreprise.'],
+    uncertainties: [
+      'Le niveau futur des dividendes dépend des résultats et des décisions de l’entreprise.',
+    ],
     relatedLessonSlug: null,
   },
 ];
 
 const NORMALIZE = (value: string): string =>
-  value
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase();
+  value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 /** Finds the glossary entry a free-text question is about, if any. */
 export function findGlossaryEntry(question: string): GlossaryEntry | null {
@@ -201,7 +203,9 @@ export function findGlossaryEntry(question: string): GlossaryEntry | null {
       const needle = NORMALIZE(alias);
       if (!needle) continue;
       // Word-boundary match so "or" inside "important" does not trigger a false positive.
-      const pattern = new RegExp(`(^|[^a-z0-9])${needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`);
+      const pattern = new RegExp(
+        `(^|[^a-z0-9])${needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`,
+      );
       if (pattern.test(haystack) && (!best || needle.length > best.length)) {
         best = { entry, length: needle.length };
       }

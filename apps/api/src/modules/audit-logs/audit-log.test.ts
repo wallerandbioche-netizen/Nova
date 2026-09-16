@@ -36,6 +36,8 @@ describe('AuditLogService.record', () => {
   it('never lets an audit failure break the audited action', async () => {
     const db = { auditLog: { create: vi.fn().mockRejectedValue(new Error('db down')) } };
     const service = new AuditLogService(db as never, logger);
-    await expect(service.record({ action: 'auth.login', resource: 'user' })).resolves.toBeUndefined();
+    await expect(
+      service.record({ action: 'auth.login', resource: 'user' }),
+    ).resolves.toBeUndefined();
   });
 });

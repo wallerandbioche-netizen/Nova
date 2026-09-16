@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, type Prisma } from '@prisma/client';
 import { getEnv } from '../../config/env.js';
 
 export type { Prisma };
@@ -37,9 +37,7 @@ export function toNumber(value: Prisma.Decimal | number | null | undefined): num
   return Number(value.toString());
 }
 
-export function toNullableNumber(
-  value: Prisma.Decimal | number | null | undefined,
-): number | null {
+export function toNullableNumber(value: Prisma.Decimal | number | null | undefined): number | null {
   if (value === null || value === undefined) return null;
   const parsed = typeof value === 'number' ? value : Number(value.toString());
   return Number.isFinite(parsed) ? parsed : null;

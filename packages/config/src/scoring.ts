@@ -81,13 +81,28 @@ export const RELEVANCE_WEIGHTS = {
 export const THEME_KEYWORDS: Record<MarketThemeKey, string[]> = {
   rates: ['taux', 'rate', 'bce', 'fed', 'banque centrale', 'monétaire', 'directeur', 'hike'],
   inflation: ['inflation', 'prix à la consommation', 'cpi', 'désinflation', 'ipc'],
-  technology: ['tech', 'technologie', 'semi-conducteur', 'intelligence artificielle', 'logiciel', 'nasdaq'],
+  technology: [
+    'tech',
+    'technologie',
+    'semi-conducteur',
+    'intelligence artificielle',
+    'logiciel',
+    'nasdaq',
+  ],
   energy: ['pétrole', 'brent', 'gaz', 'énergie', 'opep', 'baril', 'électricité'],
   banks: ['banque', 'bancaire', 'crédit', 'dépôt', 'bâle'],
   bonds: ['obligation', 'obligataire', 'oat', 'bund', 'treasury', 'rendement souverain', 'spread'],
   currencies: ['euro', 'dollar', 'devise', 'change', 'yen', 'eur/usd', 'parité'],
   commodities: ['matière première', 'or', 'cuivre', 'blé', 'métaux', 'once'],
-  geopolitics: ['conflit', 'sanction', 'tension', 'élection', 'guerre', 'droits de douane', 'tarif'],
+  geopolitics: [
+    'conflit',
+    'sanction',
+    'tension',
+    'élection',
+    'guerre',
+    'droits de douane',
+    'tarif',
+  ],
 };
 
 /** Sectors most directly sensitive to each theme; used for indirect exposure. */

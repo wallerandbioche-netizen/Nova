@@ -1,0 +1,42 @@
+# Local infrastructure for NOVA development.
+#
+#   docker compose -f infrastructure/docker-compose.yml up -d
+#
+# Redis is optional: without it the API falls back to an in-memory cache and an in-process
+# scheduler, which is enough to run the whole product locally.
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nova-postgres
+    environment:
+      POSTGRES_USER: nova
+      POSTGRES_PASSWORD: nova
+      POSTGRES_DB: nova_dev
+    ports:
+      - '5432:5432'
+    volumes:
+      - nova-postgres:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nova -d nova_dev']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: nova-redis
+    command: ['redis-server', '--appendonly', 'yes', '--save', '60', '1']
+    ports:
+      - '6379:6379'
+    volumes:
+      - nova-redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  nova-postgres:
+  nova-redis:

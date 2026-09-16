@@ -59,7 +59,10 @@ export class HttpMarketDataProvider implements MarketDataProvider {
   private readonly baseUrl: string;
   private readonly apiKey: string | undefined;
 
-  constructor(env: Env, private readonly logger: Logger) {
+  constructor(
+    env: Env,
+    private readonly logger: Logger,
+  ) {
     this.baseUrl = (env.MARKET_DATA_API_URL ?? '').replace(/\/$/, '');
     this.apiKey = env.MARKET_DATA_API_KEY;
     this.name = new URL(this.baseUrl).hostname;
@@ -127,7 +130,10 @@ export class HttpMarketDataProvider implements MarketDataProvider {
   }
 
   async searchAssets(query: string): Promise<ProviderAssetSearchResult[]> {
-    const results = await this.request(`/search?q=${encodeURIComponent(query)}`, z.array(searchSchema));
+    const results = await this.request(
+      `/search?q=${encodeURIComponent(query)}`,
+      z.array(searchSchema),
+    );
     return results.map((result) => ({
       ...result,
       exchange: result.exchange ?? null,

@@ -24,8 +24,7 @@ export const AI_DISCLAIMER =
 export const RISK_QUESTIONNAIRE_DISCLAIMER =
   'Ce questionnaire aide NOVA à adapter ses explications. Il ne constitue pas à lui seul une évaluation réglementaire complète de votre profil d’investisseur.';
 
-export const NO_DATA_ANSWER =
-  'Je n’ai pas suffisamment de données pour répondre précisément.';
+export const NO_DATA_ANSWER = 'Je n’ai pas suffisamment de données pour répondre précisément.';
 
 /** Cache time-to-live in seconds, per resource family. */
 export const CACHE_TTL = {

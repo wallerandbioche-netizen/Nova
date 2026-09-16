@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import {
-  TextInput,
-  View,
-  type TextInputProps,
-  type ViewStyle,
-} from 'react-native';
+import { TextInput, View, type TextInputProps, type ViewStyle } from 'react-native';
 import { useTheme } from '../theme/index.js';
 import { Text } from './Text.js';
 

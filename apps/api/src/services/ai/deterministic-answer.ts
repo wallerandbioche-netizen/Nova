@@ -147,7 +147,8 @@ export function deterministicChatAnswer(context: AiContext): LlmAnswer {
       whatWeKnow: glossaryEntry
         ? [glossaryEntry.simple, ...(depth === 'detailed' ? [glossaryEntry.detailed] : [])]
         : [definition],
-      whyItMatters: glossaryEntry?.whyItMatters ?? `Comprendre « ${term} » aide à lire les marchés.`,
+      whyItMatters:
+        glossaryEntry?.whyItMatters ?? `Comprendre « ${term} » aide à lire les marchés.`,
       portfolioRelevance: portfolioTieIn(context),
       uncertainties: glossaryEntry?.uncertainties ?? [],
       sources: context.sources,
@@ -185,7 +186,9 @@ export function deterministicChatAnswer(context: AiContext): LlmAnswer {
     whyItMatters:
       'Je peux expliquer un terme financier, une actualité de votre fil, ou l’exposition de votre portefeuille à partir des données dont je dispose.',
     portfolioRelevance: null,
-    uncertainties: ['Je ne dispose pas de données suffisantes pour répondre précisément à cette question.'],
+    uncertainties: [
+      'Je ne dispose pas de données suffisantes pour répondre précisément à cette question.',
+    ],
     sources: [],
     confidence: 0.2,
   };
@@ -199,7 +202,7 @@ function mentionsPortfolio(question: string): boolean {
 
 function portfolioTieIn(context: AiContext): string | null {
   const sentences = exposureSentences(context);
-  return sentences.length > 0 ? sentences[0] ?? null : null;
+  return sentences.length > 0 ? (sentences[0] ?? null) : null;
 }
 
 function formatDate(iso: string): string {

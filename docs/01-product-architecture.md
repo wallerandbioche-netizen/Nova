@@ -1,6 +1,6 @@
 # A. Product architecture — NOVA
 
-> NOVA — *Votre copilote personnel pour comprendre vos investissements.*
+> NOVA — _Votre copilote personnel pour comprendre vos investissements._
 
 ## 1. Le problème
 
@@ -33,12 +33,12 @@ PERSONNALISATION DE PLUS EN PLUS PERTINENTE
 
 ## 3. Ce que NOVA est, et ce qu'il n'est pas
 
-| NOVA **est** | NOVA **n'est pas** |
-| --- | --- |
-| Un moteur d'explication contextualisée | Un flux de news |
-| Un révélateur d'exposition de portefeuille | Un robo-advisor |
-| Un outil pédagogique | Un courtier / une plateforme de trading |
-| Une couche de transparence (source + date + incertitude) | Une source de prédictions |
+| NOVA **est**                                             | NOVA **n'est pas**                      |
+| -------------------------------------------------------- | --------------------------------------- |
+| Un moteur d'explication contextualisée                   | Un flux de news                         |
+| Un révélateur d'exposition de portefeuille               | Un robo-advisor                         |
+| Un outil pédagogique                                     | Un courtier / une plateforme de trading |
+| Une couche de transparence (source + date + incertitude) | Une source de prédictions               |
 
 Le MVP **informe, contextualise, explique, éduque**. Il ne recommande pas.
 
@@ -47,14 +47,14 @@ Le MVP **informe, contextualise, explique, éduque**. Il ne recommande pas.
 Toute information affichée porte un **type épistémique** explicite, jusque dans les types TypeScript
 (`packages/types` → `EpistemicKind`) :
 
-| Type | Origine | Rendu UI |
-| --- | --- | --- |
-| `fact` | Source primaire citée (news, publication) | Texte neutre + source + date |
-| `data` | Donnée structurée (prix, exposition calculée) | Valeur + `asOf` + badge `DEMO` si applicable |
-| `analysis` | Moteur déterministe (scoring, exposition) | Libellé + méthode explicable |
-| `hypothesis` | Chaîne de causalité plausible | Formulation conditionnelle (« peut », « pourrait ») |
-| `uncertainty` | Ce que l'on ne sait pas | Section dédiée « Ce qu'on ne sait pas » |
-| `opinion` | Avis externe attribué | Attribution obligatoire |
+| Type          | Origine                                       | Rendu UI                                            |
+| ------------- | --------------------------------------------- | --------------------------------------------------- |
+| `fact`        | Source primaire citée (news, publication)     | Texte neutre + source + date                        |
+| `data`        | Donnée structurée (prix, exposition calculée) | Valeur + `asOf` + badge `DEMO` si applicable        |
+| `analysis`    | Moteur déterministe (scoring, exposition)     | Libellé + méthode explicable                        |
+| `hypothesis`  | Chaîne de causalité plausible                 | Formulation conditionnelle (« peut », « pourrait ») |
+| `uncertainty` | Ce que l'on ne sait pas                       | Section dédiée « Ce qu'on ne sait pas »             |
+| `opinion`     | Avis externe attribué                         | Attribution obligatoire                             |
 
 Une hypothèse n'est jamais rendue comme un fait. Cette règle est appliquée par le schéma de sortie
 du LLM (`packages/validation`), pas seulement par le prompt.
@@ -81,26 +81,26 @@ Le produit sert les deux via le toggle **Simple / Détaillé** et l'adaptation a
 
 ## 7. Modules produit du MVP
 
-| # | Module | Statut MVP | Plan |
-| --- | --- | --- | --- |
-| 1 | Landing / Welcome | ✅ | free |
-| 2 | Auth (register/login/refresh/reset) | ✅ | free |
-| 3 | Onboarding investisseur (8 étapes) | ✅ | free |
-| 4 | Profil utilisateur | ✅ | free |
-| 5 | Portefeuille manuel | ✅ | free |
-| 6 | Dashboard personnalisé | ✅ | free |
-| 7 | Daily Brief | ✅ (limité en free) | free / premium |
-| 8 | Actualités | ✅ | free |
-| 9 | « Pourquoi cela vous concerne ? » | ✅ | free (quota) / premium |
-| 10 | Market Radar | ✅ | premium |
-| 11 | AI Coach | ✅ (quota free) | premium |
-| 12 | Learning | ✅ | free (basique) |
-| 13 | Journal | ✅ | free / premium (avancé) |
-| 14 | Notifications | ✅ | free |
-| 15 | Paramètres & suppression de compte | ✅ | free |
-| 16 | États loading / empty / error / offline | ✅ | — |
-| 17 | Architecture données de marché réelles | ✅ (interfaces + demo) | — |
-| 18 | Architecture broker future | ✅ (interface + non activée) | V2 |
+| #   | Module                                  | Statut MVP                   | Plan                    |
+| --- | --------------------------------------- | ---------------------------- | ----------------------- |
+| 1   | Landing / Welcome                       | ✅                           | free                    |
+| 2   | Auth (register/login/refresh/reset)     | ✅                           | free                    |
+| 3   | Onboarding investisseur (8 étapes)      | ✅                           | free                    |
+| 4   | Profil utilisateur                      | ✅                           | free                    |
+| 5   | Portefeuille manuel                     | ✅                           | free                    |
+| 6   | Dashboard personnalisé                  | ✅                           | free                    |
+| 7   | Daily Brief                             | ✅ (limité en free)          | free / premium          |
+| 8   | Actualités                              | ✅                           | free                    |
+| 9   | « Pourquoi cela vous concerne ? »       | ✅                           | free (quota) / premium  |
+| 10  | Market Radar                            | ✅                           | premium                 |
+| 11  | AI Coach                                | ✅ (quota free)              | premium                 |
+| 12  | Learning                                | ✅                           | free (basique)          |
+| 13  | Journal                                 | ✅                           | free / premium (avancé) |
+| 14  | Notifications                           | ✅                           | free                    |
+| 15  | Paramètres & suppression de compte      | ✅                           | free                    |
+| 16  | États loading / empty / error / offline | ✅                           | —                       |
+| 17  | Architecture données de marché réelles  | ✅ (interfaces + demo)       | —                       |
+| 18  | Architecture broker future              | ✅ (interface + non activée) | V2                      |
 
 Hors MVP, explicitement : trading, robo-advisor, connexion broker réelle, recommandation personnalisée.
 

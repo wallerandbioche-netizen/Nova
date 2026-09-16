@@ -32,7 +32,9 @@ export function formatShortDate(iso: string | null | undefined): string {
 /** "Dernière mise à jour : …" line shown under any market figure. */
 export function freshnessLabel(asOf: string | null | undefined): string {
   const formatted = formatDateTime(asOf);
-  return formatted === '—' ? 'Fraîcheur des données inconnue' : `Dernière mise à jour : ${formatted}`;
+  return formatted === '—'
+    ? 'Fraîcheur des données inconnue'
+    : `Dernière mise à jour : ${formatted}`;
 }
 
 export function pluralize(count: number, singular: string, plural?: string): string {

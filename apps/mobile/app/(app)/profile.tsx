@@ -20,7 +20,13 @@ export default function ProfileScreen() {
       <View style={{ gap: theme.spacing.xl }}>
         <Card>
           <View style={{ gap: theme.spacing.sm }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <Text variant="smallStrong" color="secondary">
                 Votre profil investisseur
               </Text>
@@ -101,7 +107,10 @@ export default function ProfileScreen() {
           <Card>
             <ListRow label="Aide et fonctionnement" onPress={() => router.push('/help')} />
             <Divider />
-            <ListRow label="Conditions d’utilisation" onPress={() => router.push('/(public)/terms')} />
+            <ListRow
+              label="Conditions d’utilisation"
+              onPress={() => router.push('/(public)/terms')}
+            />
             <Divider />
             <ListRow
               label="Politique de confidentialité"

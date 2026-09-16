@@ -97,9 +97,9 @@ export default function MarketsScreen() {
               <View style={{ gap: theme.spacing.sm }}>
                 <Text variant="h3">Disponible avec NOVA Premium</Text>
                 <Text variant="small" color="secondary">
-                  Le Market Radar classe les grands thèmes (taux, inflation, énergie,
-                  technologie…) selon l’attention qu’ils reçoivent, et indique la part de votre
-                  portefeuille exposée à chacun.
+                  Le Market Radar classe les grands thèmes (taux, inflation, énergie, technologie…)
+                  selon l’attention qu’ils reçoivent, et indique la part de votre portefeuille
+                  exposée à chacun.
                 </Text>
                 <Text
                   variant="smallStrong"
@@ -135,7 +135,9 @@ export default function MarketsScreen() {
                       <DemoBadge visible={radar.data?.meta.isDemo ?? false} />
                     </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm }}>
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: theme.spacing.sm }}
+                    >
                       <View
                         accessibilityElementsHidden
                         style={{

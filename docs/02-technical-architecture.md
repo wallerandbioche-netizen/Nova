@@ -2,20 +2,20 @@
 
 ## 1. Décisions techniques (ADR condensés)
 
-| # | Décision | Raison | Alternative écartée |
-| --- | --- | --- | --- |
-| 1 | **Monorepo pnpm workspaces** | Types et règles métier partagés entre API et mobile sans publication | Polyrepo (duplication des types) |
-| 2 | **Fastify** plutôt que NestJS | Surface d'API réduite, démarrage rapide, plugins/hooks suffisants pour une architecture modulaire explicite ; moins de magie décorateur à maintenir | NestJS |
-| 3 | **PostgreSQL + Prisma** | Contraintes FK, index composites, migrations versionnées, typage bout-en-bout | TypeORM, Drizzle |
-| 4 | **Zod partout** (`packages/validation`) | Une seule définition body/query/params + sortie LLM + formulaires mobiles | class-validator |
-| 5 | **Moteur financier isolé** (`packages/finance`) | Aucun calcul financier critique dans l'UI ; testable unitairement, pur, sans I/O | Calculs dans les contrôleurs |
-| 6 | **Providers derrière interfaces** | Marché/News/LLM/Notifications/Paiement/Stockage remplaçables sans réécrire l'app | Appels SDK directs |
-| 7 | **Redis optionnel en dev** | `RedisCache` si `REDIS_URL`, sinon `MemoryCache` — même interface, dev sans infra | Redis obligatoire |
-| 8 | **BullMQ si Redis, sinon scheduler in-process** | Les jobs restent exécutables en local ; même interface `JobQueue` | Cron externe |
-| 9 | **Hash mot de passe `scrypt` (node:crypto)** | Aucune dépendance native à compiler, paramètres OWASP configurables | bcrypt/argon2 natifs |
-| 10 | **JWT access court + refresh rotatif hashé en base** | Révocation réelle, détection de réutilisation de token | Session serveur pure |
-| 11 | **Expo + expo-router** | iOS/Android/web à partir d'une base, routage par fichiers lisible | RN CLI nu |
-| 12 | **TanStack Query + cache persistant** | Offline « dernières données connues » avec `asOf` explicite | Redux + fetch manuel |
+| #   | Décision                                             | Raison                                                                                                                                              | Alternative écartée              |
+| --- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| 1   | **Monorepo pnpm workspaces**                         | Types et règles métier partagés entre API et mobile sans publication                                                                                | Polyrepo (duplication des types) |
+| 2   | **Fastify** plutôt que NestJS                        | Surface d'API réduite, démarrage rapide, plugins/hooks suffisants pour une architecture modulaire explicite ; moins de magie décorateur à maintenir | NestJS                           |
+| 3   | **PostgreSQL + Prisma**                              | Contraintes FK, index composites, migrations versionnées, typage bout-en-bout                                                                       | TypeORM, Drizzle                 |
+| 4   | **Zod partout** (`packages/validation`)              | Une seule définition body/query/params + sortie LLM + formulaires mobiles                                                                           | class-validator                  |
+| 5   | **Moteur financier isolé** (`packages/finance`)      | Aucun calcul financier critique dans l'UI ; testable unitairement, pur, sans I/O                                                                    | Calculs dans les contrôleurs     |
+| 6   | **Providers derrière interfaces**                    | Marché/News/LLM/Notifications/Paiement/Stockage remplaçables sans réécrire l'app                                                                    | Appels SDK directs               |
+| 7   | **Redis optionnel en dev**                           | `RedisCache` si `REDIS_URL`, sinon `MemoryCache` — même interface, dev sans infra                                                                   | Redis obligatoire                |
+| 8   | **BullMQ si Redis, sinon scheduler in-process**      | Les jobs restent exécutables en local ; même interface `JobQueue`                                                                                   | Cron externe                     |
+| 9   | **Hash mot de passe `scrypt` (node:crypto)**         | Aucune dépendance native à compiler, paramètres OWASP configurables                                                                                 | bcrypt/argon2 natifs             |
+| 10  | **JWT access court + refresh rotatif hashé en base** | Révocation réelle, détection de réutilisation de token                                                                                              | Session serveur pure             |
+| 11  | **Expo + expo-router**                               | iOS/Android/web à partir d'une base, routage par fichiers lisible                                                                                   | RN CLI nu                        |
+| 12  | **TanStack Query + cache persistant**                | Offline « dernières données connues » avec `asOf` explicite                                                                                         | Redux + fetch manuel             |
 
 ## 2. Vue d'ensemble
 
@@ -63,16 +63,16 @@ toute donnée chiffrée affichée provient de la base, pas du modèle.
 
 ## 4. Découpage par responsabilité
 
-| Couche | Responsabilité | Interdits |
-| --- | --- | --- |
-| `apps/mobile` | Affichage, saisie, états UI, cache offline | Calcul financier, appel LLM, décision d'autorisation |
-| `apps/api/http` | Transport, authN/authZ, rate limit, mapping d'erreurs | Règle métier |
-| `apps/api/modules/*` | Règle métier par domaine, autorisations | Accès direct à un SDK externe |
-| `apps/api/services/*` | Orchestration + adaptation des providers | Accès HTTP entrant |
-| `packages/finance` | Mathématiques de portefeuille (pur) | I/O, Prisma, réseau |
-| `packages/validation` | Schémas Zod partagés | Logique métier |
-| `packages/types` | Types de domaine partagés | Runtime lourd |
-| `packages/ui` | Design system RN | Appels réseau |
+| Couche                | Responsabilité                                        | Interdits                                            |
+| --------------------- | ----------------------------------------------------- | ---------------------------------------------------- |
+| `apps/mobile`         | Affichage, saisie, états UI, cache offline            | Calcul financier, appel LLM, décision d'autorisation |
+| `apps/api/http`       | Transport, authN/authZ, rate limit, mapping d'erreurs | Règle métier                                         |
+| `apps/api/modules/*`  | Règle métier par domaine, autorisations               | Accès direct à un SDK externe                        |
+| `apps/api/services/*` | Orchestration + adaptation des providers              | Accès HTTP entrant                                   |
+| `packages/finance`    | Mathématiques de portefeuille (pur)                   | I/O, Prisma, réseau                                  |
+| `packages/validation` | Schémas Zod partagés                                  | Logique métier                                       |
+| `packages/types`      | Types de domaine partagés                             | Runtime lourd                                        |
+| `packages/ui`         | Design system RN                                      | Appels réseau                                        |
 
 ## 5. Sécurité (résumé — détail dans `docs/07-security.md`)
 
@@ -85,8 +85,8 @@ toute donnée chiffrée affichée provient de la base, pas du modèle.
 
 ## 6. Environnements
 
-| Env | Base | Cache/Jobs | Providers | Déploiement |
-| --- | --- | --- | --- | --- |
-| development | Postgres local | Memory (ou Redis local) | `demo` | `pnpm dev:api` |
-| staging | Postgres managé | Redis managé | réels en clé de test | automatique sur `main` |
-| production | Postgres managé (chiffré au repos) | Redis managé | réels | **validation manuelle requise** |
+| Env         | Base                               | Cache/Jobs              | Providers            | Déploiement                     |
+| ----------- | ---------------------------------- | ----------------------- | -------------------- | ------------------------------- |
+| development | Postgres local                     | Memory (ou Redis local) | `demo`               | `pnpm dev:api`                  |
+| staging     | Postgres managé                    | Redis managé            | réels en clé de test | automatique sur `main`          |
+| production  | Postgres managé (chiffré au repos) | Redis managé            | réels                | **validation manuelle requise** |

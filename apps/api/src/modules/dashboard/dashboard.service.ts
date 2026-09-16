@@ -74,7 +74,10 @@ export class DashboardService {
   }
 
   /** The five items that matter most for this user today. */
-  async buildTopNews(userId: string, limit = DASHBOARD_NEWS_COUNT): Promise<PersonalizedNewsItem[]> {
+  async buildTopNews(
+    userId: string,
+    limit = DASHBOARD_NEWS_COUNT,
+  ): Promise<PersonalizedNewsItem[]> {
     const exposure = await this.personalization.getExposure(userId);
     const signature = NewsService.exposureSignature(exposure);
 
@@ -122,7 +125,11 @@ export class DashboardService {
         totalUnrealizedGainPercent: 0,
         changeLabel: 'aucune position',
         isEmpty: true,
-        meta: { asOf: new Date().toISOString(), isDemo: false, provider: this.marketData.providerName },
+        meta: {
+          asOf: new Date().toISOString(),
+          isDemo: false,
+          provider: this.marketData.providerName,
+        },
       };
     }
 

@@ -58,8 +58,14 @@ export const SEED_LESSONS: SeedLesson[] = [
         'Les frais annuels sont prélevés quelle que soit la performance.',
       ],
       glossary: [
-        { term: 'Indice', definition: 'Un panier d’entreprises représentatif d’un marché ou d’un secteur.' },
-        { term: 'Frais de gestion', definition: 'Pourcentage annuel prélevé par l’émetteur sur l’encours du fonds.' },
+        {
+          term: 'Indice',
+          definition: 'Un panier d’entreprises représentatif d’un marché ou d’un secteur.',
+        },
+        {
+          term: 'Frais de gestion',
+          definition: 'Pourcentage annuel prélevé par l’émetteur sur l’encours du fonds.',
+        },
       ],
       quiz: [
         {
@@ -166,7 +172,10 @@ export const SEED_LESSONS: SeedLesson[] = [
         'Elle influence surtout votre capacité à rester investi.',
       ],
       glossary: [
-        { term: 'Écart-type', definition: 'Mesure statistique de la dispersion des variations autour de leur moyenne.' },
+        {
+          term: 'Écart-type',
+          definition: 'Mesure statistique de la dispersion des variations autour de leur moyenne.',
+        },
       ],
       quiz: [
         {
@@ -212,13 +221,20 @@ export const SEED_LESSONS: SeedLesson[] = [
         'Les entreprises de croissance y sont structurellement plus sensibles.',
       ],
       glossary: [
-        { term: 'Taux directeur', definition: 'Taux fixé par une banque centrale, référence du coût de l’argent.' },
-        { term: 'Duration', definition: 'Sensibilité du prix d’une obligation à une variation des taux.' },
+        {
+          term: 'Taux directeur',
+          definition: 'Taux fixé par une banque centrale, référence du coût de l’argent.',
+        },
+        {
+          term: 'Duration',
+          definition: 'Sensibilité du prix d’une obligation à une variation des taux.',
+        },
       ],
       quiz: [
         {
           id: 'rates-q1',
-          question: 'Les taux montent. Que se passe-t-il, mécaniquement, pour une obligation déjà émise ?',
+          question:
+            'Les taux montent. Que se passe-t-il, mécaniquement, pour une obligation déjà émise ?',
           options: [
             { id: 'a', label: 'Son prix a tendance à baisser' },
             { id: 'b', label: 'Son prix a tendance à monter' },
@@ -261,7 +277,10 @@ export const SEED_LESSONS: SeedLesson[] = [
         'L’inflation future est incertaine.',
       ],
       glossary: [
-        { term: 'Pouvoir d’achat', definition: 'Quantité de biens et services que permet d’acheter une somme donnée.' },
+        {
+          term: 'Pouvoir d’achat',
+          definition: 'Quantité de biens et services que permet d’acheter une somme donnée.',
+        },
       ],
       quiz: [
         {
@@ -355,7 +374,10 @@ export const SEED_LESSONS: SeedLesson[] = [
         'Les frais se composent exactement de la même manière.',
       ],
       glossary: [
-        { term: 'Capitalisation', definition: 'Réinvestissement des gains, qui produisent eux-mêmes des gains.' },
+        {
+          term: 'Capitalisation',
+          definition: 'Réinvestissement des gains, qui produisent eux-mêmes des gains.',
+        },
       ],
       quiz: [
         {
@@ -366,7 +388,8 @@ export const SEED_LESSONS: SeedLesson[] = [
             { id: 'b', label: 'La durée pendant laquelle on reste investi' },
           ],
           correctOptionId: 'b',
-          explanation: 'L’effet s’accentue avec le temps ; la durée pèse davantage que le point d’entrée.',
+          explanation:
+            'L’effet s’accentue avec le temps ; la durée pèse davantage que le point d’entrée.',
         },
       ],
     },
@@ -401,8 +424,14 @@ export const SEED_LESSONS: SeedLesson[] = [
         'Le risque comportemental est souvent le plus coûteux.',
       ],
       glossary: [
-        { term: 'Risque spécifique', definition: 'Risque propre à une entreprise ou à un secteur.' },
-        { term: 'Liquidité', definition: 'Facilité à vendre un actif rapidement sans décote importante.' },
+        {
+          term: 'Risque spécifique',
+          definition: 'Risque propre à une entreprise ou à un secteur.',
+        },
+        {
+          term: 'Liquidité',
+          definition: 'Facilité à vendre un actif rapidement sans décote importante.',
+        },
       ],
       quiz: [
         {
@@ -448,7 +477,10 @@ export const SEED_LESSONS: SeedLesson[] = [
         'Un seul indicateur ne suffit jamais à juger une entreprise.',
       ],
       glossary: [
-        { term: 'PER', definition: 'Price Earnings Ratio : cours divisé par le bénéfice par action.' },
+        {
+          term: 'PER',
+          definition: 'Price Earnings Ratio : cours divisé par le bénéfice par action.',
+        },
       ],
       quiz: [
         {
@@ -495,7 +527,10 @@ export const SEED_LESSONS: SeedLesson[] = [
         'La couverture a un coût et supprime aussi les gains de change.',
       ],
       glossary: [
-        { term: 'Couverture (hedging)', definition: 'Mécanisme visant à neutraliser l’effet des variations de change.' },
+        {
+          term: 'Couverture (hedging)',
+          definition: 'Mécanisme visant à neutraliser l’effet des variations de change.',
+        },
       ],
       quiz: [
         {
@@ -506,8 +541,7 @@ export const SEED_LESSONS: SeedLesson[] = [
             { id: 'b', label: 'Oui, via les sociétés américaines qu’il contient' },
           ],
           correctOptionId: 'b',
-          explanation:
-            'La devise de cotation ne change pas la devise des actifs sous-jacents.',
+          explanation: 'La devise de cotation ne change pas la devise des actifs sous-jacents.',
         },
       ],
     },

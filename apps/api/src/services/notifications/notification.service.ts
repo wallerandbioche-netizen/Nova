@@ -165,7 +165,9 @@ export class NotificationService {
           })),
         );
         // Clean up tokens the transport reports as dead, so we stop pushing to them.
-        const invalid = results.filter((result) => result.invalidToken).map((result) => result.token);
+        const invalid = results
+          .filter((result) => result.invalidToken)
+          .map((result) => result.token);
         if (invalid.length > 0) {
           await this.db.device.deleteMany({ where: { token: { in: invalid } } });
         }

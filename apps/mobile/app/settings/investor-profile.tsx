@@ -45,7 +45,9 @@ export default function InvestorProfileScreen() {
       await refreshSession();
       router.back();
     } catch (caught) {
-      setError(caught instanceof ApiError ? caught.message : 'Le profil n’a pas pu être enregistré.');
+      setError(
+        caught instanceof ApiError ? caught.message : 'Le profil n’a pas pu être enregistré.',
+      );
     } finally {
       setSubmitting(false);
     }
@@ -67,7 +69,11 @@ export default function InvestorProfileScreen() {
       <View style={{ gap: theme.spacing.xl }}>
         <View>
           <SectionHeader title="Objectif" />
-          <OptionList options={GOAL_OPTIONS} value={goal} onChange={setGoal as (v: string) => void} />
+          <OptionList
+            options={GOAL_OPTIONS}
+            value={goal}
+            onChange={setGoal as (v: string) => void}
+          />
         </View>
 
         <View>
@@ -90,7 +96,11 @@ export default function InvestorProfileScreen() {
 
         <View>
           <SectionHeader title="Tolérance aux fluctuations" subtitle={RISK_SCENARIO} />
-          <OptionList options={RISK_OPTIONS} value={risk} onChange={setRisk as (v: string) => void} />
+          <OptionList
+            options={RISK_OPTIONS}
+            value={risk}
+            onChange={setRisk as (v: string) => void}
+          />
         </View>
 
         <Text variant="caption" color="tertiary">

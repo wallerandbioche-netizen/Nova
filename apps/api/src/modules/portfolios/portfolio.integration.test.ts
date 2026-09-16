@@ -89,9 +89,9 @@ describe('portfolios and positions', () => {
     expect(position.currency).toBe('USD');
     // 10 × ~200 USD ≈ 2 000 USD → clearly below that once converted at ~0.92.
     expect(position.costBasis).toBeLessThan(2000);
-    expect(detail.json().analytics.byCurrency.some((slice: { key: string }) => slice.key === 'USD')).toBe(
-      true,
-    );
+    expect(
+      detail.json().analytics.byCurrency.some((slice: { key: string }) => slice.key === 'USD'),
+    ).toBe(true);
   });
 
   it('computes allocation, sector and region breakdowns that sum to 100 %', async () => {
@@ -154,10 +154,18 @@ describe('portfolios and positions', () => {
   });
 
   it('rejects invalid quantities and prices', async () => {
-    expect((await addPosition({ symbol: 'CW8.PA', quantity: 0, averagePrice: 440 })).statusCode).toBe(400);
-    expect((await addPosition({ symbol: 'CW8.PA', quantity: -1, averagePrice: 440 })).statusCode).toBe(400);
-    expect((await addPosition({ symbol: 'CW8.PA', quantity: 1, averagePrice: -5 })).statusCode).toBe(400);
-    expect((await addPosition({ symbol: 'CW8.PA', quantity: 'abc', averagePrice: 1 })).statusCode).toBe(400);
+    expect(
+      (await addPosition({ symbol: 'CW8.PA', quantity: 0, averagePrice: 440 })).statusCode,
+    ).toBe(400);
+    expect(
+      (await addPosition({ symbol: 'CW8.PA', quantity: -1, averagePrice: 440 })).statusCode,
+    ).toBe(400);
+    expect(
+      (await addPosition({ symbol: 'CW8.PA', quantity: 1, averagePrice: -5 })).statusCode,
+    ).toBe(400);
+    expect(
+      (await addPosition({ symbol: 'CW8.PA', quantity: 'abc', averagePrice: 1 })).statusCode,
+    ).toBe(400);
   });
 
   it('updates and deletes a position', async () => {

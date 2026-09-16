@@ -74,7 +74,14 @@ export default function BriefScreen() {
     >
       <View style={{ gap: theme.spacing['2xl'] }}>
         <View style={{ gap: theme.spacing.sm }}>
-          <View style={{ flexDirection: 'row', gap: theme.spacing.sm, alignItems: 'center', flexWrap: 'wrap' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: theme.spacing.sm,
+              alignItems: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
             {data.isStale ? (
               <Badge
                 label={`Briefing du ${data.date}`}
@@ -145,7 +152,9 @@ export default function BriefScreen() {
                   accessibilityLabel={`${index + 1}. ${item.title}`}
                 >
                   <View style={{ gap: theme.spacing.sm }}>
-                    <View style={{ flexDirection: 'row', gap: theme.spacing.sm, alignItems: 'center' }}>
+                    <View
+                      style={{ flexDirection: 'row', gap: theme.spacing.sm, alignItems: 'center' }}
+                    >
                       <Text variant="caption" color="tertiary" tabular>
                         {String(index + 1).padStart(2, '0')}
                       </Text>

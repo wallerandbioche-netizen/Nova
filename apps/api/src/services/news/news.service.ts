@@ -1,10 +1,5 @@
 import type { Logger } from 'pino';
-import type {
-  NewsCategory,
-  NewsItem,
-  PersonalizedNewsItem,
-  PortfolioExposure,
-} from '@nova/types';
+import type { NewsCategory, NewsItem, PersonalizedNewsItem, PortfolioExposure } from '@nova/types';
 import { CACHE_TTL, SECTOR_LABELS } from '@nova/config';
 import type { Cache } from '../../infrastructure/cache/index.js';
 import { cacheKey } from '../../infrastructure/cache/index.js';
@@ -48,8 +43,7 @@ export class NewsService {
 
   /** Trims, collapses whitespace and bounds the fields we store. */
   private normalize(raw: RawNewsItem): RawNewsItem {
-    const clean = (value: string, max: number) =>
-      value.replace(/\s+/g, ' ').trim().slice(0, max);
+    const clean = (value: string, max: number) => value.replace(/\s+/g, ' ').trim().slice(0, max);
     return {
       ...raw,
       title: clean(raw.title, 300),
@@ -60,7 +54,9 @@ export class NewsService {
     };
   }
 
-  async ingest(options: { since?: Date; limit?: number; now?: Date } = {}): Promise<IngestionReport> {
+  async ingest(
+    options: { since?: Date; limit?: number; now?: Date } = {},
+  ): Promise<IngestionReport> {
     const now = options.now ?? new Date();
     const report: IngestionReport = { fetched: 0, inserted: 0, duplicates: 0, failed: 0 };
 
@@ -77,10 +73,7 @@ export class NewsService {
 
         const existing = await this.db.news.findFirst({
           where: {
-            OR: [
-              { contentHash },
-              ...(item.externalId ? [{ externalId: item.externalId }] : []),
-            ],
+            OR: [{ contentHash }, ...(item.externalId ? [{ externalId: item.externalId }] : [])],
           },
           select: { id: true },
         });
@@ -275,11 +268,14 @@ export class NewsService {
     return new Map(analyses.map((analysis) => [analysis.newsId, analysis.themeKeys]));
   }
 
-  personalize(item: NewsItem, relevance: {
-    score: number;
-    reason: string | null;
-    exposurePercent: number | null;
-  }): PersonalizedNewsItem {
+  personalize(
+    item: NewsItem,
+    relevance: {
+      score: number;
+      reason: string | null;
+      exposurePercent: number | null;
+    },
+  ): PersonalizedNewsItem {
     return {
       ...item,
       portfolioRelevanceScore: relevance.score,

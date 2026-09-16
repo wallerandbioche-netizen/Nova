@@ -1,20 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import type { Logger } from 'pino';
 import type { PublicUser, SessionPayload } from '@nova/types';
-import type {
-  LoginInput,
-  RegisterInput,
-} from '@nova/validation';
+import type { LoginInput, RegisterInput } from '@nova/validation';
 import type { Env } from '../../config/env.js';
 import type { Database } from '../../infrastructure/database/prisma.js';
 import { conflict, notFound, unauthorized } from '../../http/errors.js';
 import type { AuditLogService } from '../audit-logs/audit-log.service.js';
 import { hashPassword, needsRehash, verifyPassword } from './password.js';
-import {
-  generateRefreshToken,
-  hashToken,
-  signAccessToken,
-} from './tokens.js';
+import { generateRefreshToken, hashToken, signAccessToken } from './tokens.js';
 import { toPublicUser, toInvestorProfile } from '../users/user.mapper.js';
 
 export interface AuthContext {

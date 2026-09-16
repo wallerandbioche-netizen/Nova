@@ -50,7 +50,8 @@ export async function subscriptionRoutes(app: FastifyInstance): Promise<void> {
       const signature =
         (request.headers['stripe-signature'] as string | undefined) ??
         (request.headers['x-signature'] as string | undefined);
-      const rawBody = typeof request.body === 'string' ? request.body : JSON.stringify(request.body);
+      const rawBody =
+        typeof request.body === 'string' ? request.body : JSON.stringify(request.body);
       await subscriptions.applyWebhook(rawBody, signature);
       return reply.status(204).send();
     },

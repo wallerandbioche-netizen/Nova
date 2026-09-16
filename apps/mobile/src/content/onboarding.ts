@@ -14,10 +14,12 @@ import type { Option } from '@nova/ui';
  * the screen states explicitly that this questionnaire is not, on its own, a regulatory
  * suitability assessment.
  */
-export const GOAL_OPTIONS: Option[] = Object.entries(INVESTMENT_GOAL_LABELS).map(([value, label]) => ({
-  value,
-  label,
-}));
+export const GOAL_OPTIONS: Option[] = Object.entries(INVESTMENT_GOAL_LABELS).map(
+  ([value, label]) => ({
+    value,
+    label,
+  }),
+);
 
 export const HORIZON_OPTIONS: Option[] = Object.entries(INVESTMENT_HORIZON_LABELS).map(
   ([value, label]) => ({ value, label }),
@@ -51,10 +53,12 @@ export const RISK_OPTIONS: Option[] = [
   { value: 'opportunistic', label: RISK_TOLERANCE_LABELS.opportunistic },
 ];
 
-export const ASSET_TYPE_OPTIONS: Option[] = Object.entries(ASSET_TYPE_LABELS).map(([value, label]) => ({
-  value,
-  label,
-}));
+export const ASSET_TYPE_OPTIONS: Option[] = Object.entries(ASSET_TYPE_LABELS).map(
+  ([value, label]) => ({
+    value,
+    label,
+  }),
+);
 
 export const ONBOARDING_STEPS = [
   'goal',

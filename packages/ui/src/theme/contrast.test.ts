@@ -33,7 +33,13 @@ describe.each([
   });
 
   it.each(surfaces)('semantic colours remain readable on %s', (surface) => {
-    for (const color of [colors.positive, colors.negative, colors.warning, colors.info, colors.demo]) {
+    for (const color of [
+      colors.positive,
+      colors.negative,
+      colors.warning,
+      colors.info,
+      colors.demo,
+    ]) {
       expect(contrastRatio(color, surface)).toBeGreaterThanOrEqual(WCAG_AA_NORMAL);
     }
   });
@@ -43,9 +49,15 @@ describe.each([
   });
 
   it('muted backgrounds keep their semantic text readable', () => {
-    expect(contrastRatio(colors.positive, colors.positiveMuted)).toBeGreaterThanOrEqual(WCAG_AA_NORMAL);
-    expect(contrastRatio(colors.negative, colors.negativeMuted)).toBeGreaterThanOrEqual(WCAG_AA_NORMAL);
-    expect(contrastRatio(colors.warning, colors.warningMuted)).toBeGreaterThanOrEqual(WCAG_AA_NORMAL);
+    expect(contrastRatio(colors.positive, colors.positiveMuted)).toBeGreaterThanOrEqual(
+      WCAG_AA_NORMAL,
+    );
+    expect(contrastRatio(colors.negative, colors.negativeMuted)).toBeGreaterThanOrEqual(
+      WCAG_AA_NORMAL,
+    );
+    expect(contrastRatio(colors.warning, colors.warningMuted)).toBeGreaterThanOrEqual(
+      WCAG_AA_NORMAL,
+    );
     expect(contrastRatio(colors.demo, colors.demoMuted)).toBeGreaterThanOrEqual(WCAG_AA_NORMAL);
   });
 

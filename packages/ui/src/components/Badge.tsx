@@ -2,7 +2,8 @@ import { View } from 'react-native';
 import { useTheme } from '../theme/index.js';
 import { Text } from './Text.js';
 
-export type BadgeTone = 'neutral' | 'accent' | 'positive' | 'negative' | 'warning' | 'info' | 'demo';
+export type BadgeTone =
+  'neutral' | 'accent' | 'positive' | 'negative' | 'warning' | 'info' | 'demo';
 
 export interface BadgeProps {
   label: string;

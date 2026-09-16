@@ -10,9 +10,7 @@ import {
 
 const responseSchema = z.object({
   model: z.string().optional(),
-  choices: z
-    .array(z.object({ message: z.object({ content: z.string().nullable() }) }))
-    .min(1),
+  choices: z.array(z.object({ message: z.object({ content: z.string().nullable() }) })).min(1),
   usage: z
     .object({ prompt_tokens: z.number().optional(), completion_tokens: z.number().optional() })
     .optional(),
@@ -28,7 +26,10 @@ export class OpenAiCompatibleLlmProvider implements LlmProvider {
   private readonly timeoutMs: number;
   private readonly maxOutputTokens: number;
 
-  constructor(env: Env, private readonly logger: Logger) {
+  constructor(
+    env: Env,
+    private readonly logger: Logger,
+  ) {
     this.model = env.LLM_MODEL;
     this.apiKey = env.LLM_API_KEY ?? '';
     this.baseUrl = (env.LLM_API_URL ?? '').replace(/\/$/, '');

@@ -37,7 +37,9 @@ export default function WelcomeScreen() {
             <Text variant="display" color="accent">
               {APP_NAME}
             </Text>
-            <Text variant="h2">Comprenez vos investissements sans passer votre journée à suivre les marchés.</Text>
+            <Text variant="h2">
+              Comprenez vos investissements sans passer votre journée à suivre les marchés.
+            </Text>
           </View>
 
           <View style={{ gap: theme.spacing.lg }}>
@@ -53,11 +55,7 @@ export default function WelcomeScreen() {
         </View>
 
         <View style={{ gap: theme.spacing.md }}>
-          <Button
-            label="Commencer"
-            fullWidth
-            onPress={() => router.push('/(public)/signup')}
-          />
+          <Button label="Commencer" fullWidth onPress={() => router.push('/(public)/signup')} />
           <Button
             label="J’ai déjà un compte"
             variant="ghost"

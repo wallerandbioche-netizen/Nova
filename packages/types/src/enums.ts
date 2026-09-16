@@ -34,15 +34,7 @@ export type InvestmentHorizon = (typeof INVESTMENT_HORIZONS)[number];
 export const RISK_TOLERANCES = ['very_cautious', 'cautious', 'balanced', 'opportunistic'] as const;
 export type RiskTolerance = (typeof RISK_TOLERANCES)[number];
 
-export const ASSET_TYPES = [
-  'stock',
-  'etf',
-  'bond',
-  'fund',
-  'crypto',
-  'commodity',
-  'cash',
-] as const;
+export const ASSET_TYPES = ['stock', 'etf', 'bond', 'fund', 'crypto', 'commodity', 'cash'] as const;
 export type AssetType = (typeof ASSET_TYPES)[number];
 
 export const REGIONS = ['north_america', 'europe', 'asia', 'emerging', 'global', 'other'] as const;
@@ -89,12 +81,7 @@ export type LessonDifficulty = (typeof LESSON_DIFFICULTIES)[number];
 export const LESSON_STATUSES = ['not_started', 'in_progress', 'completed'] as const;
 export type LessonStatus = (typeof LESSON_STATUSES)[number];
 
-export const NOTIFICATION_TYPES = [
-  'daily_brief',
-  'important_news',
-  'learning',
-  'system',
-] as const;
+export const NOTIFICATION_TYPES = ['daily_brief', 'important_news', 'learning', 'system'] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
 export const SUBSCRIPTION_PLANS = ['free', 'premium'] as const;

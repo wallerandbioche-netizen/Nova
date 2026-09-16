@@ -28,8 +28,16 @@ export async function registerRepeatableJobs(
   });
 
   await queue.add('news:ingest', { name: 'news:ingest' }, repeat('news:ingest', '15 * * * *'));
-  await queue.add('market:refresh', { name: 'market:refresh' }, repeat('market:refresh', '0 * * * *'));
-  await queue.add('brief:generate', { name: 'brief:generate' }, repeat('brief:generate', options.briefCron));
+  await queue.add(
+    'market:refresh',
+    { name: 'market:refresh' },
+    repeat('market:refresh', '0 * * * *'),
+  );
+  await queue.add(
+    'brief:generate',
+    { name: 'brief:generate' },
+    repeat('brief:generate', options.briefCron),
+  );
   await queue.add(
     'notifications:daily-brief',
     { name: 'notifications:daily-brief' },

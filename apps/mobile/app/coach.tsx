@@ -96,7 +96,13 @@ export default function CoachScreen() {
         style={{ flex: 1 }}
         keyboardVerticalOffset={8}
       >
-        <View style={{ paddingHorizontal: theme.screenPadding, paddingTop: theme.spacing.lg, gap: theme.spacing.md }}>
+        <View
+          style={{
+            paddingHorizontal: theme.screenPadding,
+            paddingTop: theme.spacing.lg,
+            gap: theme.spacing.md,
+          }}
+        >
           <Text variant="h1" accessibilityRole="header">
             Demander à NOVA
           </Text>

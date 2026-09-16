@@ -35,7 +35,10 @@ export const emailSchema = z
 
 export const passwordSchema = z
   .string()
-  .min(MIN_PASSWORD_LENGTH, `Le mot de passe doit contenir au moins ${MIN_PASSWORD_LENGTH} caractères`)
+  .min(
+    MIN_PASSWORD_LENGTH,
+    `Le mot de passe doit contenir au moins ${MIN_PASSWORD_LENGTH} caractères`,
+  )
   .max(MAX_PASSWORD_LENGTH, 'Le mot de passe est trop long')
   .refine((value) => /[a-zA-Z]/.test(value), 'Le mot de passe doit contenir au moins une lettre')
   .refine((value) => /[0-9]/.test(value), 'Le mot de passe doit contenir au moins un chiffre');

@@ -55,7 +55,13 @@ export interface PortfolioSummary {
 }
 
 export interface PortfolioDetail {
-  portfolio: { id: string; name: string; baseCurrency: string; createdAt: string; updatedAt: string };
+  portfolio: {
+    id: string;
+    name: string;
+    baseCurrency: string;
+    createdAt: string;
+    updatedAt: string;
+  };
   analytics: PortfolioAnalytics;
   positions: ValuedPosition[];
 }
@@ -63,8 +69,12 @@ export interface PortfolioDetail {
 export function createEndpoints(client: ApiClient) {
   return {
     auth: {
-      register: (body: { email: string; password: string; firstName: string; acceptedTerms: true }) =>
-        client.post<AuthResponse>('/auth/register', body, { anonymous: true }),
+      register: (body: {
+        email: string;
+        password: string;
+        firstName: string;
+        acceptedTerms: true;
+      }) => client.post<AuthResponse>('/auth/register', body, { anonymous: true }),
       login: (body: { email: string; password: string }) =>
         client.post<AuthResponse>('/auth/login', body, { anonymous: true }),
       logout: (refreshToken?: string) => client.post<void>('/auth/logout', { refreshToken }),
@@ -77,14 +87,16 @@ export function createEndpoints(client: ApiClient) {
 
     profile: {
       get: () => client.get<PublicUser>('/profile'),
-      update: (body: Partial<Pick<PublicUser, 'firstName' | 'locale' | 'theme' | 'contentDepth'>>) =>
-        client.patch<PublicUser>('/profile', body),
+      update: (
+        body: Partial<Pick<PublicUser, 'firstName' | 'locale' | 'theme' | 'contentDepth'>>,
+      ) => client.patch<PublicUser>('/profile', body),
       getInvestor: () =>
         client.get<{ profile: InvestorProfile | null; disclaimer: string }>('/profile/investor'),
       saveInvestor: (body: Record<string, unknown>) =>
         client.put<{ profile: InvestorProfile; disclaimer: string }>('/profile/investor', body),
       completeOnboarding: () => client.post<PublicUser>('/profile/onboarding/complete'),
-      getNotificationPreferences: () => client.get<NotificationPreferences>('/profile/notifications'),
+      getNotificationPreferences: () =>
+        client.get<NotificationPreferences>('/profile/notifications'),
       updateNotificationPreferences: (body: Partial<NotificationPreferences>) =>
         client.patch<NotificationPreferences>('/profile/notifications', body),
       changePassword: (body: { currentPassword: string; newPassword: string }) =>
@@ -99,10 +111,17 @@ export function createEndpoints(client: ApiClient) {
       update: (id: string, body: { name?: string; baseCurrency?: string }) =>
         client.patch<PortfolioSummary>(`/portfolios/${id}`, body),
       remove: (id: string) => client.delete<void>(`/portfolios/${id}`),
-      positions: (id: string) => client.get<{ items: ValuedPosition[] }>(`/portfolios/${id}/positions`),
+      positions: (id: string) =>
+        client.get<{ items: ValuedPosition[] }>(`/portfolios/${id}/positions`),
       addPosition: (
         id: string,
-        body: { symbol?: string; assetId?: string; quantity: number; averagePrice: number; currency?: string },
+        body: {
+          symbol?: string;
+          assetId?: string;
+          quantity: number;
+          averagePrice: number;
+          currency?: string;
+        },
       ) => client.post<{ id: string }>(`/portfolios/${id}/positions`, body),
       updatePosition: (
         positionId: string,
@@ -119,9 +138,17 @@ export function createEndpoints(client: ApiClient) {
           `/assets?query=${encodeURIComponent(query)}&limit=20`,
         ),
       asset: (id: string) =>
-        client.get<{ asset: { id: string; symbol: string; name: string; sector: { label: string } | null; currency: string; isDemo: boolean }; position: { quantity: number; averagePrice: number } | null }>(
-          `/assets/${id}`,
-        ),
+        client.get<{
+          asset: {
+            id: string;
+            symbol: string;
+            name: string;
+            sector: { label: string } | null;
+            currency: string;
+            isDemo: boolean;
+          };
+          position: { quantity: number; averagePrice: number } | null;
+        }>(`/assets/${id}`),
       prices: (id: string, range: string) =>
         client.get<PriceSeries>(`/assets/${id}/prices?range=${range}`),
     },
@@ -161,10 +188,15 @@ export function createEndpoints(client: ApiClient) {
         context?: { newsId?: string; assetId?: string; portfolioId?: string };
       }) => client.post<AiChatResult>('/ai/chat', body),
       conversations: () =>
-        client.get<{ items: { id: string; title: string; updatedAt: string }[] }>('/ai/conversations'),
+        client.get<{ items: { id: string; title: string; updatedAt: string }[] }>(
+          '/ai/conversations',
+        ),
       conversation: (id: string) => client.get<AiConversation>(`/ai/conversations/${id}`),
-      explainPortfolio: (body: { portfolioId: string; question?: string; depth: 'simple' | 'detailed' }) =>
-        client.post('/ai/explain-portfolio', body),
+      explainPortfolio: (body: {
+        portfolioId: string;
+        question?: string;
+        depth: 'simple' | 'detailed';
+      }) => client.post('/ai/explain-portfolio', body),
     },
 
     learning: {
@@ -207,9 +239,10 @@ export function createEndpoints(client: ApiClient) {
 
     subscriptions: {
       plans: () =>
-        client.get<{ items: (PlanDefinition & { isPurchasable: boolean })[]; paymentEnabled: boolean }>(
-          '/subscriptions/plans',
-        ),
+        client.get<{
+          items: (PlanDefinition & { isPurchasable: boolean })[];
+          paymentEnabled: boolean;
+        }>('/subscriptions/plans'),
       me: () => client.get<SubscriptionState>('/subscriptions/me'),
       checkout: (body: { plan: 'premium'; interval: 'month' | 'year' }) =>
         client.post<{ url: string | null }>('/subscriptions/checkout', body),

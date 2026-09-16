@@ -24,7 +24,9 @@ describe('registerSchema', () => {
   });
 
   it('rejects a password without a digit', () => {
-    expect(registerSchema.safeParse({ ...valid, password: 'motdepassesansnombre' }).success).toBe(false);
+    expect(registerSchema.safeParse({ ...valid, password: 'motdepassesansnombre' }).success).toBe(
+      false,
+    );
   });
 
   it('rejects a password shorter than the policy', () => {

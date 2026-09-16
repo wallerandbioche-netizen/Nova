@@ -129,8 +129,8 @@ export default function SubscriptionScreen() {
                       }}
                     >
                       <Text variant="small" color="secondary">
-                        Le paiement n’est pas encore activé sur cet environnement. NOVA Premium
-                        sera proposé prochainement.
+                        Le paiement n’est pas encore activé sur cet environnement. NOVA Premium sera
+                        proposé prochainement.
                       </Text>
                     </View>
                   )

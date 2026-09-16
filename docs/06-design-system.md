@@ -14,22 +14,22 @@ tickers clignotants, boutons « BUY » agressifs, densité de salle des marchés
 
 Les couleurs sont définies par rôle sémantique, jamais par valeur brute dans les écrans.
 
-| Token | Light | Dark | Usage |
-| --- | --- | --- | --- |
-| `background` | `#FBFBFA` | `#0E1012` | Fond d'écran |
-| `surface` | `#FFFFFF` | `#16191C` | Cartes |
+| Token              | Light     | Dark      | Usage                        |
+| ------------------ | --------- | --------- | ---------------------------- |
+| `background`       | `#FBFBFA` | `#0E1012` | Fond d'écran                 |
+| `surface`          | `#FFFFFF` | `#16191C` | Cartes                       |
 | `surfaceSecondary` | `#F4F4F2` | `#1E2226` | Zones secondaires, skeletons |
-| `textPrimary` | `#14171A` | `#F2F4F5` | Titres, valeurs |
-| `textSecondary` | `#5B6470` | `#98A2AE` | Descriptions, métadonnées |
-| `textTertiary` | `#8A94A0` | `#6C7783` | Légendes, `asOf` |
-| `border` | `#E4E5E2` | `#282D33` | Séparateurs 1 px |
-| `accent` | `#1F5D4C` | `#5FB49C` | Marque, CTA principal |
-| `accentMuted` | `#E8F1ED` | `#16302A` | Fond d'accent discret |
-| `positive` | `#1F6B4A` | `#5FB48A` | Variation positive |
-| `negative` | `#8C3A2E` | `#D3897C` | Variation négative |
-| `warning` | `#8A6A1F` | `#D9B55F` | Attention, incertitude |
-| `info` | `#2A5470` | `#7FAFCB` | Contexte, pédagogie |
-| `demo` | `#6B4E8A` | `#B79BD4` | Badge DEMO DATA |
+| `textPrimary`      | `#14171A` | `#F2F4F5` | Titres, valeurs              |
+| `textSecondary`    | `#5B6470` | `#98A2AE` | Descriptions, métadonnées    |
+| `textTertiary`     | `#8A94A0` | `#6C7783` | Légendes, `asOf`             |
+| `border`           | `#E4E5E2` | `#282D33` | Séparateurs 1 px             |
+| `accent`           | `#1F5D4C` | `#5FB49C` | Marque, CTA principal        |
+| `accentMuted`      | `#E8F1ED` | `#16302A` | Fond d'accent discret        |
+| `positive`         | `#1F6B4A` | `#5FB48A` | Variation positive           |
+| `negative`         | `#8C3A2E` | `#D3897C` | Variation négative           |
+| `warning`          | `#8A6A1F` | `#D9B55F` | Attention, incertitude       |
+| `info`             | `#2A5470` | `#7FAFCB` | Contexte, pédagogie          |
+| `demo`             | `#6B4E8A` | `#B79BD4` | Badge DEMO DATA              |
 
 `positive` / `negative` sont volontairement désaturés : ce ne sont pas des feux de signalisation.
 **Une variation n'est jamais signalée uniquement par la couleur** : signe (`+`/`−`), flèche
@@ -47,17 +47,17 @@ Contraste : tous les couples texte/fond visent WCAG AA (≥ 4,5:1 pour le texte 
 
 Famille unique : **Inter** (fallback système). Une seule famille, pas de police décorative.
 
-| Style | Taille / interligne | Graisse | Usage |
-| --- | --- | --- | --- |
-| `display` | 34 / 40 | 600 | Valeur de portefeuille |
-| `h1` | 26 / 32 | 600 | Titre d'écran |
-| `h2` | 20 / 26 | 600 | Titre de section |
-| `h3` | 17 / 24 | 600 | Titre de carte |
-| `body` | 16 / 24 | 400 | Texte courant |
-| `bodyStrong` | 16 / 24 | 600 | Emphase |
-| `small` | 14 / 20 | 400 | Secondaire |
-| `caption` | 12 / 16 | 500 | Source, date, badge |
-| `mono` | 16 / 24 | 500 | Chiffres alignés (tabular-nums) |
+| Style        | Taille / interligne | Graisse | Usage                           |
+| ------------ | ------------------- | ------- | ------------------------------- |
+| `display`    | 34 / 40             | 600     | Valeur de portefeuille          |
+| `h1`         | 26 / 32             | 600     | Titre d'écran                   |
+| `h2`         | 20 / 26             | 600     | Titre de section                |
+| `h3`         | 17 / 24             | 600     | Titre de carte                  |
+| `body`       | 16 / 24             | 400     | Texte courant                   |
+| `bodyStrong` | 16 / 24             | 600     | Emphase                         |
+| `small`      | 14 / 20             | 400     | Secondaire                      |
+| `caption`    | 12 / 16             | 500     | Source, date, badge             |
+| `mono`       | 16 / 24             | 500     | Chiffres alignés (tabular-nums) |
 
 Les chiffres utilisent `fontVariant: ['tabular-nums']` pour éviter le sautillement des valeurs.
 

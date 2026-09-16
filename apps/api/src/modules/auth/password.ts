@@ -33,14 +33,7 @@ export async function hashPassword(password: string): Promise<string> {
     // scrypt needs roughly 128 * N * r bytes; raise the default limit accordingly.
     maxmem: 256 * N * r,
   });
-  return [
-    'scrypt',
-    N,
-    r,
-    p,
-    salt.toString('base64url'),
-    derived.toString('base64url'),
-  ].join('$');
+  return ['scrypt', N, r, p, salt.toString('base64url'), derived.toString('base64url')].join('$');
 }
 
 export async function verifyPassword(password: string, stored: string): Promise<boolean> {

@@ -41,7 +41,11 @@ export default function ForgotPasswordScreen() {
             Si un compte existe pour cette adresse, un e-mail de réinitialisation vient d’être
             envoyé. Le lien est valable 30 minutes.
           </Text>
-          <Button label="Retour à la connexion" onPress={() => router.replace('/(public)/login')} fullWidth />
+          <Button
+            label="Retour à la connexion"
+            onPress={() => router.replace('/(public)/login')}
+            fullWidth
+          />
         </View>
       </Screen>
     );

@@ -191,9 +191,7 @@ export class MarketDataService {
       if (!asset) continue;
 
       // One row per (asset, day): re-running the job is idempotent.
-      const timestamp = new Date(
-        `${quote.timestamp.toISOString().slice(0, 10)}T17:30:00.000Z`,
-      );
+      const timestamp = new Date(`${quote.timestamp.toISOString().slice(0, 10)}T17:30:00.000Z`);
       await this.db.marketPrice.upsert({
         where: { assetId_timestamp: { assetId: asset.id, timestamp } },
         create: {
