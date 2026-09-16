@@ -144,6 +144,14 @@ pnpm dev:api        # API sur http://localhost:4000, documentation sur /docs
 pnpm dev:mobile     # Expo — i (iOS), a (Android), w (web)
 ```
 
+Sur iOS et Android, l'application n'envoie pas d'en-tête `Origin` et fonctionne sans réglage
+supplémentaire. **Pour la cible web**, ajoutez l'origine du navigateur à `CORS_ORIGINS` dans
+`apps/api/.env`, sinon le navigateur bloquera les appels :
+
+```
+CORS_ORIGINS=http://localhost:8081,http://localhost:19006
+```
+
 Sans aucune clé d'API, le produit est **entièrement fonctionnel** en mode démonstration : les
 cours, les actualités et les explications de NOVA sont déterministes et clairement étiquetés.
 

@@ -255,6 +255,9 @@ export class NewsService {
       themeKeys: [],
       affectedSymbols: item.affectedAssets.map((asset) => asset.symbol),
       affectedSectorKeys: item.affectedSectors.map((sector) => sector.sectorKey),
+      assetNames: Object.fromEntries(
+        item.affectedAssets.map((asset) => [asset.symbol, asset.name]),
+      ),
     };
   }
 

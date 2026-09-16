@@ -1,3 +1,5 @@
+// Must stay first: it populates process.env before anything reads it.
+import '../../load-env.js';
 import { getEnv } from '../../config/env.js';
 import { buildContainer } from '../../container.js';
 import { createCache } from '../cache/index.js';

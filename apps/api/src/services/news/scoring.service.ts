@@ -211,15 +211,32 @@ export class ScoringService {
     return clamp(score);
   }
 
-  /** Sectors indirectly sensitive to a theme, used to explain indirect exposure. */
-  sectorsForThemes(themes: MarketThemeKey[]): Record<string, number> {
+  /**
+   * Sectors indirectly sensitive to a theme, used to explain indirect exposure.
+   *
+   * Only strongly sensitive sectors are kept, and the list is capped. An item that maps to ten
+   * sectors tells the reader nothing — "les secteurs concernés sont : à peu près tous" is worse
+   * than saying nothing, and it also inflates the breadth component of the importance score.
+   */
+  sectorsForThemes(
+    themes: MarketThemeKey[],
+    options: { minSensitivity?: number; max?: number } = {},
+  ): Record<string, number> {
+    const { minSensitivity = 0.7, max = 4 } = options;
+
     const sensitivity: Record<string, number> = {};
     for (const theme of themes) {
       for (const [sectorKey, weight] of Object.entries(THEME_SECTOR_SENSITIVITY[theme] ?? {})) {
         sensitivity[sectorKey] = Math.max(sensitivity[sectorKey] ?? 0, weight);
       }
     }
-    return sensitivity;
+
+    return Object.fromEntries(
+      Object.entries(sensitivity)
+        .filter(([, weight]) => weight >= minSensitivity)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, max),
+    );
   }
 
   /**

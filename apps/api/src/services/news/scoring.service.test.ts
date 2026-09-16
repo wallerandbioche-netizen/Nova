@@ -196,3 +196,31 @@ describe('sectorsForThemes', () => {
     expect(sectors.financials).toBe(1);
   });
 });
+
+describe('sector breadth', () => {
+  it('keeps only strongly sensitive sectors, so "concerned sectors" stays meaningful', () => {
+    // Several themes at once used to accumulate nearly every sector, which says nothing to a
+    // reader and inflates the breadth component of the importance score.
+    const sectors = service.sectorsForThemes([
+      'rates',
+      'inflation',
+      'bonds',
+      'banks',
+      'currencies',
+    ]);
+    expect(Object.keys(sectors).length).toBeLessThanOrEqual(4);
+    for (const weight of Object.values(sectors)) {
+      expect(weight).toBeGreaterThanOrEqual(0.7);
+    }
+  });
+
+  it('keeps the most sensitive sectors first', () => {
+    const sectors = service.sectorsForThemes(['rates']);
+    const [first] = Object.entries(sectors);
+    expect(first?.[0]).toBe('financials');
+  });
+
+  it('returns nothing for a theme list with no strong sensitivity', () => {
+    expect(service.sectorsForThemes([])).toEqual({});
+  });
+});

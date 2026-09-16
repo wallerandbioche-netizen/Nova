@@ -82,9 +82,7 @@ export function deterministicNewsExplanation(context: AiContext): LlmNewsExplana
 
   const whyItMatters = [
     `Cette information relève de la catégorie « ${categoryLabel} », dont l’horizon de lecture habituel est ${horizonLabel(news.horizon)}.`,
-    news.affectedSectors.length > 0
-      ? `Les secteurs identifiés comme concernés sont : ${news.affectedSectors.join(', ')}.`
-      : 'Aucun secteur spécifique n’a été identifié comme directement concerné.',
+    describeAffectedSectors(news.affectedSectors),
     'Ce classement reflète une priorité de lecture, et non une prévision de performance.',
   ].join(' ');
 
@@ -119,6 +117,19 @@ export function deterministicNewsExplanation(context: AiContext): LlmNewsExplana
     uncertainties,
     confidence: Math.min(0.85, news.confidenceScore / 100),
   };
+}
+
+/** Names the concerned sectors, or says plainly that the item is broad rather than listing ten. */
+function describeAffectedSectors(sectors: string[]): string {
+  if (sectors.length === 0) {
+    return 'Aucun secteur spécifique n’a été identifié comme directement concerné.';
+  }
+  if (sectors.length <= 4) {
+    return `Les secteurs identifiés comme concernés sont : ${sectors.join(', ')}.`;
+  }
+  return `Cette information touche un large éventail de secteurs, dont ${sectors
+    .slice(0, 3)
+    .join(', ')} : son effet est diffus plutôt que ciblé.`;
 }
 
 function horizonLabel(horizon: string): string {

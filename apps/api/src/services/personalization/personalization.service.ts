@@ -22,6 +22,8 @@ export interface ScoredNews {
   affectedSymbols: string[];
   affectedSectorKeys: string[];
   affectedRegions?: string[];
+  /** symbol → display name, so a reason can say "Vous détenez Apple", not "AAPL". */
+  assetNames?: Record<string, string>;
 }
 
 export interface RelevanceBreakdown {
@@ -116,7 +118,10 @@ export class PersonalizationService {
 
     return {
       score,
-      reason: this.buildReason(directSymbols, breakdown),
+      reason: this.buildReason(
+        directSymbols.map((symbol) => news.assetNames?.[symbol] ?? symbol),
+        breakdown,
+      ),
       exposure: breakdown.slice(0, 5),
       exposurePercent:
         breakdown.length > 0 ? round(Math.max(...breakdown.map((b) => b.percent)), 2) : null,
@@ -174,7 +179,9 @@ export class PersonalizationService {
     if (relevant && relevant.relevanceReason) {
       return {
         kind: 'analysis',
-        text: `Parmi les informations du jour, « ${relevant.title} » est celle qui touche le plus votre portefeuille : ${relevant.relevanceReason.toLowerCase()}. Cette lecture décrit une exposition, pas un effet certain sur votre portefeuille.`,
+        text: `Parmi les informations du jour, « ${relevant.title} » est celle qui touche le plus votre portefeuille : ${uncapitalize(
+          relevant.relevanceReason,
+        )}. Cette lecture décrit une exposition, pas un effet certain sur votre portefeuille.`,
       };
     }
 
@@ -207,4 +214,12 @@ export class PersonalizationService {
     this.logger.debug({ count: users.length }, 'active users for personalisation');
     return users.map((user) => user.id);
   }
+}
+
+/**
+ * Lowers only the first letter, so a sentence fragment can be inlined without destroying the
+ * casing of anything else — a ticker like "OBLI.PA" must survive intact.
+ */
+function uncapitalize(text: string): string {
+  return text.length > 0 ? `${text.charAt(0).toLowerCase()}${text.slice(1)}` : text;
 }

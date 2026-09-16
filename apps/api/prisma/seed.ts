@@ -7,6 +7,8 @@
  * Every row that is not reference data carries `isDemo: true`, and the demo user's email makes
  * its nature obvious. Demo and real data are never mixed silently (rule #55).
  */
+// Must stay first: it populates process.env before anything reads it.
+import '../src/load-env.js';
 import { PrismaClient } from '@prisma/client';
 import { MARKET_INDICES, SECTORS } from '@nova/config';
 import { DEMO_ASSETS, DEMO_INDEX_LEVELS } from '../src/services/market-data/demo-dataset.js';
