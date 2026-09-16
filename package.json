@@ -8,21 +8,22 @@
     "node": ">=20.11"
   },
   "scripts": {
-    "build": "pnpm -r --filter=./packages/* build && pnpm --filter @nova/api build",
-    "typecheck": "pnpm -r typecheck",
+    "build": "pnpm build:packages && pnpm --filter @nova/api build",
+    "typecheck": "pnpm build:packages && pnpm -r typecheck",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md,yml}\"",
-    "test": "pnpm -r test",
-    "test:unit": "pnpm -r test:unit",
-    "test:integration": "pnpm --filter @nova/api test:integration",
+    "test": "pnpm build:packages && pnpm -r test",
+    "test:unit": "pnpm build:packages && pnpm -r test:unit",
+    "test:integration": "pnpm build:packages && pnpm --filter @nova/api test:integration",
     "db:generate": "pnpm --filter @nova/api db:generate",
     "db:migrate": "pnpm --filter @nova/api db:migrate",
     "db:seed": "pnpm --filter @nova/api db:seed",
-    "dev:api": "pnpm --filter @nova/api dev",
-    "dev:mobile": "pnpm --filter @nova/mobile start",
+    "dev:api": "pnpm build:packages && pnpm --filter @nova/api dev",
+    "dev:mobile": "pnpm build:packages && pnpm --filter @nova/mobile start",
     "infra:up": "docker compose -f infrastructure/docker-compose.yml up -d",
-    "infra:down": "docker compose -f infrastructure/docker-compose.yml down"
+    "infra:down": "docker compose -f infrastructure/docker-compose.yml down",
+    "build:packages": "pnpm -r --filter \"./packages/*\" build"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

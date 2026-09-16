@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "NOVA",
+    "slug": "nova",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "nova",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#FBFBFA"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.nova.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "app.nova.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#FBFBFA"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router", "expo-secure-store"],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "apiBaseUrl": "http://localhost:4000/v1"
+    }
+  }
+}
