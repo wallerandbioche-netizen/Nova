@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "pnpm build:packages && pnpm --filter @nova/api build",
+    "build:scan-trade": "pnpm --filter @scan-trade/web build",
     "typecheck": "pnpm build:packages && pnpm -r typecheck",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yml}\"",
@@ -21,6 +22,7 @@
     "db:seed": "pnpm --filter @nova/api db:seed",
     "dev:api": "pnpm build:packages && pnpm --filter @nova/api dev",
     "dev:mobile": "pnpm build:packages && pnpm --filter @nova/mobile start",
+    "dev:scan-trade": "pnpm --filter @scan-trade/web dev",
     "infra:up": "docker compose -f infrastructure/docker-compose.yml up -d",
     "infra:down": "docker compose -f infrastructure/docker-compose.yml down",
     "build:packages": "pnpm -r --filter \"./packages/*\" build"

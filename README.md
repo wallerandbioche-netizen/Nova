@@ -222,6 +222,28 @@ Préparé mais non activé : import CSV, connexion à un courtier, alertes perso
 comparaison à un benchmark, recommandations personnalisées (sous réserve de validation
 réglementaire — voir [`docs/07-implementation-plan.md`](docs/07-implementation-plan.md)).
 
+## Autres produits de cet espace de travail
+
+### Scan Trade
+
+`apps/scan-trade` héberge **Scan Trade**, un produit distinct de NOVA : une
+application SaaS qui transforme une capture d'écran de graphique en analyse
+structurée (niveaux clés, scénario potentiel, Entry / SL / TP, ratio
+risque/rendement) — ou qui refuse explicitement lorsqu'aucune configuration ne
+se justifie.
+
+Il a sa propre base de données, ses propres dépendances et sa propre cible de
+déploiement (Next.js sur Vercel). Voir [`apps/scan-trade/README.md`](apps/scan-trade/README.md)
+pour l'installation, les variables d'environnement, Stripe, le stockage et le
+déploiement.
+
+```bash
+pnpm dev:scan-trade
+pnpm build:scan-trade
+```
+
+---
+
 ## Documentation
 
 | Document                                                         | Contenu                                      |

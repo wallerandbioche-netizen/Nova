@@ -38,8 +38,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate the Prisma client
-        run: pnpm --filter @nova/api exec prisma generate
+      - name: Generate the Prisma clients
+        run: |
+          pnpm --filter @nova/api exec prisma generate
+          pnpm --filter @scan-trade/web exec prisma generate
 
       - name: Build workspace packages
         run: pnpm build:packages
