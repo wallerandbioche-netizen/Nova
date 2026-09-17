@@ -16,8 +16,9 @@ réelle, explique le lien possible — au conditionnel — et dit explicitement 
 - [Principes non négociables](#principes-non-négociables)
 - [Architecture](#architecture)
 - [Installation](#installation)
+- [Démarrage](#démarrage)
+- [Vérifier l'installation](#vérifier-linstallation)
 - [Variables d'environnement](#variables-denvironnement)
-- [Démarrage local](#démarrage-local)
 - [Base de données](#base-de-données)
 - [Tests](#tests)
 - [Build et déploiement](#build-et-déploiement)
@@ -91,31 +92,67 @@ Redis (optionnel) · BullMQ · Zod · Expo 53 · React Native 0.79 · TanStack Q
 
 ## Installation
 
-Prérequis : **Node.js ≥ 20.11**, **pnpm 10**, **PostgreSQL 16** (Docker suffit).
+Prérequis : **Node.js ≥ 20.11**, **pnpm 10**, et **PostgreSQL 16** (Docker suffit).
 
 ```bash
 git clone <repository> nova && cd nova
 pnpm install
-
-# Infrastructure locale (PostgreSQL + Redis)
-pnpm infra:up
-
-# Configuration
-cp .env.example apps/api/.env
-#   Pour un démarrage immédiat, seules DATABASE_URL et JWT_SECRET sont nécessaires.
-#   Générer un secret : openssl rand -base64 48
-
-# Base de données
-pnpm db:migrate
-pnpm db:seed
+pnpm bootstrap
 ```
 
-Le seed crée les données de référence, un univers de 18 actifs de démonstration avec 90 jours
-de cours synthétiques, 12 actualités, 10 leçons rédigées et un compte de démonstration :
+`pnpm bootstrap` fait tout le reste, et peut être relancé sans risque : il vérifie les
+prérequis, crée `apps/api/.env` avec un `JWT_SECRET` généré aléatoirement, démarre PostgreSQL
+(via Docker s'il est disponible), applique les migrations et insère les données de
+démonstration. Il ne remplace jamais un `.env` existant et ne supprime aucune donnée.
+
+Le seed crée un univers de 18 actifs de démonstration avec 90 jours de cours synthétiques,
+12 actualités, 10 leçons rédigées et un compte de démonstration :
 
 ```
 demo@nova.app / demo-nova-2026
 ```
+
+## Démarrage
+
+```bash
+pnpm dev        # API + application mobile, dans un seul terminal
+```
+
+- **iOS / Android** : scannez le QR code avec Expo Go. L'application détecte l'adresse de la
+  machine qui sert le bundle et joint l'API automatiquement — aucune adresse IP à saisir.
+- **Web** : appuyez sur `w`. Les origines locales sont déjà autorisées par `pnpm bootstrap`.
+- **API seule** : `pnpm dev:api`, documentation interactive sur http://localhost:4000/docs
+
+Sans aucune clé d'API, le produit est **entièrement fonctionnel** en mode démonstration : les
+cours, les actualités et les explications de NOVA sont déterministes et étiquetés `DEMO DATA`.
+
+## Vérifier l'installation
+
+```bash
+pnpm verify
+```
+
+Chaque point vérifié indique la commande qui le corrige :
+
+```
+  OK  Configuration          apps/api/.env présent
+  OK  CORS (cible web)       http://localhost:8081,…
+  OK  Packages compilés      packages/*/dist présents
+  OK  Base de données        PostgreSQL répond
+  OK  Schéma                 tables présentes
+  OK  Compte de démonstration demo@nova.app / demo-nova-2026
+  OK  API                    ready — données de démonstration
+```
+
+### En cas de problème
+
+| Symptôme                                         | Cause et correctif                                                                                                                             |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm bootstrap` s'arrête sur la base de données | Aucun PostgreSQL n'écoute. `pnpm infra:up` (Docker), ou démarrez-en un localement et créez `nova_dev` et `nova_test`.                          |
+| `expo start` échoue sur un réseau restreint      | Expo interroge expo.dev au démarrage. Utilisez `pnpm dev:offline`.                                                                             |
+| La cible web ne peut pas se connecter            | Le navigateur bloque l'appel : ajoutez votre origine à `CORS_ORIGINS` dans `apps/api/.env`.                                                    |
+| L'app sur téléphone n'atteint pas l'API          | Le téléphone doit être sur le même réseau que la machine. Sinon, forcez l'adresse : `EXPO_PUBLIC_API_URL=http://192.168.x.x:4000/v1 pnpm dev`. |
+| Repartir de données de démonstration propres     | `pnpm demo:reset`                                                                                                                              |
 
 ## Variables d'environnement
 
@@ -136,24 +173,6 @@ production, fournisseur sélectionné sans son endpoint, absence de Redis en pro
 | `RATE_LIMIT_*`         | non           | Limites configurables par route sensible   |
 
 Aucun secret n'est exposé au client : l'application mobile ne connaît que l'URL de l'API.
-
-## Démarrage local
-
-```bash
-pnpm dev:api        # API sur http://localhost:4000, documentation sur /docs
-pnpm dev:mobile     # Expo — i (iOS), a (Android), w (web)
-```
-
-Sur iOS et Android, l'application n'envoie pas d'en-tête `Origin` et fonctionne sans réglage
-supplémentaire. **Pour la cible web**, ajoutez l'origine du navigateur à `CORS_ORIGINS` dans
-`apps/api/.env`, sinon le navigateur bloquera les appels :
-
-```
-CORS_ORIGINS=http://localhost:8081,http://localhost:19006
-```
-
-Sans aucune clé d'API, le produit est **entièrement fonctionnel** en mode démonstration : les
-cours, les actualités et les explications de NOVA sont déterministes et clairement étiquetés.
 
 ## Base de données
 

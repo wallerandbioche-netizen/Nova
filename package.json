@@ -8,7 +8,13 @@
     "node": ">=20.11"
   },
   "scripts": {
+    "bootstrap": "node scripts/setup.mjs",
+    "dev": "pnpm build:packages && pnpm --parallel --no-bail --filter @nova/api --filter @nova/mobile dev",
+    "dev:api": "pnpm build:packages && pnpm --filter @nova/api dev",
+    "dev:mobile": "pnpm build:packages && pnpm --filter @nova/mobile start",
+    "verify": "node scripts/doctor.mjs",
     "build": "pnpm build:packages && pnpm --filter @nova/api build",
+    "build:packages": "pnpm -r --filter \"./packages/*\" build",
     "typecheck": "pnpm build:packages && pnpm -r typecheck",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yml}\"",
@@ -19,11 +25,10 @@
     "db:generate": "pnpm --filter @nova/api db:generate",
     "db:migrate": "pnpm --filter @nova/api db:migrate",
     "db:seed": "pnpm --filter @nova/api db:seed",
-    "dev:api": "pnpm build:packages && pnpm --filter @nova/api dev",
-    "dev:mobile": "pnpm build:packages && pnpm --filter @nova/mobile start",
+    "demo:reset": "pnpm --filter @nova/api db:seed",
     "infra:up": "docker compose -f infrastructure/docker-compose.yml up -d",
     "infra:down": "docker compose -f infrastructure/docker-compose.yml down",
-    "build:packages": "pnpm -r --filter \"./packages/*\" build"
+    "dev:offline": "EXPO_OFFLINE=1 pnpm dev"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

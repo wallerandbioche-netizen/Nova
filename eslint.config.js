@@ -39,4 +39,20 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
+  {
+    // Maintenance scripts run on Node directly, so they need its globals declared.
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        fetch: 'readonly',
+        AbortSignal: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        URL: 'readonly',
+        Buffer: 'readonly',
+      },
+    },
+  },
 );

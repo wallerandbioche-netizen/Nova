@@ -169,6 +169,7 @@ export default function DashboardScreen() {
             title="Les marchés"
             actionLabel="Tout voir"
             onAction={() => router.push('/(app)/markets')}
+            badge={<DemoBadge visible={data.markets.some((quote) => quote.isDemo)} />}
           />
           <ScrollView
             horizontal

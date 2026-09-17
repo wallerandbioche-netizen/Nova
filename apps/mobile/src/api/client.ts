@@ -1,5 +1,6 @@
 import Constants from 'expo-constants';
 import type { ApiErrorBody, ApiErrorCode } from '@nova/types';
+import { computeBaseUrl } from './base-url';
 
 /**
  * HTTP client.
@@ -57,12 +58,16 @@ export interface RequestOptions {
   signal?: AbortSignal;
 }
 
-const DEFAULT_BASE_URL = 'http://localhost:4000/v1';
-
 export function resolveBaseUrl(): string {
-  const configured = (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)
-    ?.apiBaseUrl;
-  return configured ?? DEFAULT_BASE_URL;
+  const extra = Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined;
+  return computeBaseUrl({
+    explicitUrl: process.env.EXPO_PUBLIC_API_URL,
+    isDev: typeof __DEV__ !== 'undefined' && __DEV__,
+    hostUri:
+      Constants.expoConfig?.hostUri ??
+      (Constants.expoGoConfig as { debuggerHost?: string } | undefined)?.debuggerHost,
+    configuredUrl: extra?.apiBaseUrl,
+  });
 }
 
 export class ApiClient {
