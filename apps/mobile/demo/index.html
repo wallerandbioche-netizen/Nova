@@ -1,0 +1,1739 @@
+<title>Copilote NOVA</title>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Archivo:wght@500;600;700&display=swap"
+/>
+<style>
+  /* ------------------------------------------------------------------------
+     Tokens. These are NOVA's own design tokens, taken from
+     packages/ui/src/theme/tokens.ts, so the demo and the app cannot drift.
+     Complete light palette on bare :root; dark redefines the same names.
+     ------------------------------------------------------------------------ */
+  :root {
+    --ground: #fbfbfa;
+    --surface: #ffffff;
+    --surface2: #f4f4f2;
+    --ink: #14171a;
+    --ink2: #5b6470;
+    --ink3: #7a8492;
+    --inverse: #ffffff;
+    --line: #e4e5e2;
+    --line-strong: #cfd2cd;
+    --accent: #1f5d4c;
+    --accent-muted: #e8f1ed;
+    --positive: #0f5340;
+    --positive-muted: #e7f1eb;
+    --negative: #b04a38;
+    --negative-muted: #f6eae7;
+    --warning: #7a5c15;
+    --warning-muted: #f7f0dc;
+    --info: #2a5470;
+    --info-muted: #e8eff4;
+    --demo: #5c4080;
+    --demo-muted: #f0eaf7;
+
+    --page: #f2f1ee;
+    --page-line: #e2e0db;
+    --device-frame: #1c1f22;
+    --shadow: 0 24px 60px rgba(20, 23, 26, 0.16);
+
+    --app: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --display: 'Archivo', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --ground: #0e1012;
+      --surface: #16191c;
+      --surface2: #1e2226;
+      --ink: #f2f4f5;
+      --ink2: #a8b2be;
+      --ink3: #8a94a0;
+      --inverse: #0e1012;
+      --line: #282d33;
+      --line-strong: #3a4148;
+      --accent: #5fb49c;
+      --accent-muted: #16302a;
+      --positive: #8fd4b1;
+      --positive-muted: #152720;
+      --negative: #c97c6e;
+      --negative-muted: #2a1c19;
+      --warning: #e0c173;
+      --warning-muted: #2a2417;
+      --info: #8fbbd6;
+      --info-muted: #152229;
+      --demo: #c4aee0;
+      --demo-muted: #211a2b;
+
+      --page: #08090a;
+      --page-line: #1c2024;
+      --device-frame: #2c3135;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --ground: #0e1012;
+    --surface: #16191c;
+    --surface2: #1e2226;
+    --ink: #f2f4f5;
+    --ink2: #a8b2be;
+    --ink3: #8a94a0;
+    --inverse: #0e1012;
+    --line: #282d33;
+    --line-strong: #3a4148;
+    --accent: #5fb49c;
+    --accent-muted: #16302a;
+    --positive: #8fd4b1;
+    --positive-muted: #152720;
+    --negative: #c97c6e;
+    --negative-muted: #2a1c19;
+    --warning: #e0c173;
+    --warning-muted: #2a2417;
+    --info: #8fbbd6;
+    --info-muted: #152229;
+    --demo: #c4aee0;
+    --demo-muted: #211a2b;
+
+    --page: #08090a;
+    --page-line: #1c2024;
+    --device-frame: #2c3135;
+    --shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: var(--app);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 20px;
+  }
+
+  /* ---------------------------------------------------------------- chrome */
+  .topbar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: color-mix(in srgb, var(--page) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--page-line);
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-block: 12px;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  .brand-sub {
+    color: var(--ink2);
+    font-size: 13px;
+    flex: 1 1 260px;
+    min-width: 0;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 5px 9px;
+    border-radius: 7px;
+    background: var(--demo-muted);
+    color: var(--demo);
+    white-space: nowrap;
+  }
+
+  /* ---------------------------------------------------------------- hero */
+  .hero {
+    padding-block: 40px 28px;
+    display: grid;
+    gap: 14px;
+    max-width: 62ch;
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .hero p {
+    margin: 0;
+    color: var(--ink2);
+    font-size: 16.5px;
+  }
+  .disclosure {
+    margin-top: 6px;
+    display: grid;
+    gap: 8px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--page-line);
+    background: var(--surface);
+    font-size: 13.5px;
+    color: var(--ink2);
+  }
+  .disclosure strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ---------------------------------------------------------------- stage */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+    gap: 44px;
+    align-items: start;
+    padding-block: 8px 56px;
+  }
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+  }
+
+  .stage {
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 72px);
+    display: grid;
+    gap: 14px;
+    justify-items: center;
+  }
+  @media (max-width: 900px) {
+    .stage {
+      position: static;
+    }
+  }
+
+  .device {
+    width: 100%;
+    max-width: 390px;
+    background: var(--device-frame);
+    border-radius: 34px;
+    padding: 10px;
+    box-shadow: var(--shadow);
+  }
+  .screen {
+    height: 700px;
+    max-height: 72vh;
+    min-height: 460px;
+    overflow: hidden;
+    border-radius: 25px;
+    background: var(--ground);
+    display: flex;
+    flex-direction: column;
+  }
+  .screen-body {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* The last 24px fade out, so content cut off by the frame reads as "keep scrolling"
+       rather than as a rendering fault. Dropped once the bottom is reached. */
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent 100%);
+    padding: 20px 18px 24px;
+    display: grid;
+    gap: 18px;
+    align-content: start;
+  }
+  .screen-body[data-at-end='true'] {
+    mask-image: none;
+  }
+  .tabbar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 0 0 25px 25px;
+  }
+  .tabbar button {
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 9px 2px 11px;
+    display: grid;
+    gap: 3px;
+    justify-items: center;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--ink3);
+  }
+  .tabbar button[aria-selected='true'] {
+    color: var(--accent);
+  }
+  .tabbar .glyph {
+    font-size: 14px;
+    line-height: 1;
+  }
+  .stage-note {
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--ink3);
+    text-align: center;
+    max-width: 380px;
+  }
+
+  /* ---------------------------------------------------------------- app UI */
+  .h1 {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: 1.16;
+  }
+  .h2 {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.32;
+  }
+  .body {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--ink);
+  }
+  .muted {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--ink2);
+  }
+  .meta {
+    margin: 0;
+    font-size: 11.5px;
+    color: var(--ink3);
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  .display {
+    font-size: 31px;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    padding: 15px;
+    display: grid;
+    gap: 9px;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+    color: inherit;
+  }
+  button.card {
+    appearance: none;
+    cursor: pointer;
+  }
+  button.card:hover {
+    border-color: var(--line-strong);
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .stack {
+    display: grid;
+    gap: 9px;
+  }
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .badge {
+    font-size: 10.5px;
+    font-weight: 500;
+    padding: 3px 7px;
+    border-radius: 7px;
+    background: var(--surface2);
+    color: var(--ink2);
+    white-space: nowrap;
+  }
+  .badge.accent {
+    background: var(--accent-muted);
+    color: var(--accent);
+  }
+  .badge.demo {
+    background: var(--demo-muted);
+    color: var(--demo);
+    letter-spacing: 0.04em;
+  }
+  .badge.info {
+    background: var(--info-muted);
+    color: var(--info);
+  }
+  .badge.warn {
+    background: var(--warning-muted);
+    color: var(--warning);
+  }
+  .badge.pos {
+    background: var(--positive-muted);
+    color: var(--positive);
+  }
+  .change {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-variant-numeric: tabular-nums;
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+  .change.up {
+    color: var(--positive);
+  }
+  .change.down {
+    color: var(--negative);
+  }
+  .change.flat {
+    color: var(--ink2);
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .hscroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .hscroll::-webkit-scrollbar {
+    display: none;
+  }
+  .hscroll .card {
+    min-width: 152px;
+    width: 152px;
+    flex: 0 0 auto;
+  }
+
+  .segmented {
+    display: flex;
+    gap: 3px;
+    padding: 3px;
+    background: var(--surface2);
+    border-radius: 11px;
+  }
+  .segmented button {
+    appearance: none;
+    border: 0;
+    flex: 1;
+    padding: 7px 4px;
+    border-radius: 8px;
+    background: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink2);
+    cursor: pointer;
+  }
+  .segmented button[aria-selected='true'] {
+    background: var(--surface);
+    color: var(--ink);
+  }
+
+  .bar {
+    height: 9px;
+    border-radius: 99px;
+    background: var(--surface2);
+    overflow: hidden;
+    display: flex;
+  }
+  .bar span {
+    display: block;
+    background: var(--accent);
+  }
+  .legend {
+    display: grid;
+    gap: 7px;
+  }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+  }
+  .legend-row .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
+    background: var(--accent);
+    flex: 0 0 auto;
+  }
+  .legend-row .name {
+    flex: 1;
+    min-width: 0;
+    color: var(--ink);
+  }
+  .legend-row .val {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .callout {
+    border-radius: 13px;
+    padding: 13px 14px;
+    display: grid;
+    gap: 6px;
+  }
+  .callout.warn {
+    background: var(--warning-muted);
+    color: var(--warning);
+  }
+  .callout.accent {
+    background: var(--accent-muted);
+    color: var(--accent);
+  }
+  .callout.info {
+    background: var(--info-muted);
+    color: var(--info);
+  }
+  .callout p {
+    margin: 0;
+    font-size: 13px;
+  }
+  .callout .label {
+    font-weight: 600;
+    font-size: 12.5px;
+  }
+
+  .btn {
+    appearance: none;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: var(--inverse);
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+  }
+  .btn.ghost {
+    background: none;
+    border-color: var(--line);
+    color: var(--accent);
+  }
+  .btn.small {
+    padding: 8px 12px;
+    font-size: 13px;
+    width: auto;
+  }
+  .back {
+    appearance: none;
+    border: 0;
+    background: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    justify-self: start;
+  }
+  .listrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-block: 11px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .listrow:last-child {
+    border-bottom: 0;
+  }
+  .listrow .grow {
+    flex: 1;
+    min-width: 0;
+  }
+  .kv {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13.5px;
+  }
+  .kv .k {
+    color: var(--ink2);
+  }
+  .kv .v {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--ink2);
+  }
+  .score .track {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--surface2);
+    overflow: hidden;
+  }
+  .score .track span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  /* ---------------------------------------------------------------- notes */
+  .notes {
+    display: grid;
+    gap: 22px;
+    padding-top: 6px;
+  }
+  .note-eyebrow {
+    font-family: var(--display);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+  }
+  .notes h2 {
+    font-family: var(--display);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 6px 0 0;
+    text-wrap: balance;
+  }
+  .notes p {
+    margin: 0;
+    color: var(--ink2);
+    font-size: 15px;
+    max-width: 60ch;
+  }
+  .rules {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .rules li {
+    display: grid;
+    gap: 3px;
+    padding-left: 15px;
+    border-left: 2px solid var(--line);
+  }
+  .rules .t {
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--ink);
+  }
+  .rules .d {
+    font-size: 13.5px;
+    color: var(--ink2);
+  }
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+    gap: 1px;
+    background: var(--page-line);
+    border: 1px solid var(--page-line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .figure {
+    background: var(--surface);
+    padding: 13px 14px;
+    display: grid;
+    gap: 2px;
+  }
+  .figure .n {
+    font-family: var(--display);
+    font-size: 21px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .figure .l {
+    font-size: 11.5px;
+    color: var(--ink2);
+  }
+
+  /* ---------------------------------------------------------------- run */
+  .run {
+    border-top: 1px solid var(--page-line);
+    padding-block: 44px 20px;
+    display: grid;
+    gap: 26px;
+  }
+  .run-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 22px;
+  }
+  .run h2 {
+    font-family: var(--display);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .run h3 {
+    font-family: var(--display);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+  }
+  .run p {
+    margin: 0 0 10px;
+    color: var(--ink2);
+    font-size: 14px;
+    max-width: 52ch;
+  }
+  pre {
+    margin: 0;
+    padding: 13px 14px;
+    border-radius: 11px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    overflow-x: auto;
+    font-size: 12.5px;
+    line-height: 1.7;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--ink);
+  }
+  pre .c {
+    color: var(--ink3);
+  }
+  footer {
+    border-top: 1px solid var(--page-line);
+    padding-block: 22px 40px;
+    color: var(--ink3);
+    font-size: 12.5px;
+    display: grid;
+    gap: 6px;
+  }
+  a {
+    color: var(--accent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <span class="brand">NOVA</span>
+    <span class="brand-sub">Votre copilote personnel pour comprendre vos investissements.</span>
+    <span class="chip">Démonstration statique</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <h1>Les écrans réels de NOVA, avec les données réelles du seed.</h1>
+    <p>
+      Naviguez dans l’application ci-dessous : les chiffres, les actualités, les scores et les
+      réponses de NOVA proviennent de l’API du projet, interrogée avec le compte de démonstration.
+    </p>
+    <div class="disclosure">
+      <span
+        ><strong>Ce que vous voyez.</strong> Une capture figée : pas de compte, pas de serveur, pas
+        d’écriture possible. Chaque valeur affichée a été produite par le vrai moteur de scoring,
+        le vrai calcul d’exposition et le vrai générateur de briefing.</span
+      >
+      <span
+        ><strong>Ce que vous ne voyez pas.</strong> L’application réelle tourne en natif (iOS,
+        Android) sur une API Node et une base PostgreSQL. La marche à suivre pour l’exécuter, ou
+        l’héberger sur votre propre infrastructure, est en bas de page.</span
+      >
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="stage">
+      <div class="device">
+        <div class="screen">
+          <div class="screen-body" id="screen"></div>
+          <nav class="tabbar" id="tabbar" aria-label="Navigation principale"></nav>
+        </div>
+      </div>
+      <p class="stage-note" id="stage-note"></p>
+    </div>
+
+    <aside class="notes" id="notes"></aside>
+  </div>
+</main>
+
+<section class="wrap run">
+  <div>
+    <h2>L’exécuter pour de vrai</h2>
+    <p>
+      Trois commandes depuis un clone. Sans aucune clé d’API, le produit est entièrement
+      fonctionnel en mode démonstration.
+    </p>
+  </div>
+  <div class="run-grid">
+    <div>
+      <h3>En local</h3>
+      <pre><span class="c"># Node ≥ 20.11, pnpm 10, PostgreSQL 16</span>
+pnpm install
+pnpm bootstrap   <span class="c"># .env, base, migrations, seed</span>
+pnpm dev         <span class="c"># API + application mobile</span></pre>
+      <p style="margin-top: 10px">
+        Scannez le QR code avec Expo Go : l’application détecte l’adresse de la machine qui sert le
+        bundle et joint l’API automatiquement.
+      </p>
+    </div>
+    <div>
+      <h3>Pour obtenir une URL publique</h3>
+      <p>
+        L’API se déploie comme conteneur (<code>infrastructure/Dockerfile.api</code>), avec une base
+        PostgreSQL managée. La cible web se déploie comme site statique.
+      </p>
+      <pre><span class="c"># API</span>
+docker build -f infrastructure/Dockerfile.api -t nova-api .
+<span class="c"># migrations, avant le déploiement du code</span>
+pnpm --filter @nova/api exec prisma migrate deploy
+
+<span class="c"># web</span>
+pnpm --filter @nova/mobile exec expo export --platform web</pre>
+      <p style="margin-top: 10px">
+        Détail des environnements, du pipeline et des points de vigilance :
+        <code>docs/10-deployment.md</code> et <code>docs/09-security.md</code>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span
+    >NOVA fournit une information pédagogique et contextuelle. NOVA ne délivre pas de conseil en
+    investissement personnalisé, n’exécute aucune transaction et n’a accès à aucun compte.</span
+  >
+  <span>Les performances passées ne préjugent pas des performances futures.</span>
+</footer>
+
+<script id="nova-snapshot" type="application/json">{"dashboard":{"greeting":"Bonjour, Camille 👋","brief":null,"portfolio":{"id":"938293f1-715f-409e-8ac8-d050c859c7a3","name":"Portefeuille de démonstration","totalValue":13805.33,"baseCurrency":"EUR","dayChangePercent":-2.18,"totalUnrealizedGainPercent":4.42,"changeLabel":"en baisse de 2,18 %","isEmpty":false,"meta":{"asOf":"2026-09-17T17:30:00.000Z","isDemo":true,"provider":"NOVA demo dataset","isStale":false}},"markets":[{"key":"cac40","label":"CAC 40","value":7651.88,"currency":"EUR","changePercent":1.33,"changeAbsolute":100.44,"changeLabel":"en hausse de 1,33 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"sp500","label":"S&P 500","value":5658.25,"currency":"USD","changePercent":0.98,"changeAbsolute":54.71,"changeLabel":"en hausse de 0,98 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"nasdaq","label":"Nasdaq 100","value":19732.13,"currency":"USD","changePercent":-1.3,"changeAbsolute":-259.47,"changeLabel":"en baisse de 1,30 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"eurostoxx50","label":"Euro Stoxx 50","value":4852.11,"currency":"EUR","changePercent":-0.06,"changeAbsolute":-2.87,"changeLabel":"en baisse de 0,06 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"gold","label":"Or","value":2562.3,"currency":"USD","changePercent":-0.1,"changeAbsolute":-2.47,"changeLabel":"en baisse de 0,10 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"oil","label":"Pétrole (Brent)","value":73.28,"currency":"USD","changePercent":0.1,"changeAbsolute":0.07,"changeLabel":"en hausse de 0,10 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"bitcoin","label":"Bitcoin","value":62945.71,"currency":"USD","changePercent":0.43,"changeAbsolute":269.08,"changeLabel":"en hausse de 0,43 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true}],"topNews":[{"id":"c3f0ec57-883f-47be-b383-b175d5f8fafc","title":"La BCE maintient ses taux directeurs et évoque une baisse progressive","summary":"La Banque centrale européenne a laissé ses taux inchangés. Sa présidente indique que les prochaines décisions dépendront des données d’inflation des prochains mois.","source":"Communiqué de démonstration — banque centrale","sourceUrl":null,"publishedAt":"2026-09-17T02:56:25.897Z","category":"central_banks","language":"fr","affectedAssets":[{"assetId":"2c8118a2-5326-4cd0-b7df-696385bd8d29","symbol":"BNP.PA","name":"BNP Paribas","relevance":90},{"assetId":"23d8fb79-c154-4f65-8952-3f4fcbf586e6","symbol":"OBLI.PA","name":"Amundi Euro Government Bond UCITS ETF","relevance":90}],"affectedSectors":[{"sectorKey":"financials","label":"Finance","relevance":80},{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"consumer_staples","label":"Consommation de base","relevance":42},{"sectorKey":"real_estate","label":"Immobilier","relevance":51}],"importanceScore":74,"confidenceScore":50,"horizon":"medium_term","isDemo":true,"portfolioRelevanceScore":36,"relevanceReason":"Vous détenez Amundi Euro Government Bond UCITS ETF","exposurePercent":66.84},{"id":"17d3686c-b932-4736-8133-8550e406d646","title":"Le bitcoin recule après plusieurs séances de hausse","summary":"La principale cryptomonnaie perd du terrain après une série de séances positives.","source":"Dépêche cryptoactifs de démonstration","sourceUrl":null,"publishedAt":"2026-09-16T17:56:25.897Z","category":"markets","language":"fr","affectedAssets":[{"assetId":"c9cbb3bb-121b-4a4b-b6ae-38de9b0d69d6","symbol":"BTC-EUR","name":"Bitcoin","relevance":90},{"assetId":"e989c828-deac-4903-a120-4c077f04f0e7","symbol":"ETH-EUR","name":"Ethereum","relevance":90}],"affectedSectors":[{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60}],"importanceScore":58,"confidenceScore":50,"horizon":"short_term","isDemo":true,"portfolioRelevanceScore":49,"relevanceReason":"Vous détenez Bitcoin","exposurePercent":66.84},{"id":"bde73e64-5576-47d5-99c6-d202c201e488","title":"Tensions commerciales : de nouveaux droits de douane envisagés sur certains composants électroniques","summary":"Des discussions portent sur l’instauration de droits de douane visant une catégorie de composants importés.","source":"Dépêche géopolitique de démonstration","sourceUrl":null,"publishedAt":"2026-09-16T09:56:25.897Z","category":"geopolitics","language":"fr","affectedAssets":[{"assetId":"5dd1a0d7-0956-4528-b95d-260dd027f84f","symbol":"ASML.AS","name":"ASML Holding","relevance":90},{"assetId":"2b697eb3-4874-4c9c-aa15-732b22d29aa6","symbol":"AAPL","name":"Apple","relevance":90}],"affectedSectors":[{"sectorKey":"technology","label":"Technologie","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60},{"sectorKey":"defense","label":"Défense","relevance":54}],"importanceScore":64,"confidenceScore":35,"horizon":"short_term","isDemo":true,"portfolioRelevanceScore":23,"relevanceReason":"Vous détenez Apple","exposurePercent":12.39},{"id":"550e80c0-7e24-48fc-b618-a73e09aa91f8","title":"Les rendements obligataires souverains européens se détendent légèrement","summary":"Le rendement des emprunts d’État à 10 ans recule de quelques points de base sur la séance.","source":"Dépêche obligataire de démonstration","sourceUrl":null,"publishedAt":"2026-09-15T23:56:25.897Z","category":"markets","language":"fr","affectedAssets":[{"assetId":"23d8fb79-c154-4f65-8952-3f4fcbf586e6","symbol":"OBLI.PA","name":"Amundi Euro Government Bond UCITS ETF","relevance":90}],"affectedSectors":[{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"financials","label":"Finance","relevance":48},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60}],"importanceScore":52,"confidenceScore":50,"horizon":"short_term","isDemo":true,"portfolioRelevanceScore":39,"relevanceReason":"Vous détenez Amundi Euro Government Bond UCITS ETF","exposurePercent":66.84},{"id":"e04930b4-f4c5-45b8-8539-ffd3498634f2","title":"Le pétrole Brent progresse de 3 % après une réduction de production","summary":"Les prix du baril montent après l’annonce d’une réduction de l’offre par plusieurs pays producteurs.","source":"Dépêche matières premières de démonstration","sourceUrl":null,"publishedAt":"2026-09-17T00:56:25.897Z","category":"commodities","language":"fr","affectedAssets":[{"assetId":"1f08cd79-6848-4dc3-a9b4-1a78bb342f6b","symbol":"TTE.PA","name":"TotalEnergies","relevance":90},{"assetId":"34b4fb13-9551-462e-8f82-cd98677e683f","symbol":"AIR.PA","name":"Airbus","relevance":90}],"affectedSectors":[{"sectorKey":"energy","label":"Énergie","relevance":80},{"sectorKey":"defense","label":"Défense","relevance":80},{"sectorKey":"materials","label":"Matériaux","relevance":60},{"sectorKey":"transport","label":"Transport","relevance":42}],"importanceScore":65,"confidenceScore":50,"horizon":"short_term","isDemo":true,"portfolioRelevanceScore":17,"relevanceReason":"Vous détenez TotalEnergies","exposurePercent":11.15}],"portfolioInsight":{"kind":"analysis","text":"Parmi les informations du jour, « Le bitcoin recule après plusieurs séances de hausse » est celle qui touche le plus votre portefeuille : vous détenez Bitcoin. Cette lecture décrit une exposition, pas un effet certain sur votre portefeuille."},"lessonOfTheDay":{"id":"48927a78-4cf1-410c-a682-91dd435a42d8","title":"Comprendre les ETF","estimatedMinutes":2},"unreadNotifications":0,"meta":{"asOf":"2026-09-17T17:30:00.000Z","isDemo":true,"provider":"NOVA demo dataset"}},"brief":{"id":"3ad25b64-3e14-4561-ae4d-13c5a6411baa","date":"2026-09-17","greeting":"Bonjour, Camille 👋","headline":"La BCE maintient ses taux directeurs et évoque une baisse progressive","summary":"NOVA a retenu 3 informations pour vous ce matin. Au moins l’une d’elles touche une partie identifiable de votre portefeuille.","marketSummary":{"kind":"data","text":"Sur les dernières valeurs connues : CAC 40 en hausse de 1,33 %, S&P 500 en hausse de 0,98 %, Nasdaq 100 en baisse de 1,30 %, Euro Stoxx 50 en baisse de 0,06 %."},"portfolioSummary":{"kind":"analysis","text":"Parmi les informations du jour, « Le bitcoin recule après plusieurs séances de hausse » est celle qui touche le plus votre portefeuille : vous détenez Bitcoin. Cette lecture décrit une exposition, pas un effet certain sur votre portefeuille."},"items":[{"newsId":"c3f0ec57-883f-47be-b383-b175d5f8fafc","title":"La BCE maintient ses taux directeurs et évoque une baisse progressive","source":"Communiqué de démonstration — banque centrale","publishedAt":"2026-09-17T02:56:25.897Z","importanceScore":74,"portfolioRelevanceScore":36,"takeaway":"La Banque centrale européenne a laissé ses taux inchangés. Cela peut concerner votre portefeuille : vous détenez Amundi Euro Government Bond UCITS ETF.","relevanceReason":"Vous détenez Amundi Euro Government Bond UCITS ETF"},{"newsId":"17d3686c-b932-4736-8133-8550e406d646","title":"Le bitcoin recule après plusieurs séances de hausse","source":"Dépêche cryptoactifs de démonstration","publishedAt":"2026-09-16T17:56:25.897Z","importanceScore":58,"portfolioRelevanceScore":49,"takeaway":"La principale cryptomonnaie perd du terrain après une série de séances positives. Cela peut concerner votre portefeuille : vous détenez Bitcoin.","relevanceReason":"Vous détenez Bitcoin"},{"newsId":"e04930b4-f4c5-45b8-8539-ffd3498634f2","title":"Le pétrole Brent progresse de 3 % après une réduction de production","source":"Dépêche matières premières de démonstration","publishedAt":"2026-09-17T00:56:25.897Z","importanceScore":65,"portfolioRelevanceScore":17,"takeaway":"Les prix du baril montent après l’annonce d’une réduction de l’offre par plusieurs pays producteurs. Cela peut concerner votre portefeuille : vous détenez TotalEnergies.","relevanceReason":"Vous détenez TotalEnergies"}],"learningSuggestionId":"48927a78-4cf1-410c-a682-91dd435a42d8","uncertainties":["Les scores d’importance reflètent une priorité de lecture, pas une prévision de performance.","Ces données sont des données de démonstration, fournies pour illustrer le fonctionnement de NOVA. Elles ne reflètent pas les marchés en temps réel."],"generatedAt":"2026-09-17T20:24:56.904Z","dataAsOf":"2026-09-17T17:30:00.000Z","isStale":false,"isFallback":false,"meta":{"asOf":"2026-09-17T17:30:00.000Z","isDemo":true,"provider":"NOVA demo dataset"}},"portfolio":{"portfolio":{"id":"938293f1-715f-409e-8ac8-d050c859c7a3","name":"Portefeuille de démonstration","baseCurrency":"EUR","createdAt":"2026-09-17T05:56:26.086Z","updatedAt":"2026-09-17T05:56:26.086Z"},"analytics":{"portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","baseCurrency":"EUR","totalValue":13805.33,"totalCostBasis":13221.28,"totalUnrealizedGain":584.05,"totalUnrealizedGainPercent":4.42,"dayChange":-308.18,"dayChangePercent":-2.18,"byAssetType":[{"key":"etf","label":"ETF","value":5496.39,"percent":39.81},{"key":"stock","label":"Actions","value":4578.09,"percent":33.16},{"key":"crypto","label":"Crypto","value":2649.27,"percent":19.19},{"key":"bond","label":"Obligations","value":1081.58,"percent":7.83}],"byRegion":[{"key":"global","label":"International","value":8145.66,"percent":59},{"key":"europe","label":"Europe","value":3949.51,"percent":28.61},{"key":"north_america","label":"Amérique du Nord","value":1710.16,"percent":12.39}],"bySector":[{"key":"diversified","label":"Diversifié","value":9227.24,"percent":66.84},{"key":"technology","label":"Technologie","value":1710.16,"percent":12.39},{"key":"energy","label":"Énergie","value":1539.71,"percent":11.15},{"key":"consumer_discretionary","label":"Consommation discrétionnaire","value":1328.22,"percent":9.62}],"byCurrency":[{"key":"EUR","label":"EUR","value":12095.17,"percent":87.61},{"key":"USD","label":"USD","value":1710.16,"percent":12.39}],"concentration":{"topPositionPercent":39.81,"topPositionLabel":"Amundi MSCI World UCITS ETF","topThreePercent":71.39,"herfindahlIndex":23.85,"positionCount":6},"unvaluedPercent":0,"meta":{"asOf":"2026-09-17T17:30:00.000Z","isDemo":true,"provider":"NOVA demo dataset","isStale":false}},"positions":[{"id":"be94c56c-a560-4fef-b43a-5868b6fc61b6","portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","asset":{"id":"3df919e9-ee59-40e1-b102-b4d9273df414","symbol":"CW8.PA","name":"Amundi MSCI World UCITS ETF","assetType":"etf","exchange":"Euronext Paris","currency":"EUR","country":"FR","region":"global","sector":{"id":"3eab5285-5bf8-4b2f-9916-99a2380743ff","key":"diversified","label":"Diversifié"},"isin":"LU1681043599","isDemo":true},"quantity":12,"averagePrice":442,"currency":"EUR","createdAt":"2026-09-17T05:56:26.090Z","updatedAt":"2026-09-17T05:56:26.090Z","lastPrice":458.0328,"marketValue":5496.39,"costBasis":5304,"unrealizedGain":192.39,"unrealizedGainPercent":3.63,"weightPercent":39.81,"priceAsOf":"2026-09-17T17:30:00.000Z","isDemoPrice":true},{"id":"28d021e6-9258-4c8c-af74-bae1bf319144","portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","asset":{"id":"2b697eb3-4874-4c9c-aa15-732b22d29aa6","symbol":"AAPL","name":"Apple","assetType":"stock","exchange":"NASDAQ","currency":"USD","country":"US","region":"north_america","sector":{"id":"e99fec75-504c-4443-b6d0-fa4a2a5f22ad","key":"technology","label":"Technologie"},"isin":"US0378331005","isDemo":true},"quantity":8,"averagePrice":198,"currency":"USD","createdAt":"2026-09-17T05:56:26.095Z","updatedAt":"2026-09-17T05:56:26.095Z","lastPrice":232.3588,"marketValue":1710.16,"costBasis":1457.28,"unrealizedGain":252.88,"unrealizedGainPercent":17.35,"weightPercent":12.39,"priceAsOf":"2026-09-17T17:30:00.000Z","isDemoPrice":true},{"id":"ee7c3a48-d4d7-4b2e-b8ae-fd1e4eeb072d","portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","asset":{"id":"ca5f0cf8-86ed-4ab7-b950-cfdee5f74231","symbol":"MC.PA","name":"LVMH","assetType":"stock","exchange":"Euronext Paris","currency":"EUR","country":"FR","region":"europe","sector":{"id":"0187a70a-98da-4425-b7f6-d4c567672d69","key":"consumer_discretionary","label":"Consommation discrétionnaire"},"isin":"FR0000121014","isDemo":true},"quantity":2,"averagePrice":690,"currency":"EUR","createdAt":"2026-09-17T05:56:26.098Z","updatedAt":"2026-09-17T05:56:26.098Z","lastPrice":664.109,"marketValue":1328.22,"costBasis":1380,"unrealizedGain":-51.78,"unrealizedGainPercent":-3.75,"weightPercent":9.62,"priceAsOf":"2026-09-17T17:30:00.000Z","isDemoPrice":true},{"id":"3320f0c8-952b-4f32-b4b3-cfe945c380f1","portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","asset":{"id":"1f08cd79-6848-4dc3-a9b4-1a78bb342f6b","symbol":"TTE.PA","name":"TotalEnergies","assetType":"stock","exchange":"Euronext Paris","currency":"EUR","country":"FR","region":"europe","sector":{"id":"b8dfbd67-c6b0-4151-a524-352d08697b18","key":"energy","label":"Énergie"},"isin":"FR0000120271","isDemo":true},"quantity":25,"averagePrice":58,"currency":"EUR","createdAt":"2026-09-17T05:56:26.102Z","updatedAt":"2026-09-17T05:56:26.102Z","lastPrice":61.5884,"marketValue":1539.71,"costBasis":1450,"unrealizedGain":89.71,"unrealizedGainPercent":6.19,"weightPercent":11.15,"priceAsOf":"2026-09-17T17:30:00.000Z","isDemoPrice":true},{"id":"777fb69f-8fad-4af2-944b-df8c859c6773","portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","asset":{"id":"23d8fb79-c154-4f65-8952-3f4fcbf586e6","symbol":"OBLI.PA","name":"Amundi Euro Government Bond UCITS ETF","assetType":"bond","exchange":"Euronext Paris","currency":"EUR","country":"FR","region":"europe","sector":{"id":"3eab5285-5bf8-4b2f-9916-99a2380743ff","key":"diversified","label":"Diversifié"},"isin":"LU1650491282","isDemo":true},"quantity":6,"averagePrice":180,"currency":"EUR","createdAt":"2026-09-17T05:56:26.105Z","updatedAt":"2026-09-17T05:56:26.105Z","lastPrice":180.2625,"marketValue":1081.58,"costBasis":1080,"unrealizedGain":1.58,"unrealizedGainPercent":0.15,"weightPercent":7.83,"priceAsOf":"2026-09-17T17:30:00.000Z","isDemoPrice":true},{"id":"c203a45e-db7d-431b-b0eb-155ba3e99c45","portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","asset":{"id":"c9cbb3bb-121b-4a4b-b6ae-38de9b0d69d6","symbol":"BTC-EUR","name":"Bitcoin","assetType":"crypto","exchange":null,"currency":"EUR","country":null,"region":"global","sector":{"id":"3eab5285-5bf8-4b2f-9916-99a2380743ff","key":"diversified","label":"Diversifié"},"isin":null,"isDemo":true},"quantity":0.05,"averagePrice":51000,"currency":"EUR","createdAt":"2026-09-17T05:56:26.109Z","updatedAt":"2026-09-17T05:56:26.109Z","lastPrice":52985.428,"marketValue":2649.27,"costBasis":2550,"unrealizedGain":99.27,"unrealizedGainPercent":3.89,"weightPercent":19.19,"priceAsOf":"2026-09-17T17:30:00.000Z","isDemoPrice":true}]},"exposure":{"portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","bySector":{"diversified":66.84,"technology":12.39,"energy":11.15,"consumer_discretionary":9.62},"byRegion":{"global":59,"europe":28.61,"north_america":12.39},"byAssetType":{"etf":39.81,"stock":33.16,"crypto":19.19,"bond":7.83},"byTheme":{"rates":6.81,"inflation":12.94,"technology":12.39,"energy":11.15,"banks":0,"bonds":0,"currencies":11.01,"commodities":8.92,"geopolitics":7.81},"weightsBySymbol":{"CW8.PA":39.81,"AAPL":12.39,"MC.PA":9.62,"TTE.PA":11.15,"OBLI.PA":7.83,"BTC-EUR":19.19},"assetIds":["3df919e9-ee59-40e1-b102-b4d9273df414","2b697eb3-4874-4c9c-aa15-732b22d29aa6","ca5f0cf8-86ed-4ab7-b950-cfdee5f74231","1f08cd79-6848-4dc3-a9b4-1a78bb342f6b","23d8fb79-c154-4f65-8952-3f4fcbf586e6","c9cbb3bb-121b-4a4b-b6ae-38de9b0d69d6"],"symbols":["CW8.PA","AAPL","MC.PA","TTE.PA","OBLI.PA","BTC-EUR"],"totalValue":13805.33,"baseCurrency":"EUR","meta":{"asOf":"2026-09-17T17:30:00.000Z","isDemo":true,"provider":"NOVA demo dataset","isStale":false}},"markets":{"quotes":[{"key":"cac40","label":"CAC 40","value":7651.88,"currency":"EUR","changePercent":1.33,"changeAbsolute":100.44,"changeLabel":"en hausse de 1,33 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"sp500","label":"S&P 500","value":5658.25,"currency":"USD","changePercent":0.98,"changeAbsolute":54.71,"changeLabel":"en hausse de 0,98 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"nasdaq","label":"Nasdaq 100","value":19732.13,"currency":"USD","changePercent":-1.3,"changeAbsolute":-259.47,"changeLabel":"en baisse de 1,30 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"eurostoxx50","label":"Euro Stoxx 50","value":4852.11,"currency":"EUR","changePercent":-0.06,"changeAbsolute":-2.87,"changeLabel":"en baisse de 0,06 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"gold","label":"Or","value":2562.3,"currency":"USD","changePercent":-0.1,"changeAbsolute":-2.47,"changeLabel":"en baisse de 0,10 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"oil","label":"Pétrole (Brent)","value":73.28,"currency":"USD","changePercent":0.1,"changeAbsolute":0.07,"changeLabel":"en hausse de 0,10 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true},{"key":"bitcoin","label":"Bitcoin","value":62945.71,"currency":"USD","changePercent":0.43,"changeAbsolute":269.08,"changeLabel":"en hausse de 0,43 %","asOf":"2026-09-17T17:30:00.000Z","isDemo":true}],"meta":{"asOf":"2026-09-17T17:30:00.000Z","isDemo":true,"provider":"NOVA demo dataset","isStale":false}},"lessons":{"items":[{"id":"48927a78-4cf1-410c-a682-91dd435a42d8","slug":"comprendre-les-etf","title":"Comprendre les ETF","description":"Ce qu’est un ETF, ce qu’il contient, et ce qu’il ne garantit pas.","difficulty":"beginner","estimatedMinutes":2,"category":"Produits","status":"in_progress"},{"id":"099050f0-7115-4314-b713-43d99db6b773","slug":"la-diversification","title":"La diversification","description":"Pourquoi répartir, et ce que la répartition ne peut pas faire.","difficulty":"beginner","estimatedMinutes":2,"category":"Principes","status":"not_started"},{"id":"1b5b7a92-cefa-45f1-97bf-6d40425a97a6","slug":"la-volatilite","title":"La volatilité","description":"Ce que mesure la volatilité, et ce qu’elle ne prédit pas.","difficulty":"beginner","estimatedMinutes":2,"category":"Risque","status":"not_started"},{"id":"972b8352-421b-41a5-b819-adbc76e50202","slug":"inflation-et-epargne","title":"Inflation et pouvoir d’achat de l’épargne","description":"Pourquoi un rendement positif peut cacher une perte réelle.","difficulty":"beginner","estimatedMinutes":2,"category":"Macroéconomie","status":"not_started"},{"id":"f668eddc-5c70-4515-9e5b-d85829a19300","slug":"les-interets-composes","title":"Les intérêts composés","description":"Pourquoi la durée compte souvent plus que le point d’entrée.","difficulty":"beginner","estimatedMinutes":2,"category":"Principes","status":"not_started"},{"id":"44d36a9e-4786-4bef-9b79-5f0034cd0740","slug":"comprendre-les-taux","title":"Comprendre les taux d’intérêt","description":"Comment une décision de banque centrale finit par toucher votre portefeuille.","difficulty":"intermediate","estimatedMinutes":3,"category":"Macroéconomie","status":"not_started"},{"id":"02913152-5060-4291-bd73-12c063ca9137","slug":"les-obligations","title":"Les obligations","description":"Prêter à un État ou à une entreprise : mécanique et risques.","difficulty":"intermediate","estimatedMinutes":3,"category":"Produits","status":"not_started"},{"id":"6a890904-2225-4c04-b936-b08eb88577f4","slug":"comprendre-le-risque","title":"Comprendre le risque","description":"Les différents risques, et comment situer le vôtre.","difficulty":"intermediate","estimatedMinutes":3,"category":"Risque","status":"not_started"},{"id":"a4b7cf16-46e7-4538-aed6-507fe7d83f00","slug":"le-risque-de-change","title":"Le risque de change","description":"Pourquoi un actif en dollars bouge aussi quand l’euro bouge.","difficulty":"intermediate","estimatedMinutes":2,"category":"Risque","status":"not_started"},{"id":"fae7bf6f-5fcc-475a-83a2-4c9cf50007d7","slug":"la-valorisation","title":"La valorisation","description":"Ce que veut dire « cher » pour une action.","difficulty":"advanced","estimatedMinutes":3,"category":"Analyse","status":"not_started"}]},"lesson":{"id":"48927a78-4cf1-410c-a682-91dd435a42d8","slug":"comprendre-les-etf","title":"Comprendre les ETF","description":"Ce qu’est un ETF, ce qu’il contient, et ce qu’il ne garantit pas.","difficulty":"beginner","estimatedMinutes":2,"category":"Produits","status":"in_progress","sections":[{"body":"Un ETF est un fonds coté en bourse qui suit un indice, par exemple le CAC 40 ou le MSCI World. En achetant une part, vous détenez indirectement une petite fraction de toutes les entreprises de cet indice. Vous n’achetez donc pas une société, mais un panier.","heading":"Un panier, pas une action"},{"body":"Avec une seule ligne, vous réduisez le risque lié à une entreprise en particulier : si l’une d’elles traverse une mauvaise passe, son poids dans l’indice limite l’effet sur votre investissement. En revanche, si l’ensemble du marché baisse, votre ETF baisse aussi : la diversification ne protège pas du risque de marché.","heading":"Pourquoi c’est utile"},{"body":"Trois éléments concrets : l’indice suivi (ce que vous achetez réellement), les frais annuels de gestion (prélevés en continu, même quand le marché baisse), et l’enveloppe fiscale dans laquelle vous le détenez. Deux ETF sur le même indice peuvent avoir des frais différents.","heading":"Ce à quoi regarder"}],"keyTakeaways":["Un ETF suit un indice : vous achetez un panier, pas une entreprise.","Il réduit le risque propre à une société, pas le risque du marché.","Les frais annuels sont prélevés quelle que soit la performance."],"glossary":[{"term":"Indice","definition":"Un panier d’entreprises représentatif d’un marché ou d’un secteur."},{"term":"Frais de gestion","definition":"Pourcentage annuel prélevé par l’émetteur sur l’encours du fonds."}],"quiz":[{"id":"etf-q1","options":[{"id":"a","label":"Une action d’une grande entreprise mondiale"},{"id":"b","label":"Une fraction de toutes les entreprises de l’indice"},{"id":"c","label":"Une obligation émise par un État"}],"question":"En achetant une part d’ETF MSCI World, vous détenez :","explanation":"Un ETF réplique un indice : votre part représente une petite fraction de l’ensemble des sociétés qui le composent."},{"id":"etf-q2","options":[{"id":"a","label":"Oui, c’est son rôle"},{"id":"b","label":"Non : il suit l’indice, à la hausse comme à la baisse"}],"question":"Un ETF protège-t-il d’une baisse générale des marchés ?","explanation":"La diversification réduit le risque lié à une entreprise, pas celui d’un recul de l’ensemble du marché."}],"relatedThemeKeys":["technology","rates"]},"journal":{"items":[{"id":"1351002f-94eb-4e9c-81c0-c4d6224c29d6","portfolioId":"938293f1-715f-409e-8ac8-d050c859c7a3","asset":{"id":"3df919e9-ee59-40e1-b102-b4d9273df414","symbol":"CW8.PA","name":"Amundi MSCI World UCITS ETF","assetType":"etf","exchange":"Euronext Paris","currency":"EUR","country":"FR","region":"global","sector":{"id":"3eab5285-5bf8-4b2f-9916-99a2380743ff","key":"diversified","label":"Diversifié"},"isin":"LU1681043599","isDemo":true},"action":"buy","quantity":12,"price":442,"currency":"EUR","reason":"Je commence par un ETF World pour être diversifié sans avoir à choisir des entreprises une par une. Horizon long, je ne compte pas y toucher.","horizon":"10_to_20_years","conviction":"high","createdAt":"2026-09-17T05:56:26.115Z","updatedAt":"2026-09-17T05:56:26.115Z"}],"hasMore":false,"nextCursor":null},"feed":{"items":[{"id":"c3f0ec57-883f-47be-b383-b175d5f8fafc","title":"La BCE maintient ses taux directeurs et évoque une baisse progressive","summary":"La Banque centrale européenne a laissé ses taux inchangés. Sa présidente indique que les prochaines décisions dépendront des données d’inflation des prochains mois.","source":"Communiqué de démonstration — banque centrale","sourceUrl":null,"publishedAt":"2026-09-17T02:56:25.897Z","category":"central_banks","language":"fr","affectedAssets":[{"assetId":"2c8118a2-5326-4cd0-b7df-696385bd8d29","symbol":"BNP.PA","name":"BNP Paribas","relevance":90},{"assetId":"23d8fb79-c154-4f65-8952-3f4fcbf586e6","symbol":"OBLI.PA","name":"Amundi Euro Government Bond UCITS ETF","relevance":90}],"affectedSectors":[{"sectorKey":"financials","label":"Finance","relevance":80},{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"consumer_staples","label":"Consommation de base","relevance":42},{"sectorKey":"real_estate","label":"Immobilier","relevance":51}],"importanceScore":74,"confidenceScore":50,"horizon":"medium_term","isDemo":true,"portfolioRelevanceScore":36,"relevanceReason":"Vous détenez Amundi Euro Government Bond UCITS ETF","exposurePercent":66.84},{"id":"17d3686c-b932-4736-8133-8550e406d646","title":"Le bitcoin recule après plusieurs séances de hausse","summary":"La principale cryptomonnaie perd du terrain après une série de séances positives.","source":"Dépêche cryptoactifs de démonstration","sourceUrl":null,"publishedAt":"2026-09-16T17:56:25.897Z","category":"markets","language":"fr","affectedAssets":[{"assetId":"c9cbb3bb-121b-4a4b-b6ae-38de9b0d69d6","symbol":"BTC-EUR","name":"Bitcoin","relevance":90},{"assetId":"e989c828-deac-4903-a120-4c077f04f0e7","symbol":"ETH-EUR","name":"Ethereum","relevance":90}],"affectedSectors":[{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60}],"importanceScore":58,"confidenceScore":50,"horizon":"short_term","isDemo":true,"portfolioRelevanceScore":49,"relevanceReason":"Vous détenez Bitcoin","exposurePercent":66.84},{"id":"bde73e64-5576-47d5-99c6-d202c201e488","title":"Tensions commerciales : de nouveaux droits de douane envisagés sur certains composants électroniques","summary":"Des discussions portent sur l’instauration de droits de douane visant une catégorie de composants importés.","source":"Dépêche géopolitique de démonstration","sourceUrl":null,"publishedAt":"2026-09-16T09:56:25.897Z","category":"geopolitics","language":"fr","affectedAssets":[{"assetId":"5dd1a0d7-0956-4528-b95d-260dd027f84f","symbol":"ASML.AS","name":"ASML Holding","relevance":90},{"assetId":"2b697eb3-4874-4c9c-aa15-732b22d29aa6","symbol":"AAPL","name":"Apple","relevance":90}],"affectedSectors":[{"sectorKey":"technology","label":"Technologie","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60},{"sectorKey":"defense","label":"Défense","relevance":54}],"importanceScore":64,"confidenceScore":35,"horizon":"short_term","isDemo":true,"portfolioRelevanceScore":23,"relevanceReason":"Vous détenez Apple","exposurePercent":12.39},{"id":"e04930b4-f4c5-45b8-8539-ffd3498634f2","title":"Le pétrole Brent progresse de 3 % après une réduction de production","summary":"Les prix du baril montent après l’annonce d’une réduction de l’offre par plusieurs pays producteurs.","source":"Dépêche matières premières de démonstration","sourceUrl":null,"publishedAt":"2026-09-17T00:56:25.897Z","category":"commodities","language":"fr","affectedAssets":[{"assetId":"1f08cd79-6848-4dc3-a9b4-1a78bb342f6b","symbol":"TTE.PA","name":"TotalEnergies","relevance":90},{"assetId":"34b4fb13-9551-462e-8f82-cd98677e683f","symbol":"AIR.PA","name":"Airbus","relevance":90}],"affectedSectors":[{"sectorKey":"energy","label":"Énergie","relevance":80},{"sectorKey":"defense","label":"Défense","relevance":80},{"sectorKey":"materials","label":"Matériaux","relevance":60},{"sectorKey":"transport","label":"Transport","relevance":42}],"importanceScore":65,"confidenceScore":50,"horizon":"short_term","isDemo":true,"portfolioRelevanceScore":17,"relevanceReason":"Vous détenez TotalEnergies","exposurePercent":11.15},{"id":"01839183-86ae-4eb1-a292-8bc825f1340b","title":"L’inflation en zone euro ralentit à 2,2 % sur un an","summary":"L’indice des prix à la consommation progresse moins vite que le mois précédent, porté par le recul des prix de l’énergie.","source":"Publication statistique de démonstration","sourceUrl":null,"publishedAt":"2026-09-16T23:56:25.897Z","category":"macro","language":"fr","affectedAssets":[],"affectedSectors":[{"sectorKey":"energy","label":"Énergie","relevance":60},{"sectorKey":"consumer_staples","label":"Consommation de base","relevance":42},{"sectorKey":"materials","label":"Matériaux","relevance":60},{"sectorKey":"transport","label":"Transport","relevance":42}],"importanceScore":68,"confidenceScore":50,"horizon":"medium_term","isDemo":true,"portfolioRelevanceScore":9,"relevanceReason":"11 % de votre portefeuille en énergie","exposurePercent":12.94},{"id":"65311490-055d-401a-9d3e-2f0ce5d6b400","title":"Le dollar se renforce face à l’euro après des chiffres d’emploi américains solides","summary":"La parité euro-dollar recule à la suite de statistiques d’emploi supérieures aux attentes aux États-Unis.","source":"Dépêche devises de démonstration","sourceUrl":null,"publishedAt":"2026-09-16T19:56:25.897Z","category":"currencies","language":"fr","affectedAssets":[{"assetId":"2b697eb3-4874-4c9c-aa15-732b22d29aa6","symbol":"AAPL","name":"Apple","relevance":90},{"assetId":"2eb03c20-40e5-4884-b2e1-04eddaeada3d","symbol":"MSFT","name":"Microsoft","relevance":90}],"affectedSectors":[{"sectorKey":"technology","label":"Technologie","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60}],"importanceScore":56,"confidenceScore":50,"horizon":"medium_term","isDemo":true,"portfolioRelevanceScore":23,"relevanceReason":"Vous détenez Apple","exposurePercent":12.39},{"id":"93a8279e-9911-463e-8d86-1b1f0e7b16fb","title":"Les valeurs technologiques reculent après des résultats mitigés dans les semi-conducteurs","summary":"Un acteur majeur des équipements pour semi-conducteurs publie des commandes inférieures aux attentes du consensus.","source":"Note sectorielle de démonstration","sourceUrl":null,"publishedAt":"2026-09-16T21:56:25.897Z","category":"sector","language":"fr","affectedAssets":[{"assetId":"5dd1a0d7-0956-4528-b95d-260dd027f84f","symbol":"ASML.AS","name":"ASML Holding","relevance":90},{"assetId":"145fd7f1-49c7-450b-958f-898d07902457","symbol":"NVDA","name":"NVIDIA","relevance":90}],"affectedSectors":[{"sectorKey":"technology","label":"Technologie","relevance":80}],"importanceScore":52,"confidenceScore":55,"horizon":"medium_term","isDemo":true,"portfolioRelevanceScore":6,"relevanceReason":"12 % de votre portefeuille en technologie","exposurePercent":12.39},{"id":"6eaf63d7-f56f-4114-ae17-326b65c799df","title":"Un projet de réglementation européenne encadre davantage les frais des fonds distribués aux particuliers","summary":"Un texte en discussion prévoit des obligations de transparence renforcées sur les frais supportés par les investisseurs particuliers.","source":"Veille réglementaire de démonstration","sourceUrl":null,"publishedAt":"2026-09-16T15:56:25.897Z","category":"regulation","language":"fr","affectedAssets":[],"affectedSectors":[{"sectorKey":"financials","label":"Finance","relevance":48},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60}],"importanceScore":53,"confidenceScore":35,"horizon":"long_term","isDemo":true,"portfolioRelevanceScore":6,"relevanceReason":"11 % de votre portefeuille en énergie","exposurePercent":11.15}],"hasMore":true,"nextCursor":"MjAyNi0wOS0xNlQwOTo1NjoyNS44OTdafGJkZTczZTY0LTU1NzYtNDdkNS05OWM2LWQyMDJjMjAxZTQ4OA","personalized":true,"exposureSignature":"938293f1-715f-409e-8ac8-d050c859c7a3:13805:6"},"analyses":{"c3f0ec57-883f-47be-b383-b175d5f8fafc":{"newsId":"c3f0ec57-883f-47be-b383-b175d5f8fafc","whatHappened":{"kind":"fact","text":"La Banque centrale européenne a laissé ses taux inchangés. Sa présidente indique que les prochaines décisions dépendront des données d’inflation des prochains mois."},"whyItMatters":{"kind":"analysis","text":"Cette information relève de la catégorie « Banques centrales », dont l’horizon de lecture habituel est le moyen terme. Les secteurs identifiés comme concernés sont : Finance, Diversifié, Consommation de base, Immobilier. Ce classement reflète une priorité de lecture, et non une prévision de performance."},"affectedAssets":[{"assetId":"2c8118a2-5326-4cd0-b7df-696385bd8d29","symbol":"BNP.PA","name":"BNP Paribas","relevance":90},{"assetId":"23d8fb79-c154-4f65-8952-3f4fcbf586e6","symbol":"OBLI.PA","name":"Amundi Euro Government Bond UCITS ETF","relevance":90}],"affectedSectors":[{"sectorKey":"financials","label":"Finance","relevance":80},{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"consumer_staples","label":"Consommation de base","relevance":42},{"sectorKey":"real_estate","label":"Immobilier","relevance":51}],"yourExposure":[{"label":"Amundi Euro Government Bond UCITS ETF","percent":7.83,"kind":"asset"},{"label":"Diversifié","percent":66.84,"kind":"sector"},{"label":"Taux","percent":6.81,"kind":"theme"},{"label":"Inflation","percent":12.94,"kind":"theme"},{"label":"Devises","percent":11.01,"kind":"theme"}],"yourExposureSummary":"Votre portefeuille possède environ 7,8 % d’exposition à « Amundi Euro Government Bond UCITS ETF ».","whyItConcernsYou":[{"kind":"hypothesis","text":"Vous détenez Amundi Euro Government Bond UCITS ETF, directement cité par cette actualité. Cette information peut donc concerner une partie identifiable de votre portefeuille."}],"uncertainties":["La durée et l’ampleur de cette évolution ne sont pas connues.","La source disponible ne permet pas un niveau de confiance élevé sur ce point."],"sources":[{"name":"Communiqué de démonstration — banque centrale","url":null,"publishedAt":"2026-09-17T02:56:25.897Z"}],"importanceScore":74,"confidenceScore":50,"portfolioRelevanceScore":36,"horizon":"medium_term","isFallback":false,"generatedAt":"2026-09-17T20:24:56.989Z","meta":{"asOf":"2026-09-17T02:56:25.897Z","isDemo":true,"provider":"NOVA demo dataset","sources":[{"name":"Communiqué de démonstration — banque centrale","url":null,"publishedAt":"2026-09-17T02:56:25.897Z"}]}},"c3f0ec57-883f-47be-b383-b175d5f8fafc:detailed":{"newsId":"c3f0ec57-883f-47be-b383-b175d5f8fafc","whatHappened":{"kind":"fact","text":"La Banque centrale européenne a laissé ses taux inchangés. Sa présidente indique que les prochaines décisions dépendront des données d’inflation des prochains mois."},"whyItMatters":{"kind":"analysis","text":"Cette information relève de la catégorie « Banques centrales », dont l’horizon de lecture habituel est le moyen terme. Les secteurs identifiés comme concernés sont : Finance, Diversifié, Consommation de base, Immobilier. Ce classement reflète une priorité de lecture, et non une prévision de performance."},"affectedAssets":[{"assetId":"2c8118a2-5326-4cd0-b7df-696385bd8d29","symbol":"BNP.PA","name":"BNP Paribas","relevance":90},{"assetId":"23d8fb79-c154-4f65-8952-3f4fcbf586e6","symbol":"OBLI.PA","name":"Amundi Euro Government Bond UCITS ETF","relevance":90}],"affectedSectors":[{"sectorKey":"financials","label":"Finance","relevance":80},{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"consumer_staples","label":"Consommation de base","relevance":42},{"sectorKey":"real_estate","label":"Immobilier","relevance":51}],"yourExposure":[{"label":"Amundi Euro Government Bond UCITS ETF","percent":7.83,"kind":"asset"},{"label":"Diversifié","percent":66.84,"kind":"sector"},{"label":"Taux","percent":6.81,"kind":"theme"},{"label":"Inflation","percent":12.94,"kind":"theme"},{"label":"Devises","percent":11.01,"kind":"theme"}],"yourExposureSummary":"Votre portefeuille possède environ 7,8 % d’exposition à « Amundi Euro Government Bond UCITS ETF ».","whyItConcernsYou":[{"kind":"hypothesis","text":"Vous détenez Amundi Euro Government Bond UCITS ETF, directement cité par cette actualité. Cette information peut donc concerner une partie identifiable de votre portefeuille."}],"uncertainties":["La durée et l’ampleur de cette évolution ne sont pas connues.","La source disponible ne permet pas un niveau de confiance élevé sur ce point."],"sources":[{"name":"Communiqué de démonstration — banque centrale","url":null,"publishedAt":"2026-09-17T02:56:25.897Z"}],"importanceScore":74,"confidenceScore":50,"portfolioRelevanceScore":36,"horizon":"medium_term","isFallback":false,"generatedAt":"2026-09-17T20:24:57.004Z","meta":{"asOf":"2026-09-17T02:56:25.897Z","isDemo":true,"provider":"NOVA demo dataset","sources":[{"name":"Communiqué de démonstration — banque centrale","url":null,"publishedAt":"2026-09-17T02:56:25.897Z"}]}},"17d3686c-b932-4736-8133-8550e406d646":{"newsId":"17d3686c-b932-4736-8133-8550e406d646","whatHappened":{"kind":"fact","text":"La principale cryptomonnaie perd du terrain après une série de séances positives."},"whyItMatters":{"kind":"analysis","text":"Cette information relève de la catégorie « Marchés », dont l’horizon de lecture habituel est le court terme. Les secteurs identifiés comme concernés sont : Diversifié, Énergie, Matériaux. Ce classement reflète une priorité de lecture, et non une prévision de performance."},"affectedAssets":[{"assetId":"c9cbb3bb-121b-4a4b-b6ae-38de9b0d69d6","symbol":"BTC-EUR","name":"Bitcoin","relevance":90},{"assetId":"e989c828-deac-4903-a120-4c077f04f0e7","symbol":"ETH-EUR","name":"Ethereum","relevance":90}],"affectedSectors":[{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60}],"yourExposure":[{"label":"Bitcoin","percent":19.19,"kind":"asset"},{"label":"Diversifié","percent":66.84,"kind":"sector"},{"label":"Énergie","percent":11.15,"kind":"sector"},{"label":"Matières premières","percent":8.92,"kind":"theme"}],"yourExposureSummary":"Votre portefeuille possède environ 19,2 % d’exposition à « Bitcoin ».","whyItConcernsYou":[{"kind":"hypothesis","text":"Vous détenez Bitcoin, directement cité par cette actualité. Cette information peut donc concerner une partie identifiable de votre portefeuille."}],"uncertainties":["La durée et l’ampleur de cette évolution ne sont pas connues.","La source disponible ne permet pas un niveau de confiance élevé sur ce point."],"sources":[{"name":"Dépêche cryptoactifs de démonstration","url":null,"publishedAt":"2026-09-16T17:56:25.897Z"}],"importanceScore":58,"confidenceScore":50,"portfolioRelevanceScore":49,"horizon":"short_term","isFallback":false,"generatedAt":"2026-09-17T20:24:57.017Z","meta":{"asOf":"2026-09-16T17:56:25.897Z","isDemo":true,"provider":"NOVA demo dataset","sources":[{"name":"Dépêche cryptoactifs de démonstration","url":null,"publishedAt":"2026-09-16T17:56:25.897Z"}]}},"17d3686c-b932-4736-8133-8550e406d646:detailed":{"newsId":"17d3686c-b932-4736-8133-8550e406d646","whatHappened":{"kind":"fact","text":"La principale cryptomonnaie perd du terrain après une série de séances positives."},"whyItMatters":{"kind":"analysis","text":"Cette information relève de la catégorie « Marchés », dont l’horizon de lecture habituel est le court terme. Les secteurs identifiés comme concernés sont : Diversifié, Énergie, Matériaux. Ce classement reflète une priorité de lecture, et non une prévision de performance."},"affectedAssets":[{"assetId":"c9cbb3bb-121b-4a4b-b6ae-38de9b0d69d6","symbol":"BTC-EUR","name":"Bitcoin","relevance":90},{"assetId":"e989c828-deac-4903-a120-4c077f04f0e7","symbol":"ETH-EUR","name":"Ethereum","relevance":90}],"affectedSectors":[{"sectorKey":"diversified","label":"Diversifié","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60}],"yourExposure":[{"label":"Bitcoin","percent":19.19,"kind":"asset"},{"label":"Diversifié","percent":66.84,"kind":"sector"},{"label":"Énergie","percent":11.15,"kind":"sector"},{"label":"Matières premières","percent":8.92,"kind":"theme"}],"yourExposureSummary":"Votre portefeuille possède environ 19,2 % d’exposition à « Bitcoin ».","whyItConcernsYou":[{"kind":"hypothesis","text":"Vous détenez Bitcoin, directement cité par cette actualité. Cette information peut donc concerner une partie identifiable de votre portefeuille."}],"uncertainties":["La durée et l’ampleur de cette évolution ne sont pas connues.","La source disponible ne permet pas un niveau de confiance élevé sur ce point."],"sources":[{"name":"Dépêche cryptoactifs de démonstration","url":null,"publishedAt":"2026-09-16T17:56:25.897Z"}],"importanceScore":58,"confidenceScore":50,"portfolioRelevanceScore":49,"horizon":"short_term","isFallback":false,"generatedAt":"2026-09-17T20:24:57.030Z","meta":{"asOf":"2026-09-16T17:56:25.897Z","isDemo":true,"provider":"NOVA demo dataset","sources":[{"name":"Dépêche cryptoactifs de démonstration","url":null,"publishedAt":"2026-09-16T17:56:25.897Z"}]}},"bde73e64-5576-47d5-99c6-d202c201e488":{"newsId":"bde73e64-5576-47d5-99c6-d202c201e488","whatHappened":{"kind":"fact","text":"Des discussions portent sur l’instauration de droits de douane visant une catégorie de composants importés."},"whyItMatters":{"kind":"analysis","text":"Cette information relève de la catégorie « Géopolitique », dont l’horizon de lecture habituel est le court terme. Les secteurs identifiés comme concernés sont : Technologie, Énergie, Matériaux, Défense. Ce classement reflète une priorité de lecture, et non une prévision de performance."},"affectedAssets":[{"assetId":"5dd1a0d7-0956-4528-b95d-260dd027f84f","symbol":"ASML.AS","name":"ASML Holding","relevance":90},{"assetId":"2b697eb3-4874-4c9c-aa15-732b22d29aa6","symbol":"AAPL","name":"Apple","relevance":90}],"affectedSectors":[{"sectorKey":"technology","label":"Technologie","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60},{"sectorKey":"defense","label":"Défense","relevance":54}],"yourExposure":[{"label":"Apple","percent":12.39,"kind":"asset"},{"label":"Technologie","percent":12.39,"kind":"sector"},{"label":"Énergie","percent":11.15,"kind":"sector"},{"label":"Matières premières","percent":8.92,"kind":"theme"},{"label":"Géopolitique","percent":7.81,"kind":"theme"}],"yourExposureSummary":"Votre portefeuille possède environ 12,4 % d’exposition à « Apple ».","whyItConcernsYou":[{"kind":"hypothesis","text":"Vous détenez Apple, directement cité par cette actualité. Cette information peut donc concerner une partie identifiable de votre portefeuille."}],"uncertainties":["La durée et l’ampleur de cette évolution ne sont pas connues.","La source disponible ne permet pas un niveau de confiance élevé sur ce point."],"sources":[{"name":"Dépêche géopolitique de démonstration","url":null,"publishedAt":"2026-09-16T09:56:25.897Z"}],"importanceScore":64,"confidenceScore":35,"portfolioRelevanceScore":23,"horizon":"short_term","isFallback":false,"generatedAt":"2026-09-17T20:24:57.042Z","meta":{"asOf":"2026-09-16T09:56:25.897Z","isDemo":true,"provider":"NOVA demo dataset","sources":[{"name":"Dépêche géopolitique de démonstration","url":null,"publishedAt":"2026-09-16T09:56:25.897Z"}]}},"bde73e64-5576-47d5-99c6-d202c201e488:detailed":{"newsId":"bde73e64-5576-47d5-99c6-d202c201e488","whatHappened":{"kind":"fact","text":"Des discussions portent sur l’instauration de droits de douane visant une catégorie de composants importés."},"whyItMatters":{"kind":"analysis","text":"Cette information relève de la catégorie « Géopolitique », dont l’horizon de lecture habituel est le court terme. Les secteurs identifiés comme concernés sont : Technologie, Énergie, Matériaux, Défense. Ce classement reflète une priorité de lecture, et non une prévision de performance."},"affectedAssets":[{"assetId":"5dd1a0d7-0956-4528-b95d-260dd027f84f","symbol":"ASML.AS","name":"ASML Holding","relevance":90},{"assetId":"2b697eb3-4874-4c9c-aa15-732b22d29aa6","symbol":"AAPL","name":"Apple","relevance":90}],"affectedSectors":[{"sectorKey":"technology","label":"Technologie","relevance":80},{"sectorKey":"energy","label":"Énergie","relevance":48},{"sectorKey":"materials","label":"Matériaux","relevance":60},{"sectorKey":"defense","label":"Défense","relevance":54}],"yourExposure":[{"label":"Apple","percent":12.39,"kind":"asset"},{"label":"Technologie","percent":12.39,"kind":"sector"},{"label":"Énergie","percent":11.15,"kind":"sector"},{"label":"Matières premières","percent":8.92,"kind":"theme"},{"label":"Géopolitique","percent":7.81,"kind":"theme"}],"yourExposureSummary":"Votre portefeuille possède environ 12,4 % d’exposition à « Apple ».","whyItConcernsYou":[{"kind":"hypothesis","text":"Vous détenez Apple, directement cité par cette actualité. Cette information peut donc concerner une partie identifiable de votre portefeuille."}],"uncertainties":["La durée et l’ampleur de cette évolution ne sont pas connues.","La source disponible ne permet pas un niveau de confiance élevé sur ce point."],"sources":[{"name":"Dépêche géopolitique de démonstration","url":null,"publishedAt":"2026-09-16T09:56:25.897Z"}],"importanceScore":64,"confidenceScore":35,"portfolioRelevanceScore":23,"horizon":"short_term","isFallback":false,"generatedAt":"2026-09-17T20:24:57.053Z","meta":{"asOf":"2026-09-16T09:56:25.897Z","isDemo":true,"provider":"NOVA demo dataset","sources":[{"name":"Dépêche géopolitique de démonstration","url":null,"publishedAt":"2026-09-16T09:56:25.897Z"}]}}},"coach":[{"question":"Pourquoi mon portefeuille baisse aujourd’hui ?","answer":{"shortAnswer":"Sur la dernière séance connue, votre portefeuille a évolué de -2,2 %.","whatWeKnow":["Votre portefeuille compte 6 positions.","Votre portefeuille possède environ 66,8 % d’exposition au secteur « Diversifié ».","Sa répartition géographique est dominée par « International » (environ 59,0 %).","Votre première ligne représente environ 39,8 % du portefeuille : une information la concernant a un effet proportionnellement plus visible.","Sur la dernière séance connue, sa valeur a évolué de -2,2 % (données arrêtées au 17 septembre 2026 à 17:30).","Attention : ces valeurs reposent sur des données de démonstration, et non sur des cours de marché réels."],"whyItMatters":"Votre portefeuille est principalement sensible aux thèmes suivants : Inflation (environ 12,9 %), Technologie (environ 12,4 %), Énergie (environ 11,2 %). Une actualité portant sur ces thèmes a plus de chances de vous concerner.","portfolioRelevance":"Votre portefeuille possède environ 66,8 % d’exposition au secteur « Diversifié ». Sa répartition géographique est dominée par « International » (environ 59,0 %). Votre première ligne représente environ 39,8 % du portefeuille : une information la concernant a un effet proportionnellement plus visible.","uncertainties":["Cette analyse repose sur les derniers cours connus, qui peuvent ne pas être les cours de clôture définitifs.","Une variation quotidienne ne dit rien de l’évolution future de votre portefeuille."],"sources":[],"confidence":0.75,"disclaimer":"NOVA fournit une information pédagogique et contextuelle. Ce contenu ne constitue pas un conseil en investissement personnalisé. Les performances passées ne préjugent pas des performances futures.","generatedBy":{"provider":"demo","model":"nova-deterministic-v1","isFallback":false}}},{"question":"Qu’est-ce qu’un ETF ?","answer":{"shortAnswer":"Un ETF est un fonds coté en bourse qui suit un indice. En achetant une part, vous détenez indirectement une petite fraction de toutes les entreprises de cet indice.","whatWeKnow":["Un ETF est un fonds coté en bourse qui suit un indice. En achetant une part, vous détenez indirectement une petite fraction de toutes les entreprises de cet indice."],"whyItMatters":"Comprendre « ETF » aide à lire les marchés.","portfolioRelevance":"Votre portefeuille possède environ 66,8 % d’exposition au secteur « Diversifié ».","uncertainties":[],"sources":[],"confidence":0.9,"disclaimer":"NOVA fournit une information pédagogique et contextuelle. Ce contenu ne constitue pas un conseil en investissement personnalisé. Les performances passées ne préjugent pas des performances futures.","generatedBy":{"provider":"demo","model":"nova-deterministic-v1","isFallback":false}}},{"question":"Quelle est mon exposition aux États-Unis ?","answer":{"shortAnswer":"Sur la dernière séance connue, votre portefeuille a évolué de -2,2 %.","whatWeKnow":["Votre portefeuille compte 6 positions.","Votre portefeuille possède environ 66,8 % d’exposition au secteur « Diversifié ».","Sa répartition géographique est dominée par « International » (environ 59,0 %).","Votre première ligne représente environ 39,8 % du portefeuille : une information la concernant a un effet proportionnellement plus visible.","Sur la dernière séance connue, sa valeur a évolué de -2,2 % (données arrêtées au 17 septembre 2026 à 17:30).","Attention : ces valeurs reposent sur des données de démonstration, et non sur des cours de marché réels."],"whyItMatters":"Votre portefeuille est principalement sensible aux thèmes suivants : Inflation (environ 12,9 %), Technologie (environ 12,4 %), Énergie (environ 11,2 %). Une actualité portant sur ces thèmes a plus de chances de vous concerner.","portfolioRelevance":"Votre portefeuille possède environ 66,8 % d’exposition au secteur « Diversifié ». Sa répartition géographique est dominée par « International » (environ 59,0 %). Votre première ligne représente environ 39,8 % du portefeuille : une information la concernant a un effet proportionnellement plus visible.","uncertainties":["Cette analyse repose sur les derniers cours connus, qui peuvent ne pas être les cours de clôture définitifs.","Une variation quotidienne ne dit rien de l’évolution future de votre portefeuille."],"sources":[],"confidence":0.75,"disclaimer":"NOVA fournit une information pédagogique et contextuelle. Ce contenu ne constitue pas un conseil en investissement personnalisé. Les performances passées ne préjugent pas des performances futures.","generatedBy":{"provider":"demo","model":"nova-deterministic-v1","isFallback":false}}},{"question":"Est-ce que je dois acheter des actions Apple ?","answer":{"shortAnswer":"NOVA ne donne pas de recommandation d’achat ou de vente. Je peux en revanche vous aider à comprendre ce qui est en jeu.","whatWeKnow":["Votre portefeuille possède environ 66,8 % d’exposition au secteur « Diversifié ».","Sa répartition géographique est dominée par « International » (environ 59,0 %).","Votre première ligne représente environ 39,8 % du portefeuille : une information la concernant a un effet proportionnellement plus visible."],"whyItMatters":"Une décision d’investissement dépend de votre situation personnelle, de votre horizon et de votre tolérance aux fluctuations — des éléments que NOVA ne peut pas apprécier à votre place. Ce que NOVA peut faire : vous montrer votre exposition actuelle, expliquer les mécanismes en jeu et détailler ce qui reste incertain.","portfolioRelevance":"Votre portefeuille possède environ 66,8 % d’exposition au secteur « Diversifié ». Sa répartition géographique est dominée par « International » (environ 59,0 %). Votre première ligne représente environ 39,8 % du portefeuille : une information la concernant a un effet proportionnellement plus visible.","uncertainties":["Personne ne connaît l’évolution future du prix d’un actif.","Une décision qui convient à une personne peut ne pas convenir à une autre."],"sources":[],"confidence":0.9,"disclaimer":"NOVA fournit une information pédagogique et contextuelle. Ce contenu ne constitue pas un conseil en investissement personnalisé. Les performances passées ne préjugent pas des performances futures.","generatedBy":{"provider":"demo","model":"nova-deterministic-v1","isFallback":false}}}]}
+</script>
+
+<script>
+  (function () {
+    'use strict';
+
+    var D = JSON.parse(document.getElementById('nova-snapshot').textContent);
+
+    // ------------------------------------------------------------------ utils
+    function esc(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, function (ch) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+      });
+    }
+
+    function money(value, currency) {
+      if (value == null) return '—';
+      try {
+        return new Intl.NumberFormat('fr-FR', {
+          style: 'currency',
+          currency: currency || 'EUR',
+          maximumFractionDigits: 2,
+        }).format(value);
+      } catch (error) {
+        return value.toFixed(2) + ' ' + (currency || 'EUR');
+      }
+    }
+
+    function pct(value, digits) {
+      if (value == null) return '—';
+      return (
+        new Intl.NumberFormat('fr-FR', {
+          minimumFractionDigits: digits == null ? 2 : digits,
+          maximumFractionDigits: digits == null ? 2 : digits,
+          signDisplay: 'exceptZero',
+        }).format(value) + ' %'
+      );
+    }
+
+    function plain(value, digits) {
+      if (value == null) return '—';
+      return new Intl.NumberFormat('fr-FR', {
+        minimumFractionDigits: digits == null ? 1 : digits,
+        maximumFractionDigits: digits == null ? 1 : digits,
+      }).format(value);
+    }
+
+    function dateTime(iso) {
+      var date = new Date(iso);
+      if (isNaN(date.getTime())) return '—';
+      return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long', timeStyle: 'short' }).format(date);
+    }
+
+    function dateOnly(iso) {
+      var date = new Date(iso);
+      if (isNaN(date.getTime())) return '—';
+      return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(date);
+    }
+
+    function ago(iso) {
+      var then = new Date(iso).getTime();
+      if (isNaN(then)) return '';
+      var minutes = Math.round((Date.now() - then) / 60000);
+      if (minutes < 60) return 'il y a ' + Math.max(minutes, 1) + ' min';
+      var hours = Math.round(minutes / 60);
+      if (hours < 24) return 'il y a ' + hours + ' h';
+      return 'il y a ' + Math.round(hours / 24) + ' j';
+    }
+
+    /**
+     * A variation is never signalled by colour alone: the arrow, the sign and a written label
+     * travel together, exactly as the ValueChange component does in the app.
+     */
+    function change(percent, label) {
+      var direction = percent == null ? 'flat' : percent > 0 ? 'up' : percent < 0 ? 'down' : 'flat';
+      var arrow = direction === 'up' ? '▲' : direction === 'down' ? '▼' : '■';
+      return (
+        '<span class="change ' +
+        direction +
+        '" title="' +
+        esc(label || '') +
+        '">' +
+        arrow +
+        ' ' +
+        esc(pct(percent)) +
+        '</span>'
+      );
+    }
+
+    function demoBadge(isDemo) {
+      return isDemo ? '<span class="badge demo">DEMO DATA</span>' : '';
+    }
+
+    var CATEGORIES = {
+      macro: 'Macroéconomie',
+      central_banks: 'Banques centrales',
+      company: 'Entreprise',
+      sector: 'Secteur',
+      geopolitics: 'Géopolitique',
+      regulation: 'Réglementation',
+      commodities: 'Matières premières',
+      currencies: 'Devises',
+      markets: 'Marchés',
+    };
+
+    var DIFFICULTY = { beginner: 'Débutant', intermediate: 'Intermédiaire', advanced: 'Avancé' };
+    var ACTIONS = { buy: 'Achat', sell: 'Vente', hold: 'Conservation', watch: 'Surveillance', note: 'Note' };
+
+    // ------------------------------------------------------------------ state
+    var state = {
+      tab: 'home',
+      view: 'home',
+      newsId: null,
+      depth: 'simple',
+      breakdown: 'byAssetType',
+      coachIndex: null,
+      lessonOpen: false,
+    };
+
+    // ------------------------------------------------------------------ screens
+    function screenHome() {
+      var d = D.dashboard;
+      var html = '';
+
+      html += '<h1 class="h1">' + esc(d.greeting) + '</h1>';
+
+      if (d.brief) {
+        html +=
+          '<button class="card" data-go="brief">' +
+          '<div class="row"><span class="badge accent">Votre briefing du jour</span>' +
+          demoBadge(d.brief.meta && d.brief.meta.isDemo) +
+          '</div>' +
+          '<p class="h3">' + esc(d.brief.headline) + '</p>' +
+          '<p class="muted">' + esc(d.brief.summary) + '</p>' +
+          '<p class="meta">Données arrêtées au ' + esc(dateTime(d.brief.dataAsOf)) + '</p>' +
+          '</button>';
+      }
+
+      if (d.portfolio && !d.portfolio.isEmpty) {
+        html +=
+          '<button class="card" data-go="portfolio">' +
+          '<div class="row"><span class="meta">' + esc(d.portfolio.name) + '</span>' +
+          demoBadge(d.portfolio.meta && d.portfolio.meta.isDemo) + '</div>' +
+          '<p class="display">' + esc(money(d.portfolio.totalValue, d.portfolio.baseCurrency)) + '</p>' +
+          change(d.portfolio.dayChangePercent, d.portfolio.changeLabel) +
+          '<p class="meta">Dernière mise à jour : ' +
+          esc(dateTime(d.portfolio.meta && d.portfolio.meta.asOf)) + '</p>' +
+          '</button>';
+      }
+
+      html += '<div class="stack">';
+      html += '<div class="section-head"><h2 class="h2">Les marchés</h2>' + demoBadge(true) + '</div>';
+      html += '<div class="hscroll">';
+      D.markets.quotes.forEach(function (quote) {
+        html +=
+          '<div class="card">' +
+          '<p class="meta">' + esc(quote.label) + '</p>' +
+          '<p class="h3 num">' + esc(plain(quote.value, 2)) + '</p>' +
+          change(quote.changePercent, quote.changeLabel) +
+          '</div>';
+      });
+      html += '</div></div>';
+
+      html += '<div class="stack">';
+      html +=
+        '<div class="section-head"><h2 class="h2">Les informations importantes</h2></div>' +
+        '<p class="meta">Classées selon leur portée et votre exposition.</p>';
+      d.topNews.forEach(function (item) {
+        html += newsCard(item);
+      });
+      html += '</div>';
+
+      if (d.portfolioInsight) {
+        html +=
+          '<div class="stack"><h2 class="h2">Pour votre portefeuille</h2>' +
+          '<div class="card"><p class="body">' + esc(d.portfolioInsight.text) + '</p>' +
+          '<p class="meta">Analyse produite à partir de votre exposition. Il ne s’agit pas d’une prévision.</p>' +
+          '</div></div>';
+      }
+
+      if (d.lessonOfTheDay) {
+        html +=
+          '<div class="stack"><h2 class="h2">À apprendre aujourd’hui</h2>' +
+          '<button class="card" data-go="lesson">' +
+          '<p class="h3">' + esc(d.lessonOfTheDay.title) + '</p>' +
+          '<p class="meta">' + esc(d.lessonOfTheDay.estimatedMinutes) + ' minutes</p>' +
+          '</button></div>';
+      }
+
+      html +=
+        '<div class="card"><p class="h3">Demander à NOVA</p>' +
+        '<p class="muted">« Pourquoi mon portefeuille baisse aujourd’hui ? », « Qu’est-ce qu’un ETF ? »</p>' +
+        '<button class="btn ghost" data-go="coach">Poser une question</button></div>';
+
+      return html;
+    }
+
+    function newsCard(item) {
+      var relevant = item.portfolioRelevanceScore >= 40;
+      return (
+        '<button class="card" data-news="' + esc(item.id) + '">' +
+        '<div class="badges">' +
+        '<span class="badge">' + esc(CATEGORIES[item.category] || item.category) + '</span>' +
+        (relevant ? '<span class="badge accent">Concerne votre portefeuille</span>' : '') +
+        demoBadge(item.isDemo) +
+        '</div>' +
+        '<p class="h3">' + esc(item.title) + '</p>' +
+        '<p class="muted">' + esc(item.summary) + '</p>' +
+        (item.relevanceReason
+          ? '<div class="callout accent"><p>' + esc(item.relevanceReason) + '</p></div>'
+          : '') +
+        '<p class="meta">' + esc(item.source) + ' · ' + esc(ago(item.publishedAt)) + '</p>' +
+        '</button>'
+      );
+    }
+
+    function screenNews() {
+      var analysis = D.analyses[state.newsId + (state.depth === 'detailed' ? ':detailed' : '')];
+      var item =
+        D.dashboard.topNews.filter(function (n) {
+          return n.id === state.newsId;
+        })[0] || {};
+      if (!analysis) return '<p class="muted">Analyse indisponible pour cette actualité.</p>';
+
+      var html = '<button class="back" data-go="home">‹ Retour</button>';
+
+      html +=
+        '<div class="stack">' +
+        '<div class="badges"><span class="badge">' +
+        esc(CATEGORIES[item.category] || '') + '</span>' + demoBadge(item.isDemo) + '</div>' +
+        '<h1 class="h1">' + esc(item.title) + '</h1>' +
+        '<p class="meta">' + esc(item.source) + ' · ' + esc(dateTime(item.publishedAt)) + '</p>' +
+        '</div>';
+
+      html +=
+        '<div class="segmented" role="tablist">' +
+        '<button role="tab" data-depth="simple" aria-selected="' + (state.depth === 'simple') + '">Simple</button>' +
+        '<button role="tab" data-depth="detailed" aria-selected="' + (state.depth === 'detailed') + '">Détaillé</button>' +
+        '</div>';
+
+      html +=
+        '<div class="stack"><div class="section-head"><h2 class="h2">Ce qui s’est passé</h2>' +
+        '<span class="badge info">Fait</span></div>' +
+        '<p class="body">' + esc(analysis.whatHappened.text) + '</p></div>';
+
+      html +=
+        '<div class="stack"><div class="section-head"><h2 class="h2">Pourquoi c’est important</h2>' +
+        '<span class="badge">Analyse</span></div>' +
+        '<p class="muted">' + esc(analysis.whyItMatters.text) + '</p></div>';
+
+      if (analysis.affectedAssets.length || analysis.affectedSectors.length) {
+        html += '<div class="stack"><h2 class="h2">Actifs et secteurs concernés</h2><div class="card">';
+        if (analysis.affectedAssets.length) {
+          html += '<p class="meta">Actifs</p><div class="badges">';
+          analysis.affectedAssets.forEach(function (asset) {
+            html += '<span class="badge">' + esc(asset.name) + '</span>';
+          });
+          html += '</div>';
+        }
+        if (analysis.affectedSectors.length) {
+          html += '<p class="meta">Secteurs</p><div class="badges">';
+          analysis.affectedSectors.forEach(function (sector) {
+            html += '<span class="badge">' + esc(sector.label) + '</span>';
+          });
+          html += '</div>';
+        }
+        html += '</div></div>';
+      }
+
+      html += '<div class="stack"><h2 class="h2">Votre exposition</h2><div class="card">';
+      html += '<p class="body">' + esc(analysis.yourExposureSummary) + '</p>';
+      analysis.yourExposure.forEach(function (exposure) {
+        html +=
+          '<div class="stack" style="gap:4px">' +
+          '<div class="kv"><span class="k">' + esc(exposure.label) + '</span>' +
+          '<span class="v">' + esc(plain(exposure.percent)) + ' %</span></div>' +
+          '<div class="bar"><span style="width:' + Math.min(Math.max(exposure.percent, 1), 100) + '%"></span></div>' +
+          '</div>';
+      });
+      html += '</div></div>';
+
+      html +=
+        '<div class="stack"><div class="section-head"><h2 class="h2">Pourquoi cela peut vous concerner</h2>' +
+        '<span class="badge warn">Hypothèse</span></div>';
+      analysis.whyItConcernsYou.forEach(function (statement) {
+        html += '<p class="muted">' + esc(statement.text) + '</p>';
+      });
+      html += '</div>';
+
+      html += '<div class="stack"><h2 class="h2">Ce qu’on ne sait pas</h2><div class="callout warn">';
+      analysis.uncertainties.forEach(function (uncertainty) {
+        html += '<p>• ' + esc(uncertainty) + '</p>';
+      });
+      html += '</div></div>';
+
+      html +=
+        '<div class="card"><p class="meta">Comment NOVA a classé cette information</p>' +
+        scoreRow('Importance', analysis.importanceScore) +
+        scoreRow('Confiance dans la source', analysis.confidenceScore) +
+        scoreRow('Lien avec votre portefeuille', analysis.portfolioRelevanceScore) +
+        '<p class="meta">Ces scores expriment une priorité de lecture. Ils ne constituent pas une prévision de performance.</p>' +
+        '</div>';
+
+      html += '<div class="stack"><p class="meta">Sources</p>';
+      analysis.sources.forEach(function (source) {
+        html +=
+          '<p class="muted">' + esc(source.name) +
+          (source.publishedAt ? ' · publié le ' + esc(dateTime(source.publishedAt)) : '') + '</p>';
+      });
+      html += '</div>';
+
+      return html;
+    }
+
+    function scoreRow(label, value) {
+      return (
+        '<div class="score"><span style="flex:0 0 auto">' + esc(label) + '</span>' +
+        '<span class="track"><span style="width:' + Math.max(value, 2) + '%"></span></span>' +
+        '<span class="num">' + value + '/100</span></div>'
+      );
+    }
+
+    function screenBrief() {
+      var b = D.brief;
+      var html = '<button class="back" data-go="home">‹ Retour</button>';
+
+      html +=
+        '<div class="stack">' + demoBadge(b.meta && b.meta.isDemo) +
+        '<h1 class="h1">' + esc(b.greeting) + '</h1>' +
+        '<p class="h3">' + esc(b.headline) + '</p>' +
+        '<p class="muted">' + esc(b.summary) + '</p>' +
+        '<p class="meta">Données arrêtées au ' + esc(dateTime(b.dataAsOf)) + '.</p></div>';
+
+      html +=
+        '<div class="card"><p class="meta">Les marchés</p><p class="body">' +
+        esc(b.marketSummary.text) + '</p></div>';
+
+      if (b.portfolioSummary) {
+        html +=
+          '<div class="card"><p class="meta">Pour votre portefeuille</p><p class="body">' +
+          esc(b.portfolioSummary.text) + '</p></div>';
+      }
+
+      html +=
+        '<div class="stack"><h2 class="h2">Les ' + b.items.length + ' informations retenues</h2>';
+      b.items.forEach(function (item, index) {
+        html +=
+          '<button class="card" data-news="' + esc(item.newsId) + '">' +
+          '<div class="badges"><span class="meta num">' +
+          String(index + 1).padStart(2, '0') + '</span>' +
+          (item.relevanceReason ? '<span class="badge accent">' + esc(item.relevanceReason) + '</span>' : '') +
+          '</div>' +
+          '<p class="h3">' + esc(item.title) + '</p>' +
+          '<p class="muted">' + esc(item.takeaway) + '</p>' +
+          '<p class="meta">' + esc(item.source) + ' · ' + esc(dateTime(item.publishedAt)) + '</p>' +
+          '</button>';
+      });
+      html += '</div>';
+
+      if (b.uncertainties.length) {
+        html += '<div class="callout warn"><span class="label">À garder en tête</span>';
+        b.uncertainties.forEach(function (uncertainty) {
+          html += '<p>• ' + esc(uncertainty) + '</p>';
+        });
+        html += '</div>';
+      }
+
+      return html;
+    }
+
+    function screenPortfolio() {
+      var a = D.portfolio.analytics;
+      var positions = D.portfolio.positions;
+      var slices = a[state.breakdown] || [];
+      var shades = [1, 0.82, 0.66, 0.52, 0.4, 0.3, 0.22];
+
+      var html = '<h1 class="h1">Portefeuille</h1>';
+
+      html +=
+        '<div class="card">' +
+        '<div class="row"><span class="meta">Valeur totale</span>' +
+        demoBadge(a.meta && a.meta.isDemo) + '</div>' +
+        '<p class="display">' + esc(money(a.totalValue, a.baseCurrency)) + '</p>' +
+        '<div class="row" style="justify-content:flex-start;gap:20px">' +
+        '<span><span class="meta">Aujourd’hui</span><br>' + change(a.dayChangePercent) + '</span>' +
+        '<span><span class="meta">Depuis l’achat</span><br>' + change(a.totalUnrealizedGainPercent) + '</span>' +
+        '</div>' +
+        '<p class="meta">Dernière mise à jour : ' + esc(dateTime(a.meta && a.meta.asOf)) + '</p>' +
+        '</div>';
+
+      html +=
+        '<div class="stack"><h2 class="h2">Répartition</h2>' +
+        '<div class="segmented" role="tablist">' +
+        '<button role="tab" data-breakdown="byAssetType" aria-selected="' + (state.breakdown === 'byAssetType') + '">Classes</button>' +
+        '<button role="tab" data-breakdown="bySector" aria-selected="' + (state.breakdown === 'bySector') + '">Secteurs</button>' +
+        '<button role="tab" data-breakdown="byRegion" aria-selected="' + (state.breakdown === 'byRegion') + '">Zones</button>' +
+        '</div>';
+
+      html += '<div class="card"><div class="bar">';
+      slices.slice(0, 7).forEach(function (slice, index) {
+        html +=
+          '<span style="flex:' + Math.max(slice.percent, 0.5) +
+          ';opacity:' + shades[Math.min(index, shades.length - 1)] + '"></span>';
+      });
+      html += '</div><div class="legend">';
+      slices.slice(0, 7).forEach(function (slice, index) {
+        html +=
+          '<div class="legend-row">' +
+          '<span class="dot" style="opacity:' + shades[Math.min(index, shades.length - 1)] + '"></span>' +
+          '<span class="name">' + esc(slice.label) + '</span>' +
+          '<span class="val">' + esc(plain(slice.percent)) + ' %</span></div>';
+      });
+      html += '</div></div></div>';
+
+      html +=
+        '<div class="stack"><h2 class="h2">Concentration</h2><div class="card">' +
+        '<div class="kv"><span class="k">Première ligne<br><span class="meta">' +
+        esc(a.concentration.topPositionLabel) + '</span></span>' +
+        '<span class="v">' + esc(plain(a.concentration.topPositionPercent)) + ' %</span></div>' +
+        '<div class="kv"><span class="k">Trois premières lignes</span><span class="v">' +
+        esc(plain(a.concentration.topThreePercent)) + ' %</span></div>' +
+        '<div class="kv"><span class="k">Nombre de positions</span><span class="v">' +
+        a.concentration.positionCount + '</span></div>' +
+        '<p class="meta">Une concentration élevée signifie qu’une seule information peut avoir un effet important sur la valeur de votre portefeuille.</p>' +
+        '</div></div>';
+
+      html += '<div class="stack"><h2 class="h2">Positions</h2>';
+      positions.forEach(function (position) {
+        html +=
+          '<div class="card"><div class="row">' +
+          '<span class="grow"><span class="h3">' + esc(position.asset.name) + '</span><br>' +
+          '<span class="meta">' + esc(position.asset.symbol) + ' · ' +
+          esc(plain(position.quantity, 0)) + ' × ' + esc(money(position.averagePrice, position.currency)) +
+          '</span></span>' +
+          '<span style="text-align:right">' +
+          (position.marketValue == null
+            ? '<span class="badge warn">valorisation indisponible</span>'
+            : '<span class="h3 num">' + esc(money(position.marketValue, a.baseCurrency)) + '</span><br>' +
+              change(position.unrealizedGainPercent)) +
+          '</span></div></div>';
+      });
+      html += '</div>';
+
+      return html;
+    }
+
+    function screenMarkets() {
+      var html = '<h1 class="h1">Marchés</h1>';
+      html += '<div class="section-head"><h2 class="h2">Aujourd’hui</h2>' + demoBadge(true) + '</div>';
+      html += '<p class="meta">Dernières valeurs connues.</p>';
+      D.markets.quotes.forEach(function (quote) {
+        html +=
+          '<div class="card"><div class="row"><span class="meta">' + esc(quote.label) + '</span></div>' +
+          '<p class="h3 num">' + esc(plain(quote.value, 2)) + '</p>' +
+          change(quote.changePercent, quote.changeLabel) +
+          '<p class="meta">Dernière mise à jour : ' + esc(dateTime(quote.asOf)) + '</p></div>';
+      });
+      html +=
+        '<div class="card"><p class="h3">Market Radar</p>' +
+        '<p class="muted">Les thèmes qui portent l’actualité, et la part de votre portefeuille exposée à chacun.</p>' +
+        '<span class="badge accent">Inclus dans NOVA Premium</span></div>';
+      return html;
+    }
+
+    function screenLearn() {
+      if (state.lessonOpen) return screenLesson();
+      var html = '<h1 class="h1">Apprendre</h1>';
+      html += '<p class="meta">Des leçons de deux minutes, adaptées à votre niveau.</p>';
+      D.lessons.items.forEach(function (lesson, index) {
+        html +=
+          '<button class="card"' + (index === 0 ? ' data-go="lesson"' : '') + '>' +
+          '<div class="badges">' +
+          '<span class="badge">' + esc(DIFFICULTY[lesson.difficulty] || lesson.difficulty) + '</span>' +
+          '<span class="badge">' + lesson.estimatedMinutes + ' min</span>' +
+          (index === 0 ? '<span class="badge pos">Ouvrir</span>' : '') +
+          '</div>' +
+          '<p class="h3">' + esc(lesson.title) + '</p>' +
+          '<p class="muted">' + esc(lesson.description) + '</p></button>';
+      });
+      return html;
+    }
+
+    function screenLesson() {
+      var lesson = D.lesson;
+      var html = '<button class="back" data-go="learn">‹ Toutes les leçons</button>';
+      html +=
+        '<div class="stack"><div class="badges">' +
+        '<span class="badge">' + lesson.estimatedMinutes + ' min</span>' +
+        '<span class="badge">' + esc(lesson.category) + '</span></div>' +
+        '<h1 class="h1">' + esc(lesson.title) + '</h1>' +
+        '<p class="muted">' + esc(lesson.description) + '</p></div>';
+
+      lesson.sections.forEach(function (section) {
+        html +=
+          '<div class="stack"><h2 class="h3">' + esc(section.heading) + '</h2>' +
+          '<p class="muted">' + esc(section.body) + '</p></div>';
+      });
+
+      html += '<div class="card"><p class="meta">À retenir</p>';
+      lesson.keyTakeaways.forEach(function (takeaway) {
+        html += '<p class="body">• ' + esc(takeaway) + '</p>';
+      });
+      html += '</div>';
+
+      if (lesson.glossary.length) {
+        html += '<div class="stack"><h2 class="h2">Vocabulaire</h2><div class="card">';
+        lesson.glossary.forEach(function (entry) {
+          html +=
+            '<div><p class="h3">' + esc(entry.term) + '</p>' +
+            '<p class="muted">' + esc(entry.definition) + '</p></div>';
+        });
+        html += '</div></div>';
+      }
+
+      if (lesson.quiz.length) {
+        html += '<div class="stack"><h2 class="h2">Vérifier ma compréhension</h2>';
+        lesson.quiz.forEach(function (question) {
+          html += '<div class="card"><p class="body"><strong>' + esc(question.question) + '</strong></p>';
+          question.options.forEach(function (option) {
+            html += '<div class="listrow"><span class="grow">' + esc(option.label) + '</span></div>';
+          });
+          html += '</div>';
+        });
+        html +=
+          '<p class="meta">Les bonnes réponses ne sont pas envoyées à l’application : la correction est calculée côté serveur, après validation.</p></div>';
+      }
+
+      return html;
+    }
+
+    function screenCoach() {
+      var html = '<button class="back" data-go="home">‹ Retour</button>';
+      html += '<h1 class="h1">Demander à NOVA</h1>';
+      html +=
+        '<div class="segmented" role="tablist">' +
+        '<button role="tab" aria-selected="true">Simple</button>' +
+        '<button role="tab" aria-selected="false">Détaillé</button></div>';
+
+      if (state.coachIndex == null) {
+        html +=
+          '<div class="card"><p class="muted">NOVA explique les marchés à partir de vos données et de sources identifiées. Il ne donne pas de conseil en investissement.</p></div>';
+        html += '<p class="meta">Exemples de questions</p>';
+        D.coach.forEach(function (entry, index) {
+          html +=
+            '<button class="card" data-coach="' + index + '"><p class="body">' +
+            esc(entry.question) + '</p></button>';
+        });
+        return html;
+      }
+
+      var current = D.coach[state.coachIndex];
+      var answer = current.answer;
+
+      html +=
+        '<div class="card" style="background:var(--accent-muted);border-color:transparent">' +
+        '<p class="body">' + esc(current.question) + '</p></div>';
+
+      html += '<div class="card">';
+      html += '<p class="body">' + esc(answer.shortAnswer) + '</p>';
+
+      if (answer.whatWeKnow.length) {
+        html += '<p class="meta">Ce que l’on sait</p>';
+        answer.whatWeKnow.forEach(function (fact) {
+          html += '<p class="muted">• ' + esc(fact) + '</p>';
+        });
+      }
+      if (answer.whyItMatters) {
+        html += '<p class="meta">Pourquoi cela compte</p><p class="muted">' + esc(answer.whyItMatters) + '</p>';
+      }
+      if (answer.portfolioRelevance) {
+        html +=
+          '<p class="meta">Ce qui concerne votre portefeuille</p><p class="muted">' +
+          esc(answer.portfolioRelevance) + '</p>';
+      }
+      if (answer.uncertainties.length) {
+        html += '<div class="callout warn"><span class="label">Ce qui reste incertain</span>';
+        answer.uncertainties.forEach(function (uncertainty) {
+          html += '<p>• ' + esc(uncertainty) + '</p>';
+        });
+        html += '</div>';
+      }
+      html += '<p class="meta">' + esc(answer.disclaimer) + '</p>';
+      html += '</div>';
+
+      html += '<button class="btn ghost" data-coach="reset">Autre question</button>';
+      return html;
+    }
+
+    function screenProfile() {
+      var html = '<h1 class="h1">Bonjour, Camille</h1>';
+      html +=
+        '<div class="card"><div class="row"><span class="meta">Votre profil investisseur</span>' +
+        '<span class="badge">NOVA</span></div>' +
+        '<div class="kv"><span class="k">Objectif</span><span class="v">Construire mon patrimoine</span></div>' +
+        '<div class="kv"><span class="k">Horizon</span><span class="v">10 à 20 ans</span></div>' +
+        '<div class="kv"><span class="k">Expérience</span><span class="v">Débutant</span></div>' +
+        '</div>';
+
+      html += '<div class="stack"><h2 class="h2">Journal d’investissement</h2>';
+      D.journal.items.forEach(function (entry) {
+        html +=
+          '<div class="card"><div class="badges">' +
+          '<span class="badge">' + esc(ACTIONS[entry.action] || entry.action) + '</span>' +
+          (entry.asset ? '<span class="badge accent">' + esc(entry.asset.symbol) + '</span>' : '') +
+          (entry.conviction === 'high' ? '<span class="badge">Conviction forte</span>' : '') +
+          '</div><p class="muted">' + esc(entry.reason) + '</p>' +
+          '<p class="meta">' + esc(dateOnly(entry.createdAt)) + '</p></div>';
+      });
+      if (!D.journal.items.length) {
+        html += '<div class="card"><p class="muted">Votre journal est vide.</p></div>';
+      }
+      html += '</div>';
+
+      html +=
+        '<div class="stack"><h2 class="h2">Réglages</h2><div class="card">' +
+        '<div class="listrow"><span class="grow">Paramètres</span><span class="meta">›</span></div>' +
+        '<div class="listrow"><span class="grow">Sécurité</span><span class="meta">›</span></div>' +
+        '<div class="listrow"><span class="grow">Abonnement</span><span class="meta">Gratuit ›</span></div>' +
+        '<div class="listrow"><span class="grow">Exporter mes données</span><span class="meta">›</span></div>' +
+        '<div class="listrow"><span class="grow" style="color:var(--negative)">Supprimer mon compte</span><span class="meta">›</span></div>' +
+        '</div></div>';
+
+      html +=
+        '<p class="meta">NOVA fournit une information pédagogique et contextuelle. NOVA ne délivre pas de conseil en investissement personnalisé.</p>';
+
+      return html;
+    }
+
+    // ------------------------------------------------------------------ notes
+    var NOTES = {
+      home: {
+        eyebrow: 'Accueil',
+        title: 'Trois minutes, et vous savez quoi regarder',
+        body:
+          'Le dashboard répond dans l’ordre : ce qui s’est passé, ce que vaut votre portefeuille, ce qui compte aujourd’hui, et pourquoi. Les cinq actualités ne sont pas les plus bruyantes : elles sont classées en croisant un score d’importance déterministe avec votre exposition réelle.',
+        rules: [
+          ['Le classement est explicable', 'Importance, confiance et pertinence sont calculées par un moteur versionné, sans modèle de langage. Le même article donne toujours le même score.'],
+          ['Chaque chiffre porte sa date', 'Aucune valeur n’est affichée sans « dernière mise à jour ». Une donnée en cache n’est jamais présentée comme du temps réel.'],
+          ['DEMO DATA est non négociable', 'Tant qu’aucun fournisseur réel n’est branché, chaque valeur est étiquetée — de la base de données jusqu’à l’écran.'],
+        ],
+      },
+      news: {
+        eyebrow: 'Pourquoi cela vous concerne',
+        title: 'L’écran qui distingue un fait d’une hypothèse',
+        body:
+          'C’est la fonctionnalité centrale du produit. Chaque bloc porte son statut épistémique — fait, analyse, hypothèse, incertitude — et ce statut est porté par les types TypeScript jusqu’à l’interface, pas seulement par la mise en forme.',
+        rules: [
+          ['Votre exposition est calculée, pas rédigée', 'Le pourcentage vient du moteur financier partagé, à partir du poids réel de vos positions. Le modèle de langage ne le reformule jamais.'],
+          ['« Ce qu’on ne sait pas » a son propre bloc', 'L’incertitude n’est pas une note de bas de page : elle occupe un espace visuel réservé.'],
+          ['Le conditionnel est une règle, pas un style', 'Une chaîne de causalité plausible s’écrit « peut concerner », jamais « va affecter ». Des expressions interdites sont détectées automatiquement et rejettent la réponse.'],
+        ],
+      },
+      brief: {
+        eyebrow: 'Daily Brief',
+        title: 'Généré à 06:00, jamais à l’ouverture',
+        body:
+          'Le briefing est produit par un job asynchrone puis stocké. L’application ne déclenche aucune génération : elle lit. Si la génération du jour a échoué, le dernier briefing disponible est servi, marqué comme tel, avec sa vraie date.',
+        rules: [
+          ['Une information peut entrer pour deux raisons', 'Soit son importance générale dépasse le seuil, soit elle vous concerne personnellement — même avec une importance plus faible.'],
+          ['Aucune formulation d’action', 'Un « takeaway » énonce un fait puis un contexte. Jamais une consigne d’achat ou de vente.'],
+          ['La date de coupure est affichée', 'Le briefing distingue l’heure de génération de la fraîcheur des données qu’il contient.'],
+        ],
+      },
+      portfolio: {
+        eyebrow: 'Portefeuille',
+        title: 'Aucun calcul financier dans l’interface',
+        body:
+          'Valorisation, conversion de devises, allocation, concentration : tout est calculé par un module pur et testé, côté serveur. L’écran ne fait que formater. Une position dont le cours est inconnu est signalée comme telle — jamais valorisée à zéro.',
+        rules: [
+          ['Les devises sont converties, pas supposées', 'Sans taux de change connu, la ligne est déclarée non valorisable plutôt que comptée à 1:1.'],
+          ['La concentration est une information de risque', 'La part de la première ligne et des trois premières est affichée, avec ce qu’elle implique.'],
+          ['La variation ne dépend jamais de la couleur', 'Signe, flèche et libellé parlé accompagnent systématiquement la valeur.'],
+        ],
+      },
+      markets: {
+        eyebrow: 'Marchés',
+        title: 'Des indices datés, et des thèmes qui veulent dire quelque chose',
+        body:
+          'Sept indices, chacun avec sa date de dernière valeur connue. Le Market Radar, réservé à l’offre payante, classe les grands thèmes selon l’attention réelle qu’ils reçoivent dans le flux d’actualité, et indique la part de votre portefeuille exposée à chacun.',
+        rules: [
+          ['L’accès premium est vérifié côté serveur', 'À partir de l’abonnement stocké, jamais d’une information envoyée par l’application.'],
+          ['Pas de graphique décoratif', 'Une visualisation n’est affichée que si elle porte une information que le texte ne porte pas.'],
+        ],
+      },
+      learn: {
+        eyebrow: 'Apprendre',
+        title: 'Du contenu rédigé, relu comme du code',
+        body:
+          'Dix leçons de deux minutes, écrites pour un particulier francophone et versionnées dans le dépôt. Le niveau déclaré à l’onboarding détermine l’ordre d’affichage, sans jamais masquer une leçon.',
+        rules: [
+          ['Les bonnes réponses restent au serveur', 'Le quiz est corrigé côté API : le client ne reçoit jamais la solution avant d’avoir répondu.'],
+          ['L’explication s’affiche dans tous les cas', 'Juste ou faux, la raison est donnée. L’objectif est la compréhension, pas le score.'],
+        ],
+      },
+      coach: {
+        eyebrow: 'AI Coach',
+        title: 'L’IA explique, elle ne décide pas',
+        body:
+          'La chaîne est toujours : source primaire → donnée structurée → moteur métier → IA → explication. Le modèle ne reçoit que des pourcentages et une tranche de valeur : jamais votre identité, jamais vos montants exacts.',
+        rules: [
+          ['La sortie est validée avant affichage', 'Schéma Zod, détection de formulations interdites, et vérification que chaque source citée figurait bien dans le contexte fourni.'],
+          ['Une demande de conseil est refusée explicitement', 'À « dois-je acheter ? », NOVA répond que ce n’est pas son rôle — et non qu’il manque de données.'],
+          ['En cas d’échec, une réponse déterministe', 'Si le modèle est indisponible ou invalide, l’explication est produite par le moteur à partir des mêmes données.'],
+        ],
+      },
+      profile: {
+        eyebrow: 'Profil',
+        title: 'Le journal, et la sortie',
+        body:
+          'Le journal enregistre la décision et surtout sa raison. Relu six mois plus tard, il montre ce que vous pensiez à ce moment — sans verdict, sans score de réussite. L’export et la suppression du compte sont accessibles en deux touches.',
+        rules: [
+          ['La suppression est réelle', 'Mot de passe exigé, confirmation typée, anonymisation immédiate puis purge. Toutes les données rattachées suivent en cascade.'],
+          ['L’export est complet', 'Profil, portefeuilles, positions, journal, progression et conversations, au format JSON, sans empreinte de mot de passe.'],
+        ],
+      },
+    };
+
+    function renderNotes() {
+      var key = state.view === 'lesson' ? 'learn' : state.view;
+      var note = NOTES[key] || NOTES.home;
+      var html =
+        '<div><p class="note-eyebrow">' + esc(note.eyebrow) + '</p>' +
+        '<h2>' + esc(note.title) + '</h2></div>' +
+        '<p>' + esc(note.body) + '</p>';
+
+      html += '<ul class="rules">';
+      note.rules.forEach(function (rule) {
+        html += '<li><span class="t">' + esc(rule[0]) + '</span><span class="d">' + esc(rule[1]) + '</span></li>';
+      });
+      html += '</ul>';
+
+      if (key === 'home') {
+        var a = D.portfolio.analytics;
+        html +=
+          '<div class="figures">' +
+          figure(money(a.totalValue, a.baseCurrency), 'Portefeuille de démonstration') +
+          figure(a.concentration.positionCount, 'positions') +
+          figure(D.dashboard.topNews.length, 'informations retenues') +
+          figure(D.lessons.items.length, 'leçons rédigées') +
+          '</div>';
+      }
+
+      return html;
+    }
+
+    function figure(value, label) {
+      return '<div class="figure"><span class="n">' + esc(value) + '</span><span class="l">' + esc(label) + '</span></div>';
+    }
+
+    var STAGE_NOTES = {
+      home: 'L’écran défile. Touchez une actualité pour ouvrir l’analyse, ou le briefing pour le lire en entier.',
+      news: 'Basculez entre Simple et Détaillé : les deux réponses viennent de l’API.',
+      brief: 'Le briefing du jour, tel qu’il a été généré et stocké.',
+      portfolio: 'Changez la répartition : classes d’actifs, secteurs, zones géographiques.',
+      markets: 'Les sept indices du tableau de bord, datés.',
+      learn: 'Ouvrez la première leçon pour voir le contenu complet.',
+      lesson: 'Contenu, points à retenir, vocabulaire et quiz.',
+      coach: 'Choisissez une question : les réponses ont été produites par le moteur déterministe.',
+      profile: 'Profil investisseur, journal et réglages du compte.',
+    };
+
+    // ------------------------------------------------------------------ render
+    var TABS = [
+      ['home', 'Accueil', '◉'],
+      ['markets', 'Marchés', '◈'],
+      ['portfolio', 'Portefeuille', '◧'],
+      ['learn', 'Apprendre', '◐'],
+      ['profile', 'Profil', '◯'],
+    ];
+
+    var screenEl = document.getElementById('screen');
+    var tabbarEl = document.getElementById('tabbar');
+    var notesEl = document.getElementById('notes');
+    var stageNoteEl = document.getElementById('stage-note');
+
+    function render() {
+      var html;
+      switch (state.view) {
+        case 'news':
+          html = screenNews();
+          break;
+        case 'brief':
+          html = screenBrief();
+          break;
+        case 'portfolio':
+          html = screenPortfolio();
+          break;
+        case 'markets':
+          html = screenMarkets();
+          break;
+        case 'learn':
+        case 'lesson':
+          html = screenLearn();
+          break;
+        case 'coach':
+          html = screenCoach();
+          break;
+        case 'profile':
+          html = screenProfile();
+          break;
+        default:
+          html = screenHome();
+      }
+
+      screenEl.innerHTML = html;
+      screenEl.scrollTop = 0;
+      markScrollEnd();
+
+      tabbarEl.innerHTML = TABS.map(function (tab) {
+        return (
+          '<button data-tab="' + tab[0] + '" aria-selected="' + (state.tab === tab[0]) + '">' +
+          '<span class="glyph">' + tab[2] + '</span><span>' + tab[1] + '</span></button>'
+        );
+      }).join('');
+
+      notesEl.innerHTML = renderNotes();
+      stageNoteEl.textContent = STAGE_NOTES[state.view] || '';
+    }
+
+    function markScrollEnd() {
+      var atEnd = screenEl.scrollTop + screenEl.clientHeight >= screenEl.scrollHeight - 2;
+      screenEl.dataset.atEnd = atEnd ? 'true' : 'false';
+    }
+
+    // ------------------------------------------------------------------ events
+    screenEl.addEventListener('scroll', markScrollEnd, { passive: true });
+
+    document.addEventListener('click', function (event) {
+      var target = event.target.closest('[data-tab],[data-go],[data-news],[data-depth],[data-breakdown],[data-coach]');
+      if (!target) return;
+
+      if (target.dataset.tab) {
+        state.tab = target.dataset.tab;
+        state.view = target.dataset.tab;
+        state.lessonOpen = false;
+        state.coachIndex = null;
+      } else if (target.dataset.go) {
+        var destination = target.dataset.go;
+        if (destination === 'lesson') {
+          state.tab = 'learn';
+          state.view = 'lesson';
+          state.lessonOpen = true;
+        } else if (destination === 'learn') {
+          state.tab = 'learn';
+          state.view = 'learn';
+          state.lessonOpen = false;
+        } else {
+          state.view = destination;
+          if (destination === 'home' || destination === 'portfolio') state.tab = destination;
+          if (destination === 'coach' || destination === 'brief') state.tab = 'home';
+          state.coachIndex = null;
+        }
+      } else if (target.dataset.news) {
+        state.view = 'news';
+        state.newsId = target.dataset.news;
+        state.depth = 'simple';
+      } else if (target.dataset.depth) {
+        state.depth = target.dataset.depth;
+      } else if (target.dataset.breakdown) {
+        state.breakdown = target.dataset.breakdown;
+      } else if (target.dataset.coach) {
+        state.coachIndex = target.dataset.coach === 'reset' ? null : Number(target.dataset.coach);
+      }
+
+      render();
+    });
+
+    render();
+  })();
+</script>

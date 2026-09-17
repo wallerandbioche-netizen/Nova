@@ -12,6 +12,7 @@ import {
   NEWS_CATEGORY_LABELS,
   getPlan,
 } from '@nova/config';
+import { uncapitalize } from '../../lib/text.js';
 import type { Cache } from '../../infrastructure/cache/index.js';
 import { cacheKey } from '../../infrastructure/cache/index.js';
 import type { Database } from '../../infrastructure/database/prisma.js';
@@ -103,7 +104,7 @@ export class DailyBriefService {
     const factual = item.summary.split('. ')[0] ?? item.summary;
     const context =
       relevanceReason !== null
-        ? `Cela peut concerner votre portefeuille : ${relevanceReason.toLowerCase()}.`
+        ? `Cela peut concerner votre portefeuille : ${uncapitalize(relevanceReason)}.`
         : `Information de catégorie « ${
             NEWS_CATEGORY_LABELS[item.category] ?? item.category
           } », à lire pour le contexte de marché.`;

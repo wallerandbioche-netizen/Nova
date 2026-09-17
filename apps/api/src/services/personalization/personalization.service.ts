@@ -10,6 +10,7 @@ import { REGION_LABELS, SECTOR_LABELS, THEME_LABELS } from '@nova/config';
 import { round } from '@nova/finance';
 import type { Database } from '../../infrastructure/database/prisma.js';
 import type { PortfolioService } from '../../modules/portfolios/portfolio.service.js';
+import { uncapitalize } from '../../lib/text.js';
 import type { ScoringService } from '../news/scoring.service.js';
 
 export interface ScoredNews {
@@ -214,12 +215,4 @@ export class PersonalizationService {
     this.logger.debug({ count: users.length }, 'active users for personalisation');
     return users.map((user) => user.id);
   }
-}
-
-/**
- * Lowers only the first letter, so a sentence fragment can be inlined without destroying the
- * casing of anything else — a ticker like "OBLI.PA" must survive intact.
- */
-function uncapitalize(text: string): string {
-  return text.length > 0 ? `${text.charAt(0).toLowerCase()}${text.slice(1)}` : text;
 }
