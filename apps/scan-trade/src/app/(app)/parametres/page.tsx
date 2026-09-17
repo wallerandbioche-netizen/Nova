@@ -23,7 +23,9 @@ export default async function SettingsPage() {
     <div className="mx-auto w-full max-w-3xl space-y-6">
       <div>
         <h1 className="text-display font-semibold text-content">Paramètres</h1>
-        <p className="mt-2 text-sm text-content-muted">Compte, préférences, sécurité et abonnement.</p>
+        <p className="mt-2 text-sm text-content-muted">
+          Compte, préférences, sécurité et abonnement.
+        </p>
       </div>
 
       <Card>
@@ -34,8 +36,8 @@ export default async function SettingsPage() {
             <Field label="Membre depuis" value={formatDate(viewer.createdAt)} />
           </div>
           <p className="text-xs leading-relaxed text-content-faint">
-            L&apos;adresse e-mail identifie ton compte et ne peut pas être modifiée depuis cette page. Écris-nous
-            depuis la page Contact si tu dois en changer.
+            L&apos;adresse e-mail identifie ton compte et ne peut pas être modifiée depuis cette
+            page. Écris-nous depuis la page Contact si tu dois en changer.
           </p>
         </CardBody>
       </Card>
@@ -83,11 +85,19 @@ export default async function SettingsPage() {
             />
             <Field
               label={viewer.subscription?.cancelAtPeriodEnd ? 'Accès jusqu’au' : 'Renouvellement'}
-              value={viewer.subscription?.currentPeriodEnd ? formatDate(viewer.subscription.currentPeriodEnd) : '—'}
+              value={
+                viewer.subscription?.currentPeriodEnd
+                  ? formatDate(viewer.subscription.currentPeriodEnd)
+                  : '—'
+              }
             />
           </div>
           <div className="max-w-xs">
-            {viewer.isSubscribed ? <ManageSubscriptionButton /> : <SubscribeButton label="S'abonner" />}
+            {viewer.isSubscribed ? (
+              <ManageSubscriptionButton />
+            ) : (
+              <SubscribeButton label="S'abonner" />
+            )}
           </div>
         </CardBody>
       </Card>

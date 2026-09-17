@@ -81,7 +81,10 @@ let store: RateLimitStore | null = null;
 
 export function getRateLimitStore(): RateLimitStore {
   if (store) return store;
-  store = getCoreEnv().RATE_LIMIT_DRIVER === 'memory' ? new MemoryRateLimitStore() : new PrismaRateLimitStore();
+  store =
+    getCoreEnv().RATE_LIMIT_DRIVER === 'memory'
+      ? new MemoryRateLimitStore()
+      : new PrismaRateLimitStore();
   return store;
 }
 
@@ -101,7 +104,11 @@ export async function consumeRateLimit(
   const key = `${rule.bucket}:${subject}:${windowStartMs}`;
 
   try {
-    const count = await (storeOverride ?? getRateLimitStore()).increment(key, new Date(windowStartMs), resetAt);
+    const count = await (storeOverride ?? getRateLimitStore()).increment(
+      key,
+      new Date(windowStartMs),
+      resetAt,
+    );
     const remaining = Math.max(0, rule.limit - count);
     return {
       allowed: count <= rule.limit,
@@ -126,6 +133,8 @@ export async function consumeRateLimit(
 
 /** Best-effort cleanup of expired windows. Safe to call from a cron. */
 export async function purgeExpiredRateLimits(): Promise<number> {
-  const result = await prisma.rateLimitCounter.deleteMany({ where: { expiresAt: { lt: new Date() } } });
+  const result = await prisma.rateLimitCounter.deleteMany({
+    where: { expiresAt: { lt: new Date() } },
+  });
   return result.count;
 }

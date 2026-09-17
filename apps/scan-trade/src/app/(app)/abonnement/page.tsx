@@ -49,19 +49,22 @@ export default async function SubscriptionPage({
       {query.checkout === 'annule' && (
         <Card className="px-5 py-4 sm:px-6">
           <p className="text-sm text-content-muted">
-            Paiement annulé — rien n&apos;a été débité. Tu peux relancer l&apos;abonnement quand tu veux.
+            Paiement annulé — rien n&apos;a été débité. Tu peux relancer l&apos;abonnement quand tu
+            veux.
           </p>
         </Card>
       )}
 
       {!stripeReady && (
         <Card className="border-warning-border bg-warning-soft px-5 py-4 sm:px-6">
-          <p className="text-sm font-medium text-warning">Paiement non configuré sur ce déploiement</p>
+          <p className="text-sm font-medium text-warning">
+            Paiement non configuré sur ce déploiement
+          </p>
           <p className="mt-1.5 text-sm text-content-muted">
             Les variables <code className="text-content">STRIPE_SECRET_KEY</code>,{' '}
             <code className="text-content">STRIPE_PRICE_ID</code> et{' '}
-            <code className="text-content">STRIPE_WEBHOOK_SECRET</code> doivent être renseignées. Voir la section
-            « Configuration Stripe » du README.
+            <code className="text-content">STRIPE_WEBHOOK_SECRET</code> doivent être renseignées.
+            Voir la section « Configuration Stripe » du README.
           </p>
         </Card>
       )}
@@ -84,9 +87,16 @@ export default async function SubscriptionPage({
             <CardHeader title="Ton abonnement" />
             <dl className="px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
               <Row label="Statut" value={<Badge tone={badge.tone}>{badge.label}</Badge>} />
-              <Row label="Plan" value={<span className="text-sm text-content">Scan Trade Pro</span>} />
               <Row
-                label={viewer.subscription?.cancelAtPeriodEnd ? 'Accès jusqu’au' : 'Prochain renouvellement'}
+                label="Plan"
+                value={<span className="text-sm text-content">Scan Trade Pro</span>}
+              />
+              <Row
+                label={
+                  viewer.subscription?.cancelAtPeriodEnd
+                    ? 'Accès jusqu’au'
+                    : 'Prochain renouvellement'
+                }
                 value={
                   <span className="numeric text-sm text-content">
                     {viewer.subscription?.currentPeriodEnd
@@ -95,7 +105,10 @@ export default async function SubscriptionPage({
                   </span>
                 }
               />
-              <Row label="Montant" value={<span className="numeric text-sm text-content">19,90 € / mois</span>} />
+              <Row
+                label="Montant"
+                value={<span className="numeric text-sm text-content">19,90 € / mois</span>}
+              />
             </dl>
             {viewer.isSubscribed && (
               <div className="hairline px-5 py-4 sm:px-6">

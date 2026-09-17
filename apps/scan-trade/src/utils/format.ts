@@ -1,4 +1,10 @@
-import type { AnalysisStatus, ConfidenceLevel, MarketBias, MarketType, TradingStyle } from '@prisma/client';
+import type {
+  AnalysisStatus,
+  ConfidenceLevel,
+  MarketBias,
+  MarketType,
+  TradingStyle,
+} from '@prisma/client';
 
 /** Display helpers. Everything user-facing is French; nothing here invents data. */
 

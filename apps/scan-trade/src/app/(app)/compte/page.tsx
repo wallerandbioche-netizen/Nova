@@ -31,7 +31,9 @@ export default async function AccountPage() {
     <div className="mx-auto w-full max-w-3xl space-y-6">
       <div>
         <h1 className="text-display font-semibold text-content">Mon compte</h1>
-        <p className="mt-2 text-sm text-content-muted">Informations, abonnement et actions rapides.</p>
+        <p className="mt-2 text-sm text-content-muted">
+          Informations, abonnement et actions rapides.
+        </p>
       </div>
 
       <Card>
@@ -43,7 +45,9 @@ export default async function AccountPage() {
             <Item label="Date d'inscription" value={formatDate(viewer.createdAt)} />
             <Item
               label="Marché principal"
-              value={viewer.marketPreference ? MARKET_LABEL[viewer.marketPreference] : 'Non précisé'}
+              value={
+                viewer.marketPreference ? MARKET_LABEL[viewer.marketPreference] : 'Non précisé'
+              }
             />
             <Item
               label="Style de trading"
@@ -61,11 +65,19 @@ export default async function AccountPage() {
             <Item label="Plan" value="Scan Trade Pro — 19,90 € / mois" />
             <Item
               label={viewer.subscription?.cancelAtPeriodEnd ? 'Accès jusqu’au' : 'Renouvellement'}
-              value={viewer.subscription?.currentPeriodEnd ? formatDate(viewer.subscription.currentPeriodEnd) : '—'}
+              value={
+                viewer.subscription?.currentPeriodEnd
+                  ? formatDate(viewer.subscription.currentPeriodEnd)
+                  : '—'
+              }
             />
           </dl>
           <div className="max-w-xs">
-            {viewer.isSubscribed ? <ManageSubscriptionButton /> : <SubscribeButton label="S'abonner" />}
+            {viewer.isSubscribed ? (
+              <ManageSubscriptionButton />
+            ) : (
+              <SubscribeButton label="S'abonner" />
+            )}
           </div>
         </CardBody>
       </Card>

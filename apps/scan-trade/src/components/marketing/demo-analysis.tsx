@@ -51,7 +51,10 @@ export function DemoAnalysis() {
             <ul className="mt-5 space-y-2">
               {DEMO.reasoning.map((line) => (
                 <li key={line} className="flex gap-2.5 text-sm leading-relaxed text-content-muted">
-                  <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-content-faint" />
+                  <span
+                    aria-hidden="true"
+                    className="mt-2 h-1 w-1 shrink-0 rounded-full bg-content-faint"
+                  />
                   {line}
                 </li>
               ))}
@@ -61,7 +64,9 @@ export function DemoAnalysis() {
 
         <Card tone="raised" className="overflow-hidden">
           <div className="border-b border-border px-5 py-4">
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-content-muted">Trade Setup</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-content-muted">
+              Trade Setup
+            </p>
           </div>
           <dl className="divide-y divide-border">
             <DemoRow label="Zone d'entrée" value={DEMO.entry} />
@@ -87,8 +92,17 @@ export function DemoAnalysis() {
   );
 }
 
-function DemoRow({ label, value, tone = 'neutral' }: { label: string; value: string; tone?: 'neutral' | 'accent' | 'danger' }) {
-  const color = tone === 'accent' ? 'text-accent' : tone === 'danger' ? 'text-danger' : 'text-content';
+function DemoRow({
+  label,
+  value,
+  tone = 'neutral',
+}: {
+  label: string;
+  value: string;
+  tone?: 'neutral' | 'accent' | 'danger';
+}) {
+  const color =
+    tone === 'accent' ? 'text-accent' : tone === 'danger' ? 'text-danger' : 'text-content';
   return (
     <div className="flex items-baseline justify-between gap-4 px-5 py-3.5">
       <dt className="text-sm text-content-muted">{label}</dt>
@@ -118,7 +132,12 @@ function MockChart() {
   ];
 
   return (
-    <svg viewBox="0 0 260 130" className="w-full" role="img" aria-label="Illustration schématique d'un graphique en chandeliers">
+    <svg
+      viewBox="0 0 260 130"
+      className="w-full"
+      role="img"
+      aria-label="Illustration schématique d'un graphique en chandeliers"
+    >
       <defs>
         <linearGradient id="demo-fade" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stopColor="#22C55E" stopOpacity="0" />
@@ -127,11 +146,38 @@ function MockChart() {
       </defs>
 
       {[26, 52, 78, 104].map((y) => (
-        <line key={y} x1="0" x2="260" y1={y} y2={y} stroke="#FFFFFF" strokeOpacity="0.04" strokeWidth="1" />
+        <line
+          key={y}
+          x1="0"
+          x2="260"
+          y1={y}
+          y2={y}
+          stroke="#FFFFFF"
+          strokeOpacity="0.04"
+          strokeWidth="1"
+        />
       ))}
 
-      <line x1="0" x2="260" y1="46" y2="46" stroke="#F59E0B" strokeOpacity="0.5" strokeWidth="1" strokeDasharray="4 4" />
-      <line x1="0" x2="260" y1="96" y2="96" stroke="#22C55E" strokeOpacity="0.5" strokeWidth="1" strokeDasharray="4 4" />
+      <line
+        x1="0"
+        x2="260"
+        y1="46"
+        y2="46"
+        stroke="#F59E0B"
+        strokeOpacity="0.5"
+        strokeWidth="1"
+        strokeDasharray="4 4"
+      />
+      <line
+        x1="0"
+        x2="260"
+        y1="96"
+        y2="96"
+        stroke="#22C55E"
+        strokeOpacity="0.5"
+        strokeWidth="1"
+        strokeDasharray="4 4"
+      />
       <rect x="0" y="84" width="260" height="12" fill="url(#demo-fade)" opacity="0.25" />
 
       {candles.map((candle) => {
@@ -141,8 +187,24 @@ function MockChart() {
         const height = Math.max(2, Math.abs(candle.close - candle.open));
         return (
           <g key={candle.x}>
-            <line x1={candle.x + 4} x2={candle.x + 4} y1={candle.high} y2={candle.low} stroke={color} strokeWidth="1.2" strokeOpacity="0.75" />
-            <rect x={candle.x} y={top} width="8" height={height} rx="1.2" fill={color} fillOpacity="0.85" />
+            <line
+              x1={candle.x + 4}
+              x2={candle.x + 4}
+              y1={candle.high}
+              y2={candle.low}
+              stroke={color}
+              strokeWidth="1.2"
+              strokeOpacity="0.75"
+            />
+            <rect
+              x={candle.x}
+              y={top}
+              width="8"
+              height={height}
+              rx="1.2"
+              fill={color}
+              fillOpacity="0.85"
+            />
           </g>
         );
       })}

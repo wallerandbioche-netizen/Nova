@@ -8,7 +8,11 @@
 
 export type AcceptedMimeType = 'image/jpeg' | 'image/png' | 'image/webp';
 
-export const ACCEPTED_MIME_TYPES: readonly AcceptedMimeType[] = ['image/jpeg', 'image/png', 'image/webp'];
+export const ACCEPTED_MIME_TYPES: readonly AcceptedMimeType[] = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+];
 
 export const ACCEPTED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'] as const;
 

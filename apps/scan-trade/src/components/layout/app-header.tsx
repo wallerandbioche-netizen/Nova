@@ -36,14 +36,20 @@ export function AppHeader({ email, name }: AppHeaderProps) {
               >
                 {initial}
               </span>
-              <span className="hidden max-w-40 truncate text-sm text-content-muted sm:block">{email}</span>
+              <span className="hidden max-w-40 truncate text-sm text-content-muted sm:block">
+                {email}
+              </span>
             </>
           }
           items={[
             { label: 'Mon compte', href: '/compte' },
             { label: 'Paramètres', href: '/parametres' },
             { label: 'Abonnement', href: '/abonnement' },
-            { label: 'Se déconnecter', onSelect: () => void signOut({ callbackUrl: '/' }), tone: 'danger' },
+            {
+              label: 'Se déconnecter',
+              onSelect: () => void signOut({ callbackUrl: '/' }),
+              tone: 'danger',
+            },
           ]}
         />
       </div>

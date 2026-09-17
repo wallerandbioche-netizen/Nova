@@ -48,9 +48,15 @@ const config: Config = {
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       fontSize: {
-        'display-lg': ['clamp(2.5rem, 6vw, 4.25rem)', { lineHeight: '1.04', letterSpacing: '-0.03em' }],
+        'display-lg': [
+          'clamp(2.5rem, 6vw, 4.25rem)',
+          { lineHeight: '1.04', letterSpacing: '-0.03em' },
+        ],
         display: ['clamp(2rem, 4.5vw, 3rem)', { lineHeight: '1.08', letterSpacing: '-0.025em' }],
-        heading: ['clamp(1.375rem, 2.5vw, 1.75rem)', { lineHeight: '1.2', letterSpacing: '-0.02em' }],
+        heading: [
+          'clamp(1.375rem, 2.5vw, 1.75rem)',
+          { lineHeight: '1.2', letterSpacing: '-0.02em' },
+        ],
         metric: ['clamp(1.5rem, 3vw, 2rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
       },
       borderRadius: {

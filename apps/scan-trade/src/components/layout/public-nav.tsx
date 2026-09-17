@@ -59,9 +59,19 @@ export function PublicNav({ isAuthenticated }: { isAuthenticated: boolean }) {
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden="true">
             {open ? (
-              <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+              <path
+                d="m6 6 12 12M18 6 6 18"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+              />
             ) : (
-              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+              />
             )}
           </svg>
         </button>
@@ -69,7 +79,10 @@ export function PublicNav({ isAuthenticated }: { isAuthenticated: boolean }) {
 
       <div
         id="public-mobile-nav"
-        className={cn('border-t border-border md:hidden', open ? 'block animate-slide-down' : 'hidden')}
+        className={cn(
+          'border-t border-border md:hidden',
+          open ? 'block animate-slide-down' : 'hidden',
+        )}
       >
         <nav className="space-y-1 px-4 py-4" aria-label="Navigation mobile">
           {LINKS.map((link) => (

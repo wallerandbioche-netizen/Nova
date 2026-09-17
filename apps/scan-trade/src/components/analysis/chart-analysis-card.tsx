@@ -22,7 +22,10 @@ export function ChartAnalysisCard({ analysis }: { analysis: AnalysisDetail }) {
 
   return (
     <Card>
-      <CardHeader title="Graphique analysé" description="Informations réellement identifiées sur la capture." />
+      <CardHeader
+        title="Graphique analysé"
+        description="Informations réellement identifiées sur la capture."
+      />
       <div className="px-5 pb-5 pt-4 sm:px-6 sm:pb-6">
         <figure className="overflow-hidden rounded-xl border border-border bg-black/40">
           {/*
@@ -30,7 +33,6 @@ export function ChartAnalysisCard({ analysis }: { analysis: AnalysisDetail }) {
             `next/image` is skipped on purpose: the optimiser would have to fetch
             a private, signed URL server-side for no visual gain.
           */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`/api/analyses/${analysis.id}/image`}
             alt={`Capture du graphique analysé${analysis.asset ? ` — ${analysis.asset}` : ''}`}
@@ -43,8 +45,13 @@ export function ChartAnalysisCard({ analysis }: { analysis: AnalysisDetail }) {
         <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
           {facts.map((fact) => (
             <div key={fact.label}>
-              <dt className="text-xs uppercase tracking-[0.12em] text-content-faint">{fact.label}</dt>
-              <dd className="numeric mt-1 truncate text-sm font-medium text-content" title={fact.value}>
+              <dt className="text-xs uppercase tracking-[0.12em] text-content-faint">
+                {fact.label}
+              </dt>
+              <dd
+                className="numeric mt-1 truncate text-sm font-medium text-content"
+                title={fact.value}
+              >
                 {fact.value}
               </dd>
             </div>

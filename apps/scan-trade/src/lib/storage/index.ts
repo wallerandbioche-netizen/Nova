@@ -11,7 +11,10 @@ let cached: StorageDriver | null = null;
 export function getStorage(): StorageDriver {
   if (cached) return cached;
   const config = getStorageConfig();
-  cached = config.driver === 'local' ? new LocalStorageDriver(config.directory) : new S3StorageDriver(config);
+  cached =
+    config.driver === 'local'
+      ? new LocalStorageDriver(config.directory)
+      : new S3StorageDriver(config);
   return cached;
 }
 

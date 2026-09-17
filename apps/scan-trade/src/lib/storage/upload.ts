@@ -33,7 +33,8 @@ export function sniffImageMimeType(data: Buffer): AcceptedMimeType | null {
   if (PNG.every((byte, index) => data[index] === byte)) return 'image/png';
 
   // WEBP: "RIFF" .... "WEBP"
-  if (data.toString('ascii', 0, 4) === 'RIFF' && data.toString('ascii', 8, 12) === 'WEBP') return 'image/webp';
+  if (data.toString('ascii', 0, 4) === 'RIFF' && data.toString('ascii', 8, 12) === 'WEBP')
+    return 'image/webp';
 
   return null;
 }
@@ -64,7 +65,10 @@ export function validateUpload(data: Buffer, options: ValidateUploadOptions): Va
   }
 
   if (data.length < MIN_UPLOAD_BYTES) {
-    throw new AppError('upload_invalid', 'Ce fichier est trop petit pour contenir un graphique lisible.');
+    throw new AppError(
+      'upload_invalid',
+      'Ce fichier est trop petit pour contenir un graphique lisible.',
+    );
   }
 
   if (options.filename) {
@@ -74,7 +78,10 @@ export function validateUpload(data: Buffer, options: ValidateUploadOptions): Va
     }
   }
 
-  if (options.declaredMimeType && !(ACCEPTED_MIME_TYPES as readonly string[]).includes(options.declaredMimeType)) {
+  if (
+    options.declaredMimeType &&
+    !(ACCEPTED_MIME_TYPES as readonly string[]).includes(options.declaredMimeType)
+  ) {
     throw new AppError('upload_invalid', 'Formats acceptés : JPG, JPEG, PNG ou WEBP.');
   }
 
@@ -102,6 +109,7 @@ export function validateUpload(data: Buffer, options: ValidateUploadOptions): Va
  */
 export function buildStorageKey(userId: string, mimeType: AcceptedMimeType): string {
   const safeUserId = userId.replace(/[^a-zA-Z0-9_-]/g, '');
-  if (safeUserId.length === 0) throw new AppError('internal_error', 'Identifiant utilisateur invalide.');
+  if (safeUserId.length === 0)
+    throw new AppError('internal_error', 'Identifiant utilisateur invalide.');
   return `analyses/${safeUserId}/${randomUUID()}.${EXTENSION_BY_MIME[mimeType]}`;
 }

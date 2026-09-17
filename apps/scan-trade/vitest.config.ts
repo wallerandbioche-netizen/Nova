@@ -12,5 +12,8 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     globals: false,
     restoreMocks: true,
+    // Keep the structured logs out of the test report; a test that needs them
+    // raises the level itself.
+    env: { LOG_LEVEL: 'error', NODE_ENV: 'test' },
   },
 });

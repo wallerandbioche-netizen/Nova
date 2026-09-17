@@ -52,7 +52,9 @@ const TONE_BG: Record<'support' | 'resistance' | 'entry' | 'risk' | 'target', st
  * stays untouched.
  */
 export function KeyLevelsCard({ levels }: { levels: KeyLevelView[] }) {
-  const priced = levels.filter((level): level is KeyLevelView & { price: number } => level.price != null);
+  const priced = levels.filter(
+    (level): level is KeyLevelView & { price: number } => level.price != null,
+  );
   if (levels.length === 0) return null;
 
   const values = priced.flatMap((level) => [level.price, level.priceMax ?? level.price]);
@@ -78,7 +80,10 @@ export function KeyLevelsCard({ levels }: { levels: KeyLevelView[] }) {
                 return (
                   <span
                     key={`${level.type}-${index}`}
-                    className={cn('absolute left-1/2 h-1.5 w-6 -translate-x-1/2 rounded-full', TONE_BG[tone])}
+                    className={cn(
+                      'absolute left-1/2 h-1.5 w-6 -translate-x-1/2 rounded-full',
+                      TONE_BG[tone],
+                    )}
                     style={{ bottom: `calc(0.5rem + ${positionOf(level.price)}% - 3px)` }}
                   />
                 );
@@ -95,8 +100,12 @@ export function KeyLevelsCard({ levels }: { levels: KeyLevelView[] }) {
                   className="flex items-start justify-between gap-4 rounded-lg px-1 py-2.5 hover:bg-surface-raised/50"
                 >
                   <div className="min-w-0">
-                    <p className={cn('text-sm font-medium', TONE_COLOR[tone])}>{LEVEL_LABEL[level.type]}</p>
-                    {level.label && <p className="mt-0.5 text-xs text-content-muted">{level.label}</p>}
+                    <p className={cn('text-sm font-medium', TONE_COLOR[tone])}>
+                      {LEVEL_LABEL[level.type]}
+                    </p>
+                    {level.label && (
+                      <p className="mt-0.5 text-xs text-content-muted">{level.label}</p>
+                    )}
                   </div>
                   <p className="numeric shrink-0 text-sm font-semibold text-content">
                     {level.price == null

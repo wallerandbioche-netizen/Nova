@@ -23,7 +23,12 @@ export function AnalysisSummary({ analysis }: { analysis: AnalysisDetail }) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.14em] text-content-faint">Market Bias</p>
-          <p className={cn('mt-1.5 text-display font-semibold tracking-tight', BIAS_STYLES[bias] ?? 'text-content')}>
+          <p
+            className={cn(
+              'mt-1.5 text-display font-semibold tracking-tight',
+              BIAS_STYLES[bias] ?? 'text-content',
+            )}
+          >
             {bias}
           </p>
         </div>
@@ -44,12 +49,14 @@ export function AnalysisSummary({ analysis }: { analysis: AnalysisDetail }) {
         </p>
       )}
 
-      {analysis.summary && <p className="mt-4 text-sm leading-relaxed text-content-muted">{analysis.summary}</p>}
+      {analysis.summary && (
+        <p className="mt-4 text-sm leading-relaxed text-content-muted">{analysis.summary}</p>
+      )}
 
       {analysis.confidence && (
         <p className="mt-3 text-xs leading-relaxed text-content-faint">
-          Le niveau de confiance décrit la cohérence des éléments visibles sur la capture. Ce n&apos;est pas une
-          probabilité de gain.
+          Le niveau de confiance décrit la cohérence des éléments visibles sur la capture. Ce
+          n&apos;est pas une probabilité de gain.
         </p>
       )}
     </Card>
@@ -65,7 +72,10 @@ export function AnalysisWarnings({ warnings }: { warnings: string[] }) {
       aria-labelledby="warnings-heading"
       className="rounded-2xl border border-warning-border bg-warning-soft px-5 py-4 sm:px-6"
     >
-      <h2 id="warnings-heading" className="text-xs font-semibold uppercase tracking-[0.14em] text-warning">
+      <h2
+        id="warnings-heading"
+        className="text-xs font-semibold uppercase tracking-[0.14em] text-warning"
+      >
         Points de vigilance
       </h2>
       <ul className="mt-2.5 space-y-1.5">

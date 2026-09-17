@@ -1,4 +1,9 @@
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { StorageError, type StorageDriver, type StoredObject } from './types';
 
@@ -61,7 +66,10 @@ export class S3StorageDriver implements StorageDriver {
       const body = result.Body;
       if (!body) throw new StorageError('Objet vide.');
       const bytes = await body.transformToByteArray();
-      return { data: Buffer.from(bytes), contentType: result.ContentType ?? 'application/octet-stream' };
+      return {
+        data: Buffer.from(bytes),
+        contentType: result.ContentType ?? 'application/octet-stream',
+      };
     } catch (cause) {
       if (cause instanceof StorageError) throw cause;
       throw new StorageError("L'image n'a pas pu être récupérée.", { cause });
@@ -70,9 +78,13 @@ export class S3StorageDriver implements StorageDriver {
 
   async createViewUrl(key: string): Promise<string | null> {
     try {
-      return await getSignedUrl(this.client, new GetObjectCommand({ Bucket: this.options.bucket, Key: key }), {
-        expiresIn: this.options.signedUrlTtlSeconds,
-      });
+      return await getSignedUrl(
+        this.client,
+        new GetObjectCommand({ Bucket: this.options.bucket, Key: key }),
+        {
+          expiresIn: this.options.signedUrlTtlSeconds,
+        },
+      );
     } catch (cause) {
       throw new StorageError("L'image n'a pas pu être récupérée.", { cause });
     }

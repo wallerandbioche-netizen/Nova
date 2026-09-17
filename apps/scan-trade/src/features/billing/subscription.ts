@@ -38,7 +38,8 @@ export function isSubscriptionActive(
   return true;
 }
 
-export type SubscriptionDisplayState = 'none' | 'active' | 'canceling' | 'past_due' | 'canceled' | 'paused';
+export type SubscriptionDisplayState =
+  'none' | 'active' | 'canceling' | 'past_due' | 'canceled' | 'paused';
 
 export function subscriptionDisplayState(
   subscription: SubscriptionSnapshot | null | undefined,

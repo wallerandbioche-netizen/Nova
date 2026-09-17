@@ -57,7 +57,11 @@ export class AnalysisService {
         requestedMarket: request.market,
       });
       await this.deps.usage.record(request.userId, 'ANALYSIS_UPLOAD');
-      logger.info('analysis.created', { userId: request.userId, analysisId: analysis.id, bytes: upload.bytes });
+      logger.info('analysis.created', {
+        userId: request.userId,
+        analysisId: analysis.id,
+        bytes: upload.bytes,
+      });
       return analysis;
     } catch (error) {
       // Do not leave an orphan object in the bucket when the row never landed.
@@ -107,7 +111,11 @@ export class AnalysisService {
     if (!existing) throw AppError.notFound("Cette analyse n'existe pas ou a été supprimée.");
 
     if (existing.status === 'PROCESSING') throw new AppError('analysis_in_progress');
-    if (existing.status === 'COMPLETED' || existing.status === 'NO_TRADE' || existing.status === 'INSUFFICIENT_DATA') {
+    if (
+      existing.status === 'COMPLETED' ||
+      existing.status === 'NO_TRADE' ||
+      existing.status === 'INSUFFICIENT_DATA'
+    ) {
       return existing;
     }
 

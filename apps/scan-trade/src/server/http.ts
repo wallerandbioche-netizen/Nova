@@ -25,7 +25,10 @@ export function noContent(): NextResponse {
  * Converts anything thrown inside a handler into a client-safe payload.
  * Stack traces are logged, never returned.
  */
-export function toErrorResponse(error: unknown, context: Record<string, unknown> = {}): NextResponse {
+export function toErrorResponse(
+  error: unknown,
+  context: Record<string, unknown> = {},
+): NextResponse {
   if (error instanceof AppError) {
     if (error.status >= 500) logger.error('http.error', { ...context, code: error.code, error });
     else logger.info('http.client_error', { ...context, code: error.code });
@@ -38,7 +41,9 @@ export function toErrorResponse(error: unknown, context: Record<string, unknown>
       const path = issue.path.join('.') || 'form';
       if (!details[path]) details[path] = issue.message;
     }
-    const appError = AppError.validation('Certaines informations envoyées sont invalides.', { fields: details });
+    const appError = AppError.validation('Certaines informations envoyées sont invalides.', {
+      fields: details,
+    });
     return NextResponse.json(appError.toJSON(), { status: appError.status });
   }
 
@@ -58,7 +63,10 @@ function mapKnownError(error: unknown): AppError | null {
   if (error instanceof StorageError) return new AppError('storage_error');
   if (error instanceof ConfigurationError) {
     // The variable names go to the log, not to the client.
-    logger.error('http.configuration_error', { variables: error.variables, message: error.message });
+    logger.error('http.configuration_error', {
+      variables: error.variables,
+      message: error.message,
+    });
     return new AppError('configuration_error');
   }
   return null;

@@ -56,7 +56,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           fill="none"
           aria-hidden="true"
         >
-          <path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="m4 6 4 4 4-4"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         </svg>
       </div>
       {hint && !error && <p className="text-xs text-content-faint">{hint}</p>}

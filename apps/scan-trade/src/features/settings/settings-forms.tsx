@@ -83,22 +83,26 @@ export function ProfileForm({ name, marketPreference, tradingStyle }: ProfileFor
         <Select
           label="Marché principal"
           value={values.marketPreference}
-          onChange={(event) => setValues((current) => ({ ...current, marketPreference: event.target.value }))}
+          onChange={(event) =>
+            setValues((current) => ({ ...current, marketPreference: event.target.value }))
+          }
           options={MARKET_OPTIONS}
           placeholder="Non précisé"
         />
         <Select
           label="Style de trading"
           value={values.tradingStyle}
-          onChange={(event) => setValues((current) => ({ ...current, tradingStyle: event.target.value }))}
+          onChange={(event) =>
+            setValues((current) => ({ ...current, tradingStyle: event.target.value }))
+          }
           options={STYLE_OPTIONS}
           placeholder="Non précisé"
         />
       </div>
 
       <p className="text-xs leading-relaxed text-content-faint">
-        Ces préférences cadrent la formulation de l&apos;analyse. Elles ne servent jamais à compléter une information
-        absente du graphique.
+        Ces préférences cadrent la formulation de l&apos;analyse. Elles ne servent jamais à
+        compléter une information absente du graphique.
       </p>
 
       <Button type="submit" loading={pending}>
@@ -118,8 +122,8 @@ export function PasswordForm({ hasPassword }: { hasPassword: boolean }) {
   if (!hasPassword) {
     return (
       <p className="text-sm leading-relaxed text-content-muted">
-        Ce compte a été créé via Google et n&apos;a pas de mot de passe. Utilise « mot de passe oublié » depuis la page
-        de connexion pour en définir un.
+        Ce compte a été créé via Google et n&apos;a pas de mot de passe. Utilise « mot de passe
+        oublié » depuis la page de connexion pour en définir un.
       </p>
     );
   }
@@ -207,8 +211,8 @@ export function DeleteAccountSection({ email }: { email: string }) {
   return (
     <>
       <p className="text-sm leading-relaxed text-content-muted">
-        La suppression efface définitivement ton compte, toutes tes analyses et les captures associées, et résilie
-        l&apos;abonnement en cours. Cette action est irréversible.
+        La suppression efface définitivement ton compte, toutes tes analyses et les captures
+        associées, et résilie l&apos;abonnement en cours. Cette action est irréversible.
       </p>
       <Button variant="danger" className="mt-4" onClick={() => setOpen(true)}>
         Supprimer mon compte
@@ -220,8 +224,8 @@ export function DeleteAccountSection({ email }: { email: string }) {
         title="Supprimer définitivement ton compte ?"
         description={
           <span>
-            Saisis <span className="font-medium text-content">{email}</span> pour confirmer. Tes analyses et tes
-            captures seront effacées, et ton abonnement résilié.
+            Saisis <span className="font-medium text-content">{email}</span> pour confirmer. Tes
+            analyses et tes captures seront effacées, et ton abonnement résilié.
           </span>
         }
         footer={

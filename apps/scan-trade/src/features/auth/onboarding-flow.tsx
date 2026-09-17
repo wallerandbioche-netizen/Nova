@@ -62,11 +62,16 @@ export function OnboardingFlow({ firstName }: { firstName: string | null }) {
         {[0, 1, 2].map((index) => (
           <span
             key={index}
-            className={cn('h-1 flex-1 rounded-full transition-colors', index <= step ? 'bg-accent' : 'bg-border')}
+            className={cn(
+              'h-1 flex-1 rounded-full transition-colors',
+              index <= step ? 'bg-accent' : 'bg-border',
+            )}
           />
         ))}
       </div>
-      <p className="mt-3 text-xs uppercase tracking-[0.12em] text-content-faint">Étape {step + 1} sur 3</p>
+      <p className="mt-3 text-xs uppercase tracking-[0.12em] text-content-faint">
+        Étape {step + 1} sur 3
+      </p>
 
       {error && <InlineError message={error} className="mt-4" />}
 
@@ -76,8 +81,8 @@ export function OnboardingFlow({ firstName }: { firstName: string | null }) {
             Bienvenue sur Scan Trade{firstName ? `, ${firstName}` : ''}.
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-content-muted">
-            Tu importes une capture de ton graphique, Scan Trade en lit la structure et te rend un plan lisible :
-            niveaux clés, scénario potentiel, invalidation.
+            Tu importes une capture de ton graphique, Scan Trade en lit la structure et te rend un
+            plan lisible : niveaux clés, scénario potentiel, invalidation.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-content-muted">
             Deux questions rapides, puis tu pourras lancer ton premier scan. Tu peux les passer.
@@ -90,8 +95,12 @@ export function OnboardingFlow({ firstName }: { firstName: string | null }) {
 
       {step === 1 && (
         <div className="mt-6">
-          <h1 className="text-heading font-semibold text-content">Quel type de marché trades-tu ?</h1>
-          <p className="mt-2 text-sm text-content-muted">Principalement. Tu pourras analyser n&apos;importe quel graphique.</p>
+          <h1 className="text-heading font-semibold text-content">
+            Quel type de marché trades-tu ?
+          </h1>
+          <p className="mt-2 text-sm text-content-muted">
+            Principalement. Tu pourras analyser n&apos;importe quel graphique.
+          </p>
 
           <div className="mt-6 grid grid-cols-2 gap-2">
             {MARKETS.map((option) => (
@@ -126,7 +135,9 @@ export function OnboardingFlow({ firstName }: { firstName: string | null }) {
       {step === 2 && (
         <div className="mt-6">
           <h1 className="text-heading font-semibold text-content">Quel est ton style ?</h1>
-          <p className="mt-2 text-sm text-content-muted">Cela aide à cadrer la lecture, sans jamais la déterminer.</p>
+          <p className="mt-2 text-sm text-content-muted">
+            Cela aide à cadrer la lecture, sans jamais la déterminer.
+          </p>
 
           <div className="mt-6 grid grid-cols-2 gap-2">
             {STYLES.map((option) => (

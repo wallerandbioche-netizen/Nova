@@ -5,7 +5,10 @@ import { AppError } from '@/lib/errors';
 import { AnalysisSummary, AnalysisWarnings } from '@/components/analysis/analysis-summary';
 import { ChartAnalysisCard } from '@/components/analysis/chart-analysis-card';
 import { KeyLevelsCard } from '@/components/analysis/key-levels-card';
-import { ReasoningSection, TechnicalAnalysisSection } from '@/components/analysis/technical-analysis';
+import {
+  ReasoningSection,
+  TechnicalAnalysisSection,
+} from '@/components/analysis/technical-analysis';
 import { TradePlanCard } from '@/components/analysis/trade-plan-card';
 import { Card } from '@/components/ui/card';
 import { Disclaimer } from '@/components/layout/disclaimer';
@@ -38,7 +41,10 @@ export default async function AnalysisPage({ params }: { params: Promise<{ id: s
   return (
     <div className="mx-auto w-full max-w-6xl space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link href="/historique" className="text-sm text-content-muted underline-offset-4 hover:text-content">
+        <Link
+          href="/historique"
+          className="text-sm text-content-muted underline-offset-4 hover:text-content"
+        >
           ← Historique
         </Link>
         <DeleteAnalysisButton analysisId={analysis.id} />
@@ -63,7 +69,9 @@ export default async function AnalysisPage({ params }: { params: Promise<{ id: s
 
       {pending && (
         <Card className="px-5 py-5 sm:px-6">
-          <p className="text-sm font-medium text-content">Cette capture n&apos;a pas encore été analysée.</p>
+          <p className="text-sm font-medium text-content">
+            Cette capture n&apos;a pas encore été analysée.
+          </p>
           <p className="mt-1.5 text-sm text-content-muted">Lance le scan pour obtenir le plan.</p>
           <div className="mt-4">
             <RunScanButton analysisId={analysis.id} label="Lancer le Scan" />
@@ -103,12 +111,16 @@ export default async function AnalysisPage({ params }: { params: Promise<{ id: s
               <div className="flex justify-between gap-4">
                 <dt className="text-content-faint">Contexte fourni</dt>
                 <dd className="text-right text-content-muted">
-                  {[analysis.requestedAsset, analysis.requestedTimeframe].filter(Boolean).join(' · ') || 'Aucun'}
+                  {[analysis.requestedAsset, analysis.requestedTimeframe]
+                    .filter(Boolean)
+                    .join(' · ') || 'Aucun'}
                 </dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-content-faint">Durée du scan</dt>
-                <dd className="numeric text-content-muted">{formatDuration(analysis.durationMs)}</dd>
+                <dd className="numeric text-content-muted">
+                  {formatDuration(analysis.durationMs)}
+                </dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-content-faint">Référence</dt>

@@ -16,7 +16,8 @@ export async function register(): Promise<void> {
   if (!process.env.DATABASE_URL) missing.push('DATABASE_URL');
   if (!process.env.AUTH_SECRET) missing.push('AUTH_SECRET');
   if (!isAIConfigured()) missing.push('AI_API_KEY');
-  if (!isStripeConfigured()) missing.push('STRIPE_SECRET_KEY / STRIPE_PRICE_ID / STRIPE_WEBHOOK_SECRET');
+  if (!isStripeConfigured())
+    missing.push('STRIPE_SECRET_KEY / STRIPE_PRICE_ID / STRIPE_WEBHOOK_SECRET');
 
   let storageDriver = 'unknown';
   try {

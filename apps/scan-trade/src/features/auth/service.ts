@@ -35,8 +35,13 @@ export const changePasswordSchema = z.object({
   newPassword: passwordSchema,
 });
 
-export async function registerUser(input: z.infer<typeof registerSchema>): Promise<{ id: string; email: string }> {
-  const existing = await prisma.user.findUnique({ where: { email: input.email }, select: { id: true } });
+export async function registerUser(
+  input: z.infer<typeof registerSchema>,
+): Promise<{ id: string; email: string }> {
+  const existing = await prisma.user.findUnique({
+    where: { email: input.email },
+    select: { id: true },
+  });
   if (existing) {
     // Registration is the one place where revealing that an address is taken is
     // unavoidable — the alternative is an account the user cannot access.
@@ -79,7 +84,10 @@ export async function completeOnboarding(
  * enumeration oracle on this endpoint would leak the customer list.
  */
 export async function requestPasswordReset(email: string): Promise<void> {
-  const user = await prisma.user.findUnique({ where: { email }, select: { id: true, email: true } });
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, email: true },
+  });
   if (!user) {
     logger.info('auth.password_reset.unknown_email');
     return;
@@ -137,7 +145,10 @@ export async function changePassword(
   userId: string,
   input: z.infer<typeof changePasswordSchema>,
 ): Promise<void> {
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { passwordHash: true } });
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { passwordHash: true },
+  });
   if (!user) throw AppError.notFound();
 
   if (!user.passwordHash) {

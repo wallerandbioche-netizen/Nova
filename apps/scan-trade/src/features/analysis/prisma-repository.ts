@@ -56,7 +56,10 @@ export class PrismaAnalysisRepository implements AnalysisRepository {
   }
 
   async findOwned(id: string, userId: string): Promise<AnalysisDetail | null> {
-    const row = await this.db.analysis.findFirst({ where: { id, userId }, include: DETAIL_INCLUDE });
+    const row = await this.db.analysis.findFirst({
+      where: { id, userId },
+      include: DETAIL_INCLUDE,
+    });
     return row ? toDetail(row) : null;
   }
 
@@ -68,7 +71,10 @@ export class PrismaAnalysisRepository implements AnalysisRepository {
   }
 
   async list(userId: string, options: ListOptions): Promise<ListResult> {
-    const where: Prisma.AnalysisWhereInput = { userId, ...(options.status ? { status: options.status } : {}) };
+    const where: Prisma.AnalysisWhereInput = {
+      userId,
+      ...(options.status ? { status: options.status } : {}),
+    };
 
     const [rows, total] = await Promise.all([
       this.db.analysis.findMany({
@@ -192,7 +198,12 @@ export class PrismaAnalysisRepository implements AnalysisRepository {
     return toDetail(row);
   }
 
-  async markFailed(id: string, userId: string, failureCode: string, durationMs: number | null): Promise<void> {
+  async markFailed(
+    id: string,
+    userId: string,
+    failureCode: string,
+    durationMs: number | null,
+  ): Promise<void> {
     await this.db.analysis.updateMany({
       where: { id, userId },
       data: { status: 'FAILED', failureCode, durationMs, completedAt: new Date() },

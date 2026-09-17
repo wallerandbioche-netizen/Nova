@@ -71,7 +71,9 @@ export const authConfig: NextAuthConfig = {
   // collect route metadata, and a build must not require production secrets.
   // A production boot without AUTH_SECRET is caught by `instrumentation.ts`,
   // and Auth.js itself refuses to sign a session without one.
-  secret: process.env.AUTH_SECRET ?? (process.env.NODE_ENV === 'production' ? undefined : 'development-only-secret'),
+  secret:
+    process.env.AUTH_SECRET ??
+    (process.env.NODE_ENV === 'production' ? undefined : 'development-only-secret'),
   session: { strategy: 'jwt', maxAge: 30 * 24 * 60 * 60 },
   trustHost: true,
   pages: {

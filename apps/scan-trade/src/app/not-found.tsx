@@ -13,7 +13,9 @@ export default function NotFound() {
     <main className="grid-lines flex min-h-dvh flex-col items-center justify-center px-4 text-center">
       <Logo />
       <p className="numeric mt-10 text-display-lg font-semibold tracking-tight text-content">404</p>
-      <h1 className="mt-3 text-heading font-semibold text-content">Cette page n&apos;existe pas.</h1>
+      <h1 className="mt-3 text-heading font-semibold text-content">
+        Cette page n&apos;existe pas.
+      </h1>
       <p className="mt-2 max-w-sm text-sm text-content-muted">
         Le lien est peut-être obsolète, ou l&apos;analyse que tu cherches a été supprimée.
       </p>

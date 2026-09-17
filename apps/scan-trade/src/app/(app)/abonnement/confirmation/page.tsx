@@ -45,7 +45,13 @@ export default async function CheckoutConfirmationPage({
               className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-accent-border bg-accent-soft text-accent"
             >
               <svg viewBox="0 0 20 20" className="h-6 w-6" fill="none">
-                <path d="m5 10.5 3.5 3.5L15 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                <path
+                  d="m5 10.5 3.5 3.5L15 7"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             </span>
             <h1 className="mt-6 text-heading font-semibold text-content">Abonnement actif</h1>
@@ -63,10 +69,12 @@ export default async function CheckoutConfirmationPage({
           </>
         ) : (
           <>
-            <h1 className="text-heading font-semibold text-content">Paiement en cours de confirmation</h1>
+            <h1 className="text-heading font-semibold text-content">
+              Paiement en cours de confirmation
+            </h1>
             <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-content-muted">
-              Stripe n&apos;a pas encore confirmé le paiement. Cela prend généralement quelques secondes : recharge
-              cette page, ou consulte la page Abonnement dans un instant.
+              Stripe n&apos;a pas encore confirmé le paiement. Cela prend généralement quelques
+              secondes : recharge cette page, ou consulte la page Abonnement dans un instant.
             </p>
             <div className="mt-8">
               <ButtonLink href="/abonnement" variant="secondary" size="lg">

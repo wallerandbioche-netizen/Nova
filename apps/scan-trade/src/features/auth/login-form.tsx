@@ -19,7 +19,8 @@ export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
   // Where to land afterwards. Only same-origin paths are honoured, so a
   // crafted `?next=` cannot bounce a signed-in user off to another site.
   const rawNext = searchParams.get('next');
-  const next = rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard';
+  const next =
+    rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/dashboard';
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -74,7 +75,10 @@ export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
             onChange={(event) => setPassword(event.target.value)}
           />
           <div className="text-right">
-            <Link href="/mot-de-passe-oublie" className="text-xs text-content-muted underline-offset-4 hover:text-content">
+            <Link
+              href="/mot-de-passe-oublie"
+              className="text-xs text-content-muted underline-offset-4 hover:text-content"
+            >
               Mot de passe oublié ?
             </Link>
           </div>

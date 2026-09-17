@@ -18,13 +18,18 @@ export function TechnicalAnalysisSection({ items }: { items: TechnicalObservatio
 
   return (
     <section aria-labelledby="technical-heading" className="space-y-3">
-      <h2 id="technical-heading" className="text-sm font-semibold uppercase tracking-[0.14em] text-content-muted">
+      <h2
+        id="technical-heading"
+        className="text-sm font-semibold uppercase tracking-[0.14em] text-content-muted"
+      >
         Technical Analysis
       </h2>
       <div className="grid gap-3 sm:grid-cols-2">
         {items.map((item, index) => (
           <Card key={`${item.category}-${index}`} className="p-5">
-            <p className="text-xs uppercase tracking-[0.12em] text-content-faint">{AREA_LABEL[item.category]}</p>
+            <p className="text-xs uppercase tracking-[0.12em] text-content-faint">
+              {AREA_LABEL[item.category]}
+            </p>
             <p className="mt-2 text-sm font-medium text-content">{item.title}</p>
             <p className="mt-1.5 text-sm leading-relaxed text-content-muted">{item.detail}</p>
           </Card>
@@ -73,7 +78,10 @@ export function ReasoningSection({ items }: { items: ReasoningView[] }) {
             <ul className="mt-2 space-y-1.5">
               {group.entries.map((entry, index) => (
                 <li key={index} className="flex gap-2.5 text-sm leading-relaxed text-content-muted">
-                  <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-content-faint" />
+                  <span
+                    aria-hidden="true"
+                    className="mt-2 h-1 w-1 shrink-0 rounded-full bg-content-faint"
+                  />
                   <span>{entry.content}</span>
                 </li>
               ))}

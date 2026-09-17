@@ -12,11 +12,20 @@ export interface ErrorStateProps {
   className?: string;
 }
 
-export function ErrorState({ title = 'Une erreur est survenue', message, onRetry, action, className }: ErrorStateProps) {
+export function ErrorState({
+  title = 'Une erreur est survenue',
+  message,
+  onRetry,
+  action,
+  className,
+}: ErrorStateProps) {
   return (
     <div
       role="alert"
-      className={cn('rounded-2xl border border-danger-border bg-danger-soft px-5 py-5 sm:px-6', className)}
+      className={cn(
+        'rounded-2xl border border-danger-border bg-danger-soft px-5 py-5 sm:px-6',
+        className,
+      )}
     >
       <p className="text-sm font-semibold text-danger">{title}</p>
       <p className="mt-1.5 text-sm text-content-muted">{message}</p>
@@ -39,7 +48,10 @@ export function InlineError({ message, className }: { message: string; className
   return (
     <p
       role="alert"
-      className={cn('rounded-lg border border-danger-border bg-danger-soft px-3 py-2 text-sm text-danger', className)}
+      className={cn(
+        'rounded-lg border border-danger-border bg-danger-soft px-3 py-2 text-sm text-danger',
+        className,
+      )}
     >
       {message}
     </p>
@@ -50,7 +62,10 @@ export function InlineSuccess({ message, className }: { message: string; classNa
   return (
     <p
       role="status"
-      className={cn('rounded-lg border border-accent-border bg-accent-soft px-3 py-2 text-sm text-accent', className)}
+      className={cn(
+        'rounded-lg border border-accent-border bg-accent-soft px-3 py-2 text-sm text-accent',
+        className,
+      )}
     >
       {message}
     </p>

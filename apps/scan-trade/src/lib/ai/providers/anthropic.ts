@@ -1,7 +1,12 @@
 import { getAIConfig } from '@/lib/env';
 import { AI_RESPONSE_JSON_SCHEMA } from '../schema';
 import { SYSTEM_PROMPT, buildHintsBlock } from '../prompt';
-import { AIProviderError, type AIAnalysisProvider, type AnalyzeChartInput, type ProviderResult } from '../types';
+import {
+  AIProviderError,
+  type AIAnalysisProvider,
+  type AnalyzeChartInput,
+  type ProviderResult,
+} from '../types';
 
 const TOOL_NAME = 'submit_chart_analysis';
 
@@ -78,7 +83,10 @@ export class AnthropicVisionProvider implements AIAnalysisProvider {
       });
     } catch (error) {
       if (signal.aborted || (error instanceof Error && error.name === 'AbortError')) {
-        throw new AIProviderError('timeout', "Le fournisseur d'analyse n'a pas répondu dans le délai imparti.");
+        throw new AIProviderError(
+          'timeout',
+          "Le fournisseur d'analyse n'a pas répondu dans le délai imparti.",
+        );
       }
       throw new AIProviderError('unavailable', "Le fournisseur d'analyse est injoignable.");
     }
@@ -87,7 +95,11 @@ export class AnthropicVisionProvider implements AIAnalysisProvider {
       const detail = await safeErrorDetail(response);
       // 4xx other than 429 means we sent something the provider rejected.
       const kind = response.status === 408 || response.status === 504 ? 'timeout' : 'unavailable';
-      throw new AIProviderError(kind, `Fournisseur d'analyse indisponible (${response.status}): ${detail}`, response.status);
+      throw new AIProviderError(
+        kind,
+        `Fournisseur d'analyse indisponible (${response.status}): ${detail}`,
+        response.status,
+      );
     }
 
     const payload = (await response.json()) as AnthropicResponse;
@@ -120,7 +132,10 @@ function extractToolInput(payload: AnthropicResponse): unknown {
   const recovered = extractJsonObject(text);
   if (recovered != null) return recovered;
 
-  throw new AIProviderError('invalid_response', "Le fournisseur n'a pas renvoyé d'analyse structurée.");
+  throw new AIProviderError(
+    'invalid_response',
+    "Le fournisseur n'a pas renvoyé d'analyse structurée.",
+  );
 }
 
 /** Pulls the outermost balanced JSON object out of a text blob. */

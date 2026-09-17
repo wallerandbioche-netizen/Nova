@@ -19,7 +19,9 @@ const hintSchema = z.object({
 const listQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(50).default(20),
   cursor: z.string().min(1).max(50).optional(),
-  status: z.enum(['PENDING', 'PROCESSING', 'COMPLETED', 'NO_TRADE', 'INSUFFICIENT_DATA', 'FAILED']).optional(),
+  status: z
+    .enum(['PENDING', 'PROCESSING', 'COMPLETED', 'NO_TRADE', 'INSUFFICIENT_DATA', 'FAILED'])
+    .optional(),
 });
 
 /** POST /api/analyses — upload a chart screenshot and open an analysis. */

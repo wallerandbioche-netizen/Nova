@@ -69,7 +69,11 @@ class ResendMailer implements Mailer {
 
     if (!response.ok) {
       const detail = await response.text().catch(() => '');
-      logger.error('mail.send_failed', { template: 'password_reset', status: response.status, detail: detail.slice(0, 200) });
+      logger.error('mail.send_failed', {
+        template: 'password_reset',
+        status: response.status,
+        detail: detail.slice(0, 200),
+      });
       throw new Error(`Resend a refusé l'envoi (${response.status}).`);
     }
   }

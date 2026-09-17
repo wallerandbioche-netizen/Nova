@@ -2,11 +2,21 @@ import { logger } from '@/lib/logger';
 import { getAIConfig } from '@/lib/env';
 import { AnthropicVisionProvider } from './providers/anthropic';
 import { AnalysisValidationError, validateAnalysisResponse } from './validate';
-import { AIProviderError, type AIAnalysisProvider, type AnalyzeChartInput, type AnalyzeChartResult } from './types';
+import {
+  AIProviderError,
+  type AIAnalysisProvider,
+  type AnalyzeChartInput,
+  type AnalyzeChartResult,
+} from './types';
 
 export { AnalysisValidationError, validateAnalysisResponse } from './validate';
 export { AIProviderError } from './types';
-export type { AIAnalysisProvider, AnalyzeChartInput, AnalyzeChartResult, ChartImage } from './types';
+export type {
+  AIAnalysisProvider,
+  AnalyzeChartInput,
+  AnalyzeChartResult,
+  ChartImage,
+} from './types';
 
 /**
  * `AIAnalysisService` is the single entry point the rest of the app uses to
@@ -50,7 +60,11 @@ export class AIAnalysisService {
       if (error instanceof AnalysisValidationError) {
         logger.warn('ai.analysis.rejected', { durationMs, reasons: error.reasons });
       } else if (error instanceof AIProviderError) {
-        logger.error('ai.analysis.provider_error', { durationMs, kind: error.kind, status: error.status });
+        logger.error('ai.analysis.provider_error', {
+          durationMs,
+          kind: error.kind,
+          status: error.status,
+        });
       } else {
         logger.error('ai.analysis.failed', { durationMs, error });
       }

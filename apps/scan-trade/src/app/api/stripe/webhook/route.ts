@@ -21,7 +21,10 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request): Promise<NextResponse> {
   const signature = request.headers.get('stripe-signature');
   if (!signature) {
-    return NextResponse.json({ error: { code: 'validation_error', message: 'Signature absente.' } }, { status: 400 });
+    return NextResponse.json(
+      { error: { code: 'validation_error', message: 'Signature absente.' } },
+      { status: 400 },
+    );
   }
 
   let event: Stripe.Event;

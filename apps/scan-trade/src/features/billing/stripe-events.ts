@@ -84,7 +84,9 @@ function toDate(seconds: number | null | undefined): Date | null {
  * Reads period boundaries from either the subscription (older API versions) or
  * its first item (2025+ versions), whichever is present.
  */
-export function normalizeStripeSubscription(subscription: StripeSubscriptionLike): NormalizedSubscription | null {
+export function normalizeStripeSubscription(
+  subscription: StripeSubscriptionLike,
+): NormalizedSubscription | null {
   const customerId = idOf(subscription.customer);
   if (!customerId) return null;
 
@@ -95,7 +97,9 @@ export function normalizeStripeSubscription(subscription: StripeSubscriptionLike
     stripeCustomerId: customerId,
     stripePriceId: firstItem?.price?.id ?? null,
     status: mapStripeStatus(subscription.status),
-    currentPeriodStart: toDate(subscription.current_period_start ?? firstItem?.current_period_start),
+    currentPeriodStart: toDate(
+      subscription.current_period_start ?? firstItem?.current_period_start,
+    ),
     currentPeriodEnd: toDate(subscription.current_period_end ?? firstItem?.current_period_end),
     cancelAtPeriodEnd: Boolean(subscription.cancel_at_period_end),
   };
@@ -135,7 +139,8 @@ async function route(
 ): Promise<WebhookOutcome> {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as StripeCheckoutSessionLike;
-    if (session.mode && session.mode !== 'subscription') return { handled: false, reason: 'ignored' };
+    if (session.mode && session.mode !== 'subscription')
+      return { handled: false, reason: 'ignored' };
 
     const subscriptionId = idOf(session.subscription);
     if (!subscriptionId) return { handled: false, reason: 'ignored' };
@@ -159,7 +164,11 @@ async function route(
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object as StripeSubscriptionLike;
     const normalized = normalizeStripeSubscription(subscription);
-    const userId = await resolveUserId(deps.store, normalized?.stripeCustomerId ?? null, subscription.id);
+    const userId = await resolveUserId(
+      deps.store,
+      normalized?.stripeCustomerId ?? null,
+      subscription.id,
+    );
 
     if (userId && normalized) {
       await deps.store.upsertSubscription(userId, { ...normalized, status: 'CANCELED' });

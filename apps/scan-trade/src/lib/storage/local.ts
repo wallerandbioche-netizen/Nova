@@ -41,7 +41,9 @@ export class LocalStorageDriver implements StorageDriver {
       const data = await readFile(target);
       let contentType = 'application/octet-stream';
       try {
-        const meta = JSON.parse(await readFile(`${target}.meta`, 'utf8')) as { contentType?: string };
+        const meta = JSON.parse(await readFile(`${target}.meta`, 'utf8')) as {
+          contentType?: string;
+        };
         if (meta.contentType) contentType = meta.contentType;
       } catch {
         // Metadata is a convenience; the caller falls back to the stored MIME type.

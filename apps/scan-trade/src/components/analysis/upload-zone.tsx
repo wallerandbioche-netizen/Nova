@@ -34,7 +34,9 @@ export function UploadZone({ onSelect, maxBytes, disabled = false, error }: Uplo
         return;
       }
       if (file.size > maxBytes) {
-        setLocalError(`Cette image fait ${formatBytes(file.size)}. La limite est de ${formatBytes(maxBytes)}.`);
+        setLocalError(
+          `Cette image fait ${formatBytes(file.size)}. La limite est de ${formatBytes(maxBytes)}.`,
+        );
         return;
       }
       setLocalError(null);

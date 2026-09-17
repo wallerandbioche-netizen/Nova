@@ -45,7 +45,14 @@ export const aiReasoningCategorySchema = z.enum([
   'limitation',
 ]);
 
-export const aiMarketSchema = z.enum(['crypto', 'forex', 'indices', 'stocks', 'commodities', 'other']);
+export const aiMarketSchema = z.enum([
+  'crypto',
+  'forex',
+  'indices',
+  'stocks',
+  'commodities',
+  'other',
+]);
 
 export const aiAnalysisResponseSchema = z.object({
   status: z.enum(['analysis', 'no_trade', 'insufficient_data']),
@@ -55,10 +62,7 @@ export const aiAnalysisResponseSchema = z.object({
   chart_type: nullableText,
   approximate_price: nullableNumber,
   market_bias: z.enum(['long', 'short', 'neutral']).nullable().catch(null),
-  entry: z
-    .object({ min: nullableNumber, max: nullableNumber })
-    .nullable()
-    .catch(null),
+  entry: z.object({ min: nullableNumber, max: nullableNumber }).nullable().catch(null),
   stop_loss: nullableNumber,
   take_profit_1: nullableNumber,
   take_profit_2: nullableNumber,
@@ -133,11 +137,26 @@ export const AI_RESPONSE_JSON_SCHEMA = {
       description:
         '"analysis" only when a justified scenario exists. "no_trade" when the chart is readable but offers no clear setup. "insufficient_data" when the screenshot cannot be read reliably.',
     },
-    asset: { type: ['string', 'null'], description: 'Ticker exactly as written on the chart, else null.' },
-    timeframe: { type: ['string', 'null'], description: 'Timeframe exactly as written on the chart, else null.' },
-    market: { type: ['string', 'null'], enum: ['crypto', 'forex', 'indices', 'stocks', 'commodities', 'other', null] },
-    chart_type: { type: ['string', 'null'], description: 'e.g. "candlestick", "line", "heikin ashi". Null if unclear.' },
-    approximate_price: { type: ['number', 'null'], description: 'Last price if legible on the axis or the price tag, else null.' },
+    asset: {
+      type: ['string', 'null'],
+      description: 'Ticker exactly as written on the chart, else null.',
+    },
+    timeframe: {
+      type: ['string', 'null'],
+      description: 'Timeframe exactly as written on the chart, else null.',
+    },
+    market: {
+      type: ['string', 'null'],
+      enum: ['crypto', 'forex', 'indices', 'stocks', 'commodities', 'other', null],
+    },
+    chart_type: {
+      type: ['string', 'null'],
+      description: 'e.g. "candlestick", "line", "heikin ashi". Null if unclear.',
+    },
+    approximate_price: {
+      type: ['number', 'null'],
+      description: 'Last price if legible on the axis or the price tag, else null.',
+    },
     market_bias: { type: ['string', 'null'], enum: ['long', 'short', 'neutral', null] },
     entry: {
       type: ['object', 'null'],
@@ -148,7 +167,10 @@ export const AI_RESPONSE_JSON_SCHEMA = {
     stop_loss: { type: ['number', 'null'] },
     take_profit_1: { type: ['number', 'null'] },
     take_profit_2: { type: ['number', 'null'] },
-    risk_reward: { type: ['number', 'null'], description: 'Reward divided by risk. The server recomputes it anyway.' },
+    risk_reward: {
+      type: ['number', 'null'],
+      description: 'Reward divided by risk. The server recomputes it anyway.',
+    },
     confidence: { type: ['string', 'null'], enum: ['low', 'medium', 'high', null] },
     key_levels: {
       type: 'array',
@@ -172,7 +194,10 @@ export const AI_RESPONSE_JSON_SCHEMA = {
             ],
           },
           price: { type: ['number', 'null'] },
-          price_max: { type: ['number', 'null'], description: 'Upper bound when the level is a zone.' },
+          price_max: {
+            type: ['number', 'null'],
+            description: 'Upper bound when the level is a zone.',
+          },
           label: { type: ['string', 'null'] },
         },
       },
@@ -187,7 +212,15 @@ export const AI_RESPONSE_JSON_SCHEMA = {
         properties: {
           category: {
             type: 'string',
-            enum: ['trend', 'market_structure', 'support_resistance', 'momentum', 'indicators', 'volume', 'other'],
+            enum: [
+              'trend',
+              'market_structure',
+              'support_resistance',
+              'momentum',
+              'indicators',
+              'volume',
+              'other',
+            ],
           },
           title: { type: 'string' },
           detail: { type: 'string' },
@@ -204,13 +237,23 @@ export const AI_RESPONSE_JSON_SCHEMA = {
         properties: {
           category: {
             type: 'string',
-            enum: ['observation', 'interpretation', 'confirmation', 'invalidation', 'confidence', 'limitation'],
+            enum: [
+              'observation',
+              'interpretation',
+              'confirmation',
+              'invalidation',
+              'confidence',
+              'limitation',
+            ],
           },
           content: { type: 'string' },
         },
       },
     },
-    summary: { type: 'string', description: 'Two or three sentences, French, no promise of outcome.' },
+    summary: {
+      type: 'string',
+      description: 'Two or three sentences, French, no promise of outcome.',
+    },
     invalidation: { type: ['string', 'null'] },
     warnings: { type: 'array', maxItems: 12, items: { type: 'string' } },
   },

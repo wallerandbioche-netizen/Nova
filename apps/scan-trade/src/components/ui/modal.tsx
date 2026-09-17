@@ -21,7 +21,15 @@ export interface ModalProps {
  * Focus moves into the panel on open and returns to the trigger on close;
  * Tab is kept inside the panel; Escape and the backdrop both dismiss.
  */
-export function Modal({ open, onClose, title, description, children, footer, size = 'sm' }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  description,
+  children,
+  footer,
+  size = 'sm',
+}: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
 

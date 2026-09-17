@@ -1,6 +1,14 @@
 'use client';
 
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { cn } from '@/utils/cn';
 
 type ToastTone = 'success' | 'error' | 'info';
@@ -76,7 +84,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               TONE_STYLES[toast.tone],
             )}
           >
-            <span className={cn('mt-1.5 h-2 w-2 shrink-0 rounded-full', TONE_DOT[toast.tone])} aria-hidden="true" />
+            <span
+              className={cn('mt-1.5 h-2 w-2 shrink-0 rounded-full', TONE_DOT[toast.tone])}
+              aria-hidden="true"
+            />
             <p className="flex-1 text-sm">{toast.message}</p>
             <button
               type="button"
@@ -85,7 +96,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               aria-label="Fermer la notification"
             >
               <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" aria-hidden="true">
-                <path d="m4 4 8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path
+                  d="m4 4 8 8M12 4l-8 8"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
               </svg>
             </button>
           </div>

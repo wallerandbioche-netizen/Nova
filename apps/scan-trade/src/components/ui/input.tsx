@@ -1,6 +1,12 @@
 'use client';
 
-import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react';
+import {
+  forwardRef,
+  useId,
+  type InputHTMLAttributes,
+  type ReactNode,
+  type TextareaHTMLAttributes,
+} from 'react';
 import { cn } from '@/utils/cn';
 
 const FIELD =
@@ -19,7 +25,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 ) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
-  const describedBy = [hint ? `${inputId}-hint` : null, error ? `${inputId}-error` : null].filter(Boolean).join(' ');
+  const describedBy = [hint ? `${inputId}-hint` : null, error ? `${inputId}-error` : null]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div className="space-y-1.5">
@@ -34,7 +42,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         className={cn(
           FIELD,
           'h-11',
-          error ? 'border-danger focus:border-danger' : 'border-border-strong focus:border-accent/60',
+          error
+            ? 'border-danger focus:border-danger'
+            : 'border-border-strong focus:border-accent/60',
           className,
         )}
         aria-invalid={error ? true : undefined}

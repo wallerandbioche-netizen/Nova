@@ -18,8 +18,8 @@ export function Footer() {
           <div className="space-y-3">
             <Logo />
             <p className="max-w-xs text-sm text-content-muted">
-              Transforme une capture de graphique en analyse structurée : niveaux clés, scénario potentiel
-              et zones de risque.
+              Transforme une capture de graphique en analyse structurée : niveaux clés, scénario
+              potentiel et zones de risque.
             </p>
           </div>
 

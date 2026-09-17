@@ -3,7 +3,12 @@ import { getCoreEnv, getStripeConfig } from '@/lib/env';
 import { AppError } from '@/lib/errors';
 import { logger } from '@/lib/logger';
 import { getStripe } from '@/lib/stripe/client';
-import type { BillingStore, NormalizedSubscription, StripeGateway, StripeSubscriptionLike } from './stripe-events';
+import type {
+  BillingStore,
+  NormalizedSubscription,
+  StripeGateway,
+  StripeSubscriptionLike,
+} from './stripe-events';
 
 /** Public price of the single MVP plan, kept in one place for the UI. */
 export const PRO_PLAN = {
@@ -67,7 +72,10 @@ export const prismaBillingStore: BillingStore = {
   },
 
   async isEventProcessed(eventId: string) {
-    const row = await prisma.processedStripeEvent.findUnique({ where: { id: eventId }, select: { id: true } });
+    const row = await prisma.processedStripeEvent.findUnique({
+      where: { id: eventId },
+      select: { id: true },
+    });
     return row != null;
   },
 
@@ -93,7 +101,11 @@ export const stripeGateway: StripeGateway = {
  * The user id is written into customer metadata so a webhook that arrives
  * before our own row is committed can still be attributed.
  */
-export async function ensureStripeCustomer(user: { id: string; email: string; name: string | null }): Promise<string> {
+export async function ensureStripeCustomer(user: {
+  id: string;
+  email: string;
+  name: string | null;
+}): Promise<string> {
   const existing = await prisma.subscription.findUnique({
     where: { userId: user.id },
     select: { stripeCustomerId: true },
@@ -172,7 +184,9 @@ export async function createPortalSession(userId: string): Promise<{ url: string
  * confirmation page before the webhook is delivered.
  */
 export async function confirmCheckoutSession(userId: string, sessionId: string): Promise<boolean> {
-  const session = await getStripe().checkout.sessions.retrieve(sessionId, { expand: ['subscription'] });
+  const session = await getStripe().checkout.sessions.retrieve(sessionId, {
+    expand: ['subscription'],
+  });
 
   const ownerId = session.client_reference_id ?? session.metadata?.userId ?? null;
   if (ownerId && ownerId !== userId) {

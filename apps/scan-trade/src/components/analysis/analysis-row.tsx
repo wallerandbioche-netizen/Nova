@@ -4,7 +4,13 @@ import { StatusBadge } from '@/components/ui/status-badge';
 import { formatDateTime, formatPrice, formatRiskReward, orUnknown } from '@/utils/format';
 
 /** One history row: thumbnail, identity, and the four numbers that matter (§15). */
-export function AnalysisRow({ item, thumbnail = true }: { item: AnalysisListItem; thumbnail?: boolean }) {
+export function AnalysisRow({
+  item,
+  thumbnail = true,
+}: {
+  item: AnalysisListItem;
+  thumbnail?: boolean;
+}) {
   const hasPlan = item.status === 'COMPLETED';
 
   return (
@@ -14,7 +20,6 @@ export function AnalysisRow({ item, thumbnail = true }: { item: AnalysisListItem
     >
       {thumbnail && (
         <span className="hidden h-14 w-24 shrink-0 overflow-hidden rounded-lg border border-border bg-black/40 sm:block">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`/api/analyses/${item.id}/image`}
             alt=""
@@ -40,7 +45,9 @@ export function AnalysisRow({ item, thumbnail = true }: { item: AnalysisListItem
             </span>
           )}
         </span>
-        <span className="mt-1 block text-xs text-content-faint">{formatDateTime(item.createdAt)}</span>
+        <span className="mt-1 block text-xs text-content-faint">
+          {formatDateTime(item.createdAt)}
+        </span>
       </span>
 
       <span className="hidden shrink-0 items-baseline gap-6 md:flex">
@@ -50,19 +57,43 @@ export function AnalysisRow({ item, thumbnail = true }: { item: AnalysisListItem
         <Metric label="R:R" value={hasPlan ? formatRiskReward(item.riskReward) : '—'} />
       </span>
 
-      <svg viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-content-faint" fill="none" aria-hidden="true">
-        <path d="m6 3.5 5 4.5-5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <svg
+        viewBox="0 0 16 16"
+        className="h-4 w-4 shrink-0 text-content-faint"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="m6 3.5 5 4.5-5 4.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     </Link>
   );
 }
 
-function Metric({ label, value, tone }: { label: string; value: string; tone?: 'accent' | 'danger' }) {
-  const color = tone === 'accent' ? 'text-accent' : tone === 'danger' ? 'text-danger' : 'text-content';
+function Metric({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: 'accent' | 'danger';
+}) {
+  const color =
+    tone === 'accent' ? 'text-accent' : tone === 'danger' ? 'text-danger' : 'text-content';
   return (
     <span className="block w-20 text-right">
-      <span className="block text-[10px] uppercase tracking-[0.1em] text-content-faint">{label}</span>
-      <span className={`numeric mt-0.5 block truncate text-sm font-medium ${value === '—' ? 'text-content-faint' : color}`}>
+      <span className="block text-[10px] uppercase tracking-[0.1em] text-content-faint">
+        {label}
+      </span>
+      <span
+        className={`numeric mt-0.5 block truncate text-sm font-medium ${value === '—' ? 'text-content-faint' : color}`}
+      >
         {value}
       </span>
     </span>

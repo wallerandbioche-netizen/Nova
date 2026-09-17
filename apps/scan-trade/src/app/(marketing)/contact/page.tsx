@@ -9,16 +9,29 @@ export const metadata: Metadata = {
 };
 
 const CHANNELS = [
-  { label: 'Support produit', email: 'support@scan-trade.app', detail: 'Bug, analyse inattendue, question d’usage.' },
-  { label: 'Facturation', email: 'billing@scan-trade.app', detail: 'Abonnement, facture, résiliation.' },
-  { label: 'Confidentialité', email: 'privacy@scan-trade.app', detail: 'Accès, rectification ou suppression de données.' },
+  {
+    label: 'Support produit',
+    email: 'support@scan-trade.app',
+    detail: 'Bug, analyse inattendue, question d’usage.',
+  },
+  {
+    label: 'Facturation',
+    email: 'billing@scan-trade.app',
+    detail: 'Abonnement, facture, résiliation.',
+  },
+  {
+    label: 'Confidentialité',
+    email: 'privacy@scan-trade.app',
+    detail: 'Accès, rectification ou suppression de données.',
+  },
 ] as const;
 
 export default function ContactPage() {
   return (
     <LegalPage title="Contact" updatedAt="16 septembre 2026">
       <p className="text-sm leading-relaxed text-content-muted">
-        Écris-nous à l&apos;adresse correspondant à ta demande. Nous répondons sous deux jours ouvrés.
+        Écris-nous à l&apos;adresse correspondant à ta demande. Nous répondons sous deux jours
+        ouvrés.
       </p>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -37,8 +50,8 @@ export default function ContactPage() {
       </div>
 
       <p className="mt-8 text-xs leading-relaxed text-content-faint">
-        Ces adresses sont des exemples de contact pour ce déploiement : remplace-les par les adresses réelles de ton
-        organisation avant la mise en production.
+        Ces adresses sont des exemples de contact pour ce déploiement : remplace-les par les
+        adresses réelles de ton organisation avant la mise en production.
       </p>
     </LegalPage>
   );

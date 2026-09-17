@@ -51,7 +51,9 @@ export function RegisterForm() {
   return (
     <div>
       <h1 className="text-heading font-semibold text-content">Créer un compte</h1>
-      <p className="mt-2 text-sm text-content-muted">Deux minutes, puis tu peux scanner ton premier chart.</p>
+      <p className="mt-2 text-sm text-content-muted">
+        Deux minutes, puis tu peux scanner ton premier chart.
+      </p>
 
       <form onSubmit={onSubmit} className="mt-8 space-y-4" noValidate>
         {error && <InlineError message={error} />}
@@ -101,7 +103,10 @@ export function RegisterForm() {
           conditions d&apos;utilisation
         </Link>{' '}
         et la{' '}
-        <Link href="/confidentialite" className="underline underline-offset-4 hover:text-content-muted">
+        <Link
+          href="/confidentialite"
+          className="underline underline-offset-4 hover:text-content-muted"
+        >
           politique de confidentialité
         </Link>
         .

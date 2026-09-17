@@ -21,7 +21,9 @@ export const POST = route('account.delete', async (request: Request) => {
   const { confirmation } = bodySchema.parse(body);
 
   if (confirmation !== viewer.email.toLowerCase()) {
-    throw AppError.validation('Saisis exactement ton adresse e-mail pour confirmer la suppression.');
+    throw AppError.validation(
+      'Saisis exactement ton adresse e-mail pour confirmer la suppression.',
+    );
   }
 
   await deleteAccount(viewer.id);

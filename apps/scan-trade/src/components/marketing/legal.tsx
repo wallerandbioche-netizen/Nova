@@ -14,7 +14,9 @@ export function LegalPage({
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
       <h1 className="text-display font-semibold text-content">{title}</h1>
-      <p className="mt-2 text-xs uppercase tracking-[0.12em] text-content-faint">Mise à jour : {updatedAt}</p>
+      <p className="mt-2 text-xs uppercase tracking-[0.12em] text-content-faint">
+        Mise à jour : {updatedAt}
+      </p>
       <div className="mt-10 space-y-8">{children}</div>
       <Disclaimer className="mt-12" />
     </article>

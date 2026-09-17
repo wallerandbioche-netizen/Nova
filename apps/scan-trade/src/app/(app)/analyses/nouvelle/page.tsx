@@ -19,7 +19,10 @@ export default async function NewAnalysisPage() {
         </p>
       </div>
 
-      <NewAnalysis maxUploadBytes={getCoreEnv().MAX_UPLOAD_BYTES} isSubscribed={viewer.isSubscribed} />
+      <NewAnalysis
+        maxUploadBytes={getCoreEnv().MAX_UPLOAD_BYTES}
+        isSubscribed={viewer.isSubscribed}
+      />
 
       <Disclaimer />
     </div>

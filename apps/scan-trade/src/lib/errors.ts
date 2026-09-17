@@ -56,14 +56,16 @@ const DEFAULT_MESSAGE: Record<AppErrorCode, string> = {
   rate_limited: 'Trop de requêtes en peu de temps. Réessaie dans un instant.',
   subscription_required: 'Un abonnement Scan Trade Pro actif est nécessaire pour lancer un scan.',
   quota_exceeded: "Tu as atteint la limite d'analyses de la période en cours.",
-  upload_invalid: "Ce fichier n'est pas une image de graphique exploitable (JPG, PNG ou WEBP attendus).",
+  upload_invalid:
+    "Ce fichier n'est pas une image de graphique exploitable (JPG, PNG ou WEBP attendus).",
   upload_too_large: 'Cette image est trop lourde. Réduis sa taille puis réessaie.',
-  ai_unavailable: "Le service d'analyse est momentanément indisponible. Réessaie dans quelques minutes.",
+  ai_unavailable:
+    "Le service d'analyse est momentanément indisponible. Réessaie dans quelques minutes.",
   ai_timeout: "L'analyse a pris trop de temps. Réessaie avec une capture plus lisible.",
   ai_invalid_response: 'Analyse indisponible — les données générées sont incohérentes.',
   analysis_in_progress: 'Cette analyse est déjà en cours de traitement.',
   storage_error: "Impossible d'accéder à l'image pour le moment. Réessaie dans un instant.",
-  billing_error: "La facturation est momentanément indisponible. Réessaie dans quelques minutes.",
+  billing_error: 'La facturation est momentanément indisponible. Réessaie dans quelques minutes.',
   configuration_error: "Le service n'est pas correctement configuré. L'équipe a été alertée.",
   internal_error: "Une erreur inattendue s'est produite. Réessaie dans un instant.",
 };

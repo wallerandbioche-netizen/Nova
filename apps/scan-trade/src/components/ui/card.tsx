@@ -30,9 +30,13 @@ export interface CardHeaderProps {
 
 export function CardHeader({ title, description, action, className }: CardHeaderProps) {
   return (
-    <div className={cn('flex items-start justify-between gap-4 px-5 pt-5 sm:px-6 sm:pt-6', className)}>
+    <div
+      className={cn('flex items-start justify-between gap-4 px-5 pt-5 sm:px-6 sm:pt-6', className)}
+    >
       <div className="min-w-0 space-y-1">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-content-muted">{title}</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-content-muted">
+          {title}
+        </h2>
         {description && <p className="text-sm text-content-muted">{description}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}

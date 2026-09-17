@@ -41,7 +41,10 @@ export default async function DashboardPage() {
       </div>
 
       {!viewer.isSubscribed && (
-        <Card tone="raised" className="flex flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-6">
+        <Card
+          tone="raised"
+          className="flex flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-6"
+        >
           <div>
             <p className="text-sm font-medium text-content">Ton abonnement n&apos;est pas actif</p>
             <p className="mt-1 text-sm text-content-muted">
@@ -68,7 +71,10 @@ export default async function DashboardPage() {
             title={<span id="latest-heading">Dernière analyse</span>}
             action={
               latest ? (
-                <Link href={`/analyses/${latest.id}`} className="text-sm text-accent underline-offset-4 hover:underline">
+                <Link
+                  href={`/analyses/${latest.id}`}
+                  className="text-sm text-accent underline-offset-4 hover:underline"
+                >
                   Ouvrir →
                 </Link>
               ) : null
@@ -78,7 +84,6 @@ export default async function DashboardPage() {
             {latest ? (
               <div className="flex flex-wrap items-start gap-5">
                 <span className="h-24 w-36 shrink-0 overflow-hidden rounded-xl border border-border bg-black/40">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`/api/analyses/${latest.id}/image`}
                     alt=""
@@ -89,8 +94,12 @@ export default async function DashboardPage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-base font-semibold text-content">{orUnknown(latest.asset)}</span>
-                    {latest.timeframe && <span className="text-sm text-content-muted">{latest.timeframe}</span>}
+                    <span className="text-base font-semibold text-content">
+                      {orUnknown(latest.asset)}
+                    </span>
+                    {latest.timeframe && (
+                      <span className="text-sm text-content-muted">{latest.timeframe}</span>
+                    )}
                     <StatusBadge status={latest.status} />
                   </div>
 
@@ -104,7 +113,9 @@ export default async function DashboardPage() {
                   ) : null}
 
                   {latest.summary && (
-                    <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-content-muted">{latest.summary}</p>
+                    <p className="mt-4 line-clamp-3 text-sm leading-relaxed text-content-muted">
+                      {latest.summary}
+                    </p>
                   )}
                 </div>
               </div>
@@ -126,7 +137,10 @@ export default async function DashboardPage() {
             <CardHeader
               title={<span id="recent-heading">Analyses récentes</span>}
               action={
-                <Link href="/historique" className="text-sm text-accent underline-offset-4 hover:underline">
+                <Link
+                  href="/historique"
+                  className="text-sm text-accent underline-offset-4 hover:underline"
+                >
                   Tout voir
                 </Link>
               }
@@ -149,15 +163,26 @@ function Stat({ label, value, muted = false }: { label: string; value: string; m
   return (
     <Card className="px-5 py-4">
       <p className="text-xs uppercase tracking-[0.12em] text-content-faint">{label}</p>
-      <p className={`numeric mt-2 text-metric font-semibold ${muted ? 'text-content-muted' : 'text-content'}`}>
+      <p
+        className={`numeric mt-2 text-metric font-semibold ${muted ? 'text-content-muted' : 'text-content'}`}
+      >
         {value}
       </p>
     </Card>
   );
 }
 
-function Field({ label, value, tone }: { label: string; value: string; tone?: 'accent' | 'danger' }) {
-  const color = tone === 'accent' ? 'text-accent' : tone === 'danger' ? 'text-danger' : 'text-content';
+function Field({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: 'accent' | 'danger';
+}) {
+  const color =
+    tone === 'accent' ? 'text-accent' : tone === 'danger' ? 'text-danger' : 'text-content';
   return (
     <div>
       <dt className="text-[10px] uppercase tracking-[0.1em] text-content-faint">{label}</dt>

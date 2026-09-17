@@ -52,8 +52,18 @@ export interface AnalysisRepository {
   latest(userId: string): Promise<AnalysisDetail | null>;
   /** Returns false when the row is missing, not owned, or already processing. */
   claimForScan(id: string, userId: string): Promise<boolean>;
-  saveResult(id: string, userId: string, result: ValidatedAnalysis, meta: SaveResultMeta): Promise<AnalysisDetail>;
-  markFailed(id: string, userId: string, failureCode: string, durationMs: number | null): Promise<void>;
+  saveResult(
+    id: string,
+    userId: string,
+    result: ValidatedAnalysis,
+    meta: SaveResultMeta,
+  ): Promise<AnalysisDetail>;
+  markFailed(
+    id: string,
+    userId: string,
+    failureCode: string,
+    durationMs: number | null,
+  ): Promise<void>;
   /** Returns the deleted row's image key so the object can be removed too. */
   remove(id: string, userId: string): Promise<AnalysisImageRef | null>;
   countSince(userId: string, since: Date): Promise<number>;

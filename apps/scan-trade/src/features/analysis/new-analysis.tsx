@@ -85,9 +85,12 @@ export function NewAnalysis({ maxUploadBytes, isSubscribed }: NewAnalysisProps) 
     const analysisId = created.data.analysis.id;
     setPhase('scanning');
 
-    const scanned = await apiRequest<{ analysis: AnalysisDetail }>(`/api/analyses/${analysisId}/scan`, {
-      method: 'POST',
-    });
+    const scanned = await apiRequest<{ analysis: AnalysisDetail }>(
+      `/api/analyses/${analysisId}/scan`,
+      {
+        method: 'POST',
+      },
+    );
 
     if (!scanned.ok) {
       // The row exists either way, so the user is sent to it: the page explains
@@ -106,8 +109,8 @@ export function NewAnalysis({ maxUploadBytes, isSubscribed }: NewAnalysisProps) 
       <Card className="px-5 py-10 text-center sm:px-6">
         <h2 className="text-heading font-semibold text-content">Débloque Scan Trade</h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-content-muted">
-          Un abonnement Scan Trade Pro actif est nécessaire pour lancer un scan. 19,90 € par mois, résiliable à tout
-          moment.
+          Un abonnement Scan Trade Pro actif est nécessaire pour lancer un scan. 19,90 € par mois,
+          résiliable à tout moment.
         </p>
         <div className="mt-8">
           <ButtonLink href="/abonnement" size="lg">
@@ -126,7 +129,9 @@ export function NewAnalysis({ maxUploadBytes, isSubscribed }: NewAnalysisProps) 
     <div className="space-y-5">
       {failure && (
         <ErrorState
-          title={failure.code === 'subscription_required' ? 'Abonnement requis' : 'Analyse impossible'}
+          title={
+            failure.code === 'subscription_required' ? 'Abonnement requis' : 'Analyse impossible'
+          }
           message={failure.message}
           action={
             failure.code === 'subscription_required' ? (
@@ -145,13 +150,17 @@ export function NewAnalysis({ maxUploadBytes, isSubscribed }: NewAnalysisProps) 
           <CardHeader
             title="Aperçu"
             action={
-              <Button variant="ghost" size="sm" onClick={() => setFile(null)} disabled={phase !== 'idle'}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setFile(null)}
+                disabled={phase !== 'idle'}
+              >
                 Changer d&apos;image
               </Button>
             }
           />
           <div className="mt-4 border-t border-border bg-black/40 p-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={previewUrl}
               alt="Aperçu de la capture importée"
@@ -196,9 +205,15 @@ export function NewAnalysis({ maxUploadBytes, isSubscribed }: NewAnalysisProps) 
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs leading-relaxed text-content-faint sm:max-w-md">
-          Scan Trade lit uniquement ce qui est visible sur la capture. Aucun ordre n&apos;est transmis à un courtier.
+          Scan Trade lit uniquement ce qui est visible sur la capture. Aucun ordre n&apos;est
+          transmis à un courtier.
         </p>
-        <Button size="lg" onClick={() => void startScan()} disabled={!file} loading={phase === 'uploading'}>
+        <Button
+          size="lg"
+          onClick={() => void startScan()}
+          disabled={!file}
+          loading={phase === 'uploading'}
+        >
           Lancer le Scan
         </Button>
       </div>

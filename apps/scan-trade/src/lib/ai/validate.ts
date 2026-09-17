@@ -50,7 +50,10 @@ const LEVEL_TYPE_MAP: Record<AIAnalysisResponse['key_levels'][number]['type'], L
   take_profit_2: 'TAKE_PROFIT_2',
 };
 
-const TECHNICAL_AREA_MAP: Record<AIAnalysisResponse['technical_analysis'][number]['category'], TechnicalArea> = {
+const TECHNICAL_AREA_MAP: Record<
+  AIAnalysisResponse['technical_analysis'][number]['category'],
+  TechnicalArea
+> = {
   trend: 'TREND',
   market_structure: 'MARKET_STRUCTURE',
   support_resistance: 'SUPPORT_RESISTANCE',
@@ -60,7 +63,10 @@ const TECHNICAL_AREA_MAP: Record<AIAnalysisResponse['technical_analysis'][number
   other: 'OTHER',
 };
 
-const REASONING_MAP: Record<AIAnalysisResponse['reasoning'][number]['category'], ReasoningCategory> = {
+const REASONING_MAP: Record<
+  AIAnalysisResponse['reasoning'][number]['category'],
+  ReasoningCategory
+> = {
   observation: 'OBSERVATION',
   interpretation: 'INTERPRETATION',
   confirmation: 'CONFIRMATION',
@@ -116,7 +122,9 @@ export function validateAnalysisResponse(raw: unknown): ValidatedAnalysis {
   const parsed = aiAnalysisResponseSchema.safeParse(raw);
   if (!parsed.success) {
     throw new AnalysisValidationError(
-      parsed.error.issues.slice(0, 6).map((issue) => `${issue.path.join('.') || 'racine'}: ${issue.message}`),
+      parsed.error.issues
+        .slice(0, 6)
+        .map((issue) => `${issue.path.join('.') || 'racine'}: ${issue.message}`),
     );
   }
 
@@ -153,7 +161,10 @@ export function validateAnalysisResponse(raw: unknown): ValidatedAnalysis {
       invalidation: null,
       warnings,
       levels: mapLevels(data.key_levels).filter(
-        (level) => level.type !== 'ENTRY_ZONE' && level.type !== 'TAKE_PROFIT_1' && level.type !== 'TAKE_PROFIT_2',
+        (level) =>
+          level.type !== 'ENTRY_ZONE' &&
+          level.type !== 'TAKE_PROFIT_1' &&
+          level.type !== 'TAKE_PROFIT_2',
       ),
     };
   }
@@ -208,12 +219,15 @@ export function validateAnalysisResponse(raw: unknown): ValidatedAnalysis {
 
   if (bias === 'LONG') {
     if (sl >= low) reasons.push('un stop loss LONG doit se situer sous la zone d’entrée');
-    if (tp1 <= high) reasons.push('un take profit LONG doit se situer au-dessus de la zone d’entrée');
-    if (tp2 != null && tp2 <= tp1) reasons.push('le take profit 2 doit dépasser le take profit 1 en LONG');
+    if (tp1 <= high)
+      reasons.push('un take profit LONG doit se situer au-dessus de la zone d’entrée');
+    if (tp2 != null && tp2 <= tp1)
+      reasons.push('le take profit 2 doit dépasser le take profit 1 en LONG');
   } else {
     if (sl <= high) reasons.push('un stop loss SHORT doit se situer au-dessus de la zone d’entrée');
     if (tp1 >= low) reasons.push('un take profit SHORT doit se situer sous la zone d’entrée');
-    if (tp2 != null && tp2 >= tp1) reasons.push('le take profit 2 doit être inférieur au take profit 1 en SHORT');
+    if (tp2 != null && tp2 >= tp1)
+      reasons.push('le take profit 2 doit être inférieur au take profit 1 en SHORT');
   }
 
   if (reasons.length > 0) throw new AnalysisValidationError(reasons);
@@ -270,7 +284,10 @@ function mapLevels(levels: AIAnalysisResponse['key_levels']): KeyLevelView[] {
     out.push({
       type: LEVEL_TYPE_MAP[level.type],
       price: price != null ? round(price, decimalsFor(price)) : null,
-      priceMax: priceMax != null && price != null && priceMax > price ? round(priceMax, decimalsFor(priceMax)) : null,
+      priceMax:
+        priceMax != null && price != null && priceMax > price
+          ? round(priceMax, decimalsFor(priceMax))
+          : null,
       label: level.label,
     });
   }

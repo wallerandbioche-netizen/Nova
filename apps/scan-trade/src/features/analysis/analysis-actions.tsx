@@ -65,7 +65,9 @@ export function RunScanButton({ analysisId, label }: { analysisId: string; label
 
   async function run() {
     setPending(true);
-    const result = await apiRequest<unknown>(`/api/analyses/${analysisId}/scan`, { method: 'POST' });
+    const result = await apiRequest<unknown>(`/api/analyses/${analysisId}/scan`, {
+      method: 'POST',
+    });
     setPending(false);
 
     if (!result.ok) {

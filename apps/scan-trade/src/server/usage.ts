@@ -36,7 +36,10 @@ export interface UsageSnapshot {
   periodStart: Date;
 }
 
-export async function getUsageSnapshot(userId: string, now: Date = new Date()): Promise<UsageSnapshot> {
+export async function getUsageSnapshot(
+  userId: string,
+  now: Date = new Date(),
+): Promise<UsageSnapshot> {
   const periodStart = currentPeriodStart(now);
   const configured = getCoreEnv().ANALYSIS_MONTHLY_LIMIT;
   const limit = configured > 0 ? configured : null;

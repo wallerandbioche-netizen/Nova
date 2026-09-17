@@ -12,9 +12,19 @@ export const DISCLAIMER_TEXT =
  * Shown on the landing page, on every analysis, and in the footer. It is a
  * component rather than copied text so the wording can never drift apart.
  */
-export function Disclaimer({ variant = 'block', className }: { variant?: 'block' | 'compact'; className?: string }) {
+export function Disclaimer({
+  variant = 'block',
+  className,
+}: {
+  variant?: 'block' | 'compact';
+  className?: string;
+}) {
   if (variant === 'compact') {
-    return <p className={cn('text-xs leading-relaxed text-content-faint', className)}>{DISCLAIMER_TEXT}</p>;
+    return (
+      <p className={cn('text-xs leading-relaxed text-content-faint', className)}>
+        {DISCLAIMER_TEXT}
+      </p>
+    );
   }
 
   return (
@@ -24,7 +34,9 @@ export function Disclaimer({ variant = 'block', className }: { variant?: 'block'
         className,
       )}
     >
-      <p className="mb-1 font-medium uppercase tracking-[0.14em] text-content-faint">Avertissement</p>
+      <p className="mb-1 font-medium uppercase tracking-[0.14em] text-content-faint">
+        Avertissement
+      </p>
       {DISCLAIMER_TEXT}
     </aside>
   );

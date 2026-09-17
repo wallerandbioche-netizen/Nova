@@ -23,7 +23,9 @@ const bool = (fallback: boolean) =>
   z
     .string()
     .optional()
-    .transform((value) => (value == null || value === '' ? fallback : value === 'true' || value === '1'));
+    .transform((value) =>
+      value == null || value === '' ? fallback : value === 'true' || value === '1',
+    );
 
 const int = (fallback: number) =>
   z
@@ -146,7 +148,10 @@ export function getStripeConfig(): StripeConfig {
   if (stripeCache) return stripeCache;
   stripeCache = {
     secretKey: required('STRIPE_SECRET_KEY', 'Voir README « Configuration Stripe ».'),
-    webhookSecret: required('STRIPE_WEBHOOK_SECRET', 'Obtenue via `stripe listen` ou le dashboard.'),
+    webhookSecret: required(
+      'STRIPE_WEBHOOK_SECRET',
+      'Obtenue via `stripe listen` ou le dashboard.',
+    ),
     priceId: required('STRIPE_PRICE_ID', 'Identifiant du prix récurrent 19,90 €/mois.'),
   };
   return stripeCache;
@@ -199,7 +204,12 @@ export function getStorageConfig(): StorageConfig {
     );
   }
 
-  const parsedTtl = z.coerce.number().int().min(30).max(3600).safeParse(process.env.STORAGE_SIGNED_URL_TTL ?? 300);
+  const parsedTtl = z.coerce
+    .number()
+    .int()
+    .min(30)
+    .max(3600)
+    .safeParse(process.env.STORAGE_SIGNED_URL_TTL ?? 300);
 
   storageCache = {
     driver: 's3',

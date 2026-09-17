@@ -12,14 +12,27 @@ const LEVEL_WEIGHT: Record<LogLevel, number> = { debug: 10, info: 20, warn: 30, 
 
 const REDACTED = '[redacted]';
 
-const SENSITIVE_KEY = /(password|passwd|secret|token|apikey|api_key|authorization|cookie|card|cvc|iban|signature)/i;
+const SENSITIVE_KEY =
+  /(password|passwd|secret|token|apikey|api_key|authorization|cookie|card|cvc|iban|signature)/i;
 
-export type LogValue = string | number | boolean | null | undefined | LogValue[] | { [key: string]: LogValue };
+/**
+ * Keys that merely *contain* a sensitive word while carrying no secret.
+ *
+ * Token counts are the observability signal we most want on an AI call, and
+ * blanket-redacting anything matching /token/ hid them — so the allowlist is
+ * checked first.
+ */
+const SAFE_KEY =
+  /^(input_?tokens|output_?tokens|total_?tokens|token_?count|max_?tokens|max_?output_?tokens|has_?password|card_?count|cards)$/i;
+
+export type LogValue =
+  string | number | boolean | null | undefined | LogValue[] | { [key: string]: LogValue };
 
 export function redact(value: unknown, depth = 0): LogValue {
   if (depth > 6) return '[deep]';
   if (value == null) return null;
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean')
+    return value;
   if (value instanceof Error) {
     return { name: value.name, message: value.message, stack: value.stack ?? null };
   }
@@ -27,7 +40,7 @@ export function redact(value: unknown, depth = 0): LogValue {
   if (typeof value === 'object') {
     const out: Record<string, LogValue> = {};
     for (const [key, raw] of Object.entries(value as Record<string, unknown>)) {
-      out[key] = SENSITIVE_KEY.test(key) ? REDACTED : redact(raw, depth + 1);
+      out[key] = !SAFE_KEY.test(key) && SENSITIVE_KEY.test(key) ? REDACTED : redact(raw, depth + 1);
     }
     return out;
   }

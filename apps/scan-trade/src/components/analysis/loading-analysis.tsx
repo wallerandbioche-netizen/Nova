@@ -40,7 +40,9 @@ export function LoadingAnalysis({ className }: { className?: string }) {
       </div>
 
       <div className="px-5 py-6 sm:px-6 sm:py-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-content-muted">Scan en cours</p>
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-content-muted">
+          Scan en cours
+        </p>
 
         <ol className="mt-5 space-y-3" aria-live="polite">
           {STEPS.map((label, index) => {
@@ -57,7 +59,13 @@ export function LoadingAnalysis({ className }: { className?: string }) {
                     !done && !active && 'border-border text-content-faint',
                   )}
                 >
-                  {done ? '✓' : active ? <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" /> : ''}
+                  {done ? (
+                    '✓'
+                  ) : active ? (
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
+                  ) : (
+                    ''
+                  )}
                 </span>
                 <span
                   className={cn(
@@ -73,8 +81,8 @@ export function LoadingAnalysis({ className }: { className?: string }) {
         </ol>
 
         <p className="mt-6 text-xs leading-relaxed text-content-faint">
-          La durée dépend de la capture et du service d&apos;analyse. Tu peux quitter cette page : le résultat
-          restera disponible dans ton historique.
+          La durée dépend de la capture et du service d&apos;analyse. Tu peux quitter cette page :
+          le résultat restera disponible dans ton historique.
         </p>
       </div>
     </Card>
