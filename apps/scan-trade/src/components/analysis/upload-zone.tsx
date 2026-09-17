@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useId, useRef, useState, type DragEvent } from 'react';
-import { ACCEPTED_MIME_TYPES, formatBytes } from '@/lib/storage/upload';
+import { ACCEPTED_MIME_TYPES, formatBytes } from '@/lib/storage/upload-limits';
 import { cn } from '@/utils/cn';
 
 export interface UploadZoneProps {

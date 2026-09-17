@@ -3,7 +3,7 @@ import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/db/prisma';
-import { getAuthSecret, isGoogleOAuthConfigured } from '@/lib/env';
+import { isGoogleOAuthConfigured } from '@/lib/env';
 import { logger } from '@/lib/logger';
 import { RATE_LIMITS, consumeRateLimit } from '@/lib/rate-limit';
 import { emailSchema, verifyPassword } from './password';
@@ -67,7 +67,11 @@ if (isGoogleOAuthConfigured()) {
 
 export const authConfig: NextAuthConfig = {
   adapter: PrismaAdapter(prisma),
-  secret: process.env.AUTH_SECRET ?? (process.env.NODE_ENV === 'production' ? getAuthSecret() : 'development-only-secret'),
+  // Read, never demanded, at module scope: `next build` imports this file to
+  // collect route metadata, and a build must not require production secrets.
+  // A production boot without AUTH_SECRET is caught by `instrumentation.ts`,
+  // and Auth.js itself refuses to sign a session without one.
+  secret: process.env.AUTH_SECRET ?? (process.env.NODE_ENV === 'production' ? undefined : 'development-only-secret'),
   session: { strategy: 'jwt', maxAge: 30 * 24 * 60 * 60 },
   trustHost: true,
   pages: {

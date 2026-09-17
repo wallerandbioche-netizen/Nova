@@ -1,8 +1,16 @@
 import { randomUUID } from 'node:crypto';
 import { AppError } from '@/lib/errors';
+import {
+  ACCEPTED_EXTENSIONS,
+  ACCEPTED_MIME_TYPES,
+  EXTENSION_BY_MIME,
+  MIN_UPLOAD_BYTES,
+  formatBytes,
+  type AcceptedMimeType,
+} from './upload-limits';
 
 /**
- * Upload validation (§42).
+ * Server-side upload validation (§42).
  *
  * A browser-declared MIME type is a suggestion, and a file extension is a
  * rumour. The real check is the magic-byte signature: what we hand the vision
@@ -10,19 +18,8 @@ import { AppError } from '@/lib/errors';
  * we support.
  */
 
-export type AcceptedMimeType = 'image/jpeg' | 'image/png' | 'image/webp';
-
-export const ACCEPTED_MIME_TYPES: readonly AcceptedMimeType[] = ['image/jpeg', 'image/png', 'image/webp'];
-export const ACCEPTED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'] as const;
-
-/** Anything smaller than this cannot hold a readable chart. */
-const MIN_UPLOAD_BYTES = 1024;
-
-const EXTENSION_BY_MIME: Record<AcceptedMimeType, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
+export { ACCEPTED_EXTENSIONS, ACCEPTED_MIME_TYPES, formatBytes };
+export type { AcceptedMimeType };
 
 /** Detects the real format from the file header, ignoring the declared type. */
 export function sniffImageMimeType(data: Buffer): AcceptedMimeType | null {
@@ -67,7 +64,7 @@ export function validateUpload(data: Buffer, options: ValidateUploadOptions): Va
   }
 
   if (data.length < MIN_UPLOAD_BYTES) {
-    throw new AppError('upload_invalid', "Ce fichier est trop petit pour contenir un graphique lisible.");
+    throw new AppError('upload_invalid', 'Ce fichier est trop petit pour contenir un graphique lisible.');
   }
 
   if (options.filename) {
@@ -105,12 +102,6 @@ export function validateUpload(data: Buffer, options: ValidateUploadOptions): Va
  */
 export function buildStorageKey(userId: string, mimeType: AcceptedMimeType): string {
   const safeUserId = userId.replace(/[^a-zA-Z0-9_-]/g, '');
-  if (safeUserId.length === 0) throw new AppError('internal_error', "Identifiant utilisateur invalide.");
+  if (safeUserId.length === 0) throw new AppError('internal_error', 'Identifiant utilisateur invalide.');
   return `analyses/${safeUserId}/${randomUUID()}.${EXTENSION_BY_MIME[mimeType]}`;
-}
-
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} o`;
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} Ko`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
 }
