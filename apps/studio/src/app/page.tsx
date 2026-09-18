@@ -56,7 +56,8 @@ export default async function LandingPage() {
           <div className="animate-rise mx-auto mt-10 max-w-2xl" style={{ animationDelay: '80ms' }}>
             <UrlForm signedIn={Boolean(user)} />
             <p className="mt-3 text-center text-xs text-ink-400">
-              Pas de lien compatible ? Importez vos photos manuellement, le résultat est le même.
+              Pas de lien compatible ? Importez vos photos manuellement, le résultat est le même —
+              ou essayez avec notre jeu de photos d’exemple depuis votre espace.
             </p>
           </div>
 

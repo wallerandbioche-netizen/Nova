@@ -55,10 +55,15 @@ Le seed crée un compte utilisable immédiatement :
 | ------------------ | ------------------ | ------- |
 | `demo@nova.studio` | `demo-nova-studio` | 25      |
 
-**Mode démonstration.** L'URL `https://demo.nova.studio/villa` est reconnue et renvoie 14 photos
-(orientations et pièces variées) générées localement dans `public/demo`. Elle permet de tester
-tout le pipeline — import, analyse, sélection, montage, rendu, téléchargement — sans dépendre
-d'une plateforme tierce.
+**Mode démonstration.** Dans l'application, le bouton **« Essayer avec un exemple »** (page
+« Créer une vidéo ») importe 14 photos d'orientations et de pièces variées, générées localement
+dans `public/demo`. Il permet de tester tout le pipeline — import, analyse, sélection, montage,
+rendu, téléchargement — sans dépendre d'une plateforme tierce.
+
+> Techniquement, ce bouton envoie l'URL sentinelle `https://demo.nova.studio/villa`, reconnue par
+> `DemoImporter`. **Ce domaine n'existe pas** : il n'est valable qu'à l'intérieur de
+> l'application et ne mène nulle part dans un navigateur. C'est pourquoi l'interface n'en fait
+> jamais un lien.
 
 > Le rendu utilise Chromium via Remotion. En local, Remotion télécharge son propre navigateur au
 > premier rendu ; si vous en avez déjà un, pointez `REMOTION_BROWSER_EXECUTABLE` dessus.

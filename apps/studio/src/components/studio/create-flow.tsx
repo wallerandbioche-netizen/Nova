@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AlertCircle, ArrowRight, Loader2, Sparkles, Upload, Wand2 } from 'lucide-react';
+import { AlertCircle, ArrowRight, Loader2, PlayCircle, Sparkles, Upload, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PhotoGrid } from '@/components/studio/photo-grid';
@@ -12,6 +12,12 @@ import { ImportSteps, type StepState } from '@/components/studio/import-steps';
 import { api, ApiRequestError, type SerialisedListing, type SerialisedVideo } from '@/lib/api-client';
 
 type Phase = 'url' | 'importing' | 'photos';
+
+/**
+ * Internal sentinel recognised by the demo importer. It is never shown as a link: it is not a
+ * real website, and printing it invites people to type it into a browser.
+ */
+const DEMO_LISTING_URL = 'https://demo.nova.studio/villa';
 
 interface ImportPayload {
   listing: SerialisedListing;
@@ -285,16 +291,15 @@ export function CreateFlow({ initialUrl, maxUploadBytes, credits, costPerVideo }
               Importer des photos
             </button>
           </p>
-          <p className="mt-2 text-sm text-ink-400">
-            Pour tester le produit sans annonce réelle, utilisez le lien{' '}
-            <button
-              type="button"
-              onClick={() => void runImport('https://demo.nova.studio/villa')}
-              className="font-medium text-ink-600 underline underline-offset-4"
-            >
-              https://demo.nova.studio/villa
-            </button>
-          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <Button variant="outline" size="sm" onClick={() => void runImport(DEMO_LISTING_URL)}>
+              <PlayCircle />
+              Essayer avec un exemple
+            </Button>
+            <span className="text-sm text-ink-400">
+              14 photos de démonstration, sans annonce réelle.
+            </span>
+          </div>
         </div>
       </div>
     );
