@@ -7,3 +7,5 @@ onlyBuiltDependencies:
   - '@prisma/engines'
   - prisma
   - msgpackr-extract
+  - sharp
+  - '@remotion/compositor-linux-x64-gnu'

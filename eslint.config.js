@@ -1,6 +1,8 @@
 // @ts-check
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import reactHooks from 'eslint-plugin-react-hooks';
+import nextPlugin from '@next/eslint-plugin-next';
 
 export default tseslint.config(
   {
@@ -10,6 +12,10 @@ export default tseslint.config(
       '**/.expo/**',
       '**/coverage/**',
       '**/prisma/generated/**',
+      '**/.next/**',
+      '**/next-env.d.ts',
+      '**/.storage/**',
+      '**/public/demo/**',
       '**/*.config.js',
       '**/*.config.cjs',
     ],
@@ -37,6 +43,15 @@ export default tseslint.config(
     rules: {
       'no-console': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
+  {
+    // The Next.js app: React and Next rules apply on top of the shared TypeScript ones.
+    files: ['apps/studio/**/*.{ts,tsx}'],
+    plugins: { 'react-hooks': reactHooks, '@next/next': nextPlugin },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      ...nextPlugin.configs.recommended.rules,
     },
   },
   {

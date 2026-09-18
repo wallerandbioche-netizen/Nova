@@ -1,0 +1,376 @@
+// Nova Studio — data model.
+//
+// Conventions:
+//   * every user-owned row carries `userId` so authorization is a WHERE clause, never a guess;
+//   * deletes cascade downwards (listing -> images, video -> scenes/jobs) so a "delete my project"
+//     request actually removes the data;
+//   * money and credits are integers (cents / whole credits), never floats.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum ImportSource {
+  AIRBNB
+  BOOKING
+  VRBO
+  GENERIC
+  MANUAL
+  DEMO
+}
+
+enum ListingStatus {
+  IMPORTING
+  READY
+  NEEDS_MANUAL_UPLOAD
+  FAILED
+}
+
+enum RoomType {
+  EXTERIOR
+  LIVING_ROOM
+  KITCHEN
+  DINING
+  BEDROOM
+  BATHROOM
+  TERRACE
+  POOL
+  GARDEN
+  VIEW
+  OTHER
+}
+
+enum VideoStyle {
+  CINEMATIC
+  MODERN
+  LUXURY
+  DYNAMIC
+}
+
+enum AspectRatio {
+  VERTICAL
+  HORIZONTAL
+  SQUARE
+}
+
+enum DurationPreset {
+  AUTO
+  S15
+  S30
+  S45
+}
+
+enum VideoStatus {
+  DRAFT
+  QUEUED
+  PROCESSING
+  RENDERING
+  UPLOADING
+  COMPLETED
+  FAILED
+}
+
+enum JobStatus {
+  QUEUED
+  PROCESSING
+  RENDERING
+  UPLOADING
+  COMPLETED
+  FAILED
+}
+
+enum CreditTransactionType {
+  PURCHASE
+  GENERATION
+  REFUND
+  BONUS
+}
+
+enum SubscriptionPlan {
+  FREE
+  STARTER
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+// ---------------------------------------------------------------------------
+// Identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  name          String?
+  creditBalance Int      @default(0)
+  stripeCustomerId String? @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions           Session[]
+  listings           Listing[]
+  videos             Video[]
+  creditTransactions CreditTransaction[]
+  subscription       Subscription?
+  payments           Payment[]
+
+  @@index([createdAt])
+}
+
+/// Server-side sessions: the cookie carries an opaque token, the database stores only its hash,
+/// so a database leak does not hand out live sessions.
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ---------------------------------------------------------------------------
+// Listings & images
+// ---------------------------------------------------------------------------
+
+model Listing {
+  id             String        @id @default(cuid())
+  userId         String
+  sourceUrl      String?
+  sourcePlatform ImportSource
+  title          String?
+  location       String?
+  status         ListingStatus @default(IMPORTING)
+  importNotice   String?
+  importedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images ListingImage[]
+  videos Video[]
+
+  @@index([userId, createdAt])
+}
+
+model ListingImage {
+  id          String  @id @default(cuid())
+  listingId   String
+  originalUrl String?
+  storageKey  String
+  thumbnailKey String?
+  width       Int
+  height      Int
+  format      String
+  bytes       Int
+  sortOrder   Int     @default(0)
+
+  /// Perceptual hash (64-bit, hex) used for near-duplicate detection.
+  phash       String?
+  /// Normalised 0..1 sharpness estimate; low values mean a blurry photo.
+  sharpness   Float?
+  brightness  Float?
+  /// Aggregate 0..1 score used by the automatic selection algorithm.
+  quality     Float   @default(0.5)
+  roomType    RoomType @default(OTHER)
+  roomConfidence Float @default(0)
+  /// Focal point in normalised coordinates; the Ken Burns move keeps it in frame.
+  focalX      Float   @default(0.5)
+  focalY      Float   @default(0.5)
+  /// Set when another image in the same listing is a near-duplicate of this one.
+  duplicateOfId String?
+  analyzedAt  DateTime?
+  metadata    Json      @default("{}")
+  createdAt   DateTime  @default(now())
+
+  listing Listing     @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  scenes  VideoScene[]
+
+  @@index([listingId, sortOrder])
+  @@index([phash])
+}
+
+// ---------------------------------------------------------------------------
+// Videos
+// ---------------------------------------------------------------------------
+
+model Video {
+  id          String      @id @default(cuid())
+  userId      String
+  listingId   String
+  name        String
+  style       VideoStyle  @default(CINEMATIC)
+  aspectRatio AspectRatio @default(VERTICAL)
+  duration    DurationPreset @default(AUTO)
+  status      VideoStatus @default(DRAFT)
+
+  width  Int @default(1080)
+  height Int @default(1920)
+  fps    Int @default(30)
+
+  /// Deterministic seed: same inputs + same seed => byte-identical storyboard.
+  seed            Int
+  /// Selected image ids, in the order they appear in the video.
+  imageOrder      String[] @default([])
+  storyboard      Json?
+  durationSeconds Float?
+
+  storageKey   String?
+  thumbnailKey String?
+  bytes        Int?
+
+  errorCode    String?
+  errorMessage String?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing Listing         @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  scenes  VideoScene[]
+  jobs    GenerationJob[]
+  creditTransactions CreditTransaction[]
+
+  @@index([userId, createdAt])
+  @@index([listingId])
+  @@index([status])
+}
+
+model VideoScene {
+  id       String @id @default(cuid())
+  videoId  String
+  imageId  String
+  index    Int
+
+  startSeconds    Float
+  durationSeconds Float
+
+  /// One of the animations in lib/video/animations.ts (slowZoomIn, panLeft, ...).
+  animation   String
+  /// Transition used to enter this scene (crossfade | dissolve | fade | softSlide).
+  transitionIn String
+  transitionDurationSeconds Float @default(0.6)
+
+  /// Normalised crop rectangle at the start and at the end of the move.
+  startRect Json
+  endRect   Json
+
+  video Video        @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  image ListingImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, index])
+  @@index([videoId])
+  @@index([imageId])
+}
+
+model GenerationJob {
+  id         String    @id @default(cuid())
+  videoId    String
+  status     JobStatus @default(QUEUED)
+  /// 0..100, only ever set from a real signal reported by the renderer.
+  progress   Int       @default(0)
+  stage      String    @default("queued")
+  attempts   Int       @default(0)
+  errorCode  String?
+  error      String?
+  queuedAt   DateTime  @default(now())
+  startedAt  DateTime?
+  finishedAt DateTime?
+  updatedAt  DateTime  @updatedAt
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@index([videoId, queuedAt])
+  @@index([status, queuedAt])
+}
+
+// ---------------------------------------------------------------------------
+// Billing
+// ---------------------------------------------------------------------------
+
+model CreditTransaction {
+  id          String                @id @default(cuid())
+  userId      String
+  /// Positive for grants, negative for spends.
+  amount      Int
+  type        CreditTransactionType
+  videoId     String?
+  balanceAfter Int
+  description String?
+  /// Guards against double-spending the same credits on concurrent requests.
+  idempotencyKey String? @unique
+  createdAt   DateTime @default(now())
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video Video? @relation(fields: [videoId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([videoId])
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  stripeSubscriptionId String?            @unique
+  stripePriceId        String?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id                      String        @id @default(cuid())
+  userId                  String
+  stripeCheckoutSessionId String?       @unique
+  stripePaymentIntentId   String?       @unique
+  amountCents             Int
+  currency                String        @default("eur")
+  creditsGranted          Int           @default(0)
+  status                  PaymentStatus @default(PENDING)
+  createdAt               DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+/// Runtime configuration (credit cost per video, free credits on signup, ...) so pricing and
+/// limits can change without a deploy.
+model SystemConfig {
+  key         String   @id
+  value       Json
+  description String?
+  updatedAt   DateTime @updatedAt
+}

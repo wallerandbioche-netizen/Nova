@@ -1,0 +1,8 @@
+.next/
+next-env.d.ts
+out/
+.storage/
+public/demo/*.jpg
+*.tsbuildinfo
+smoke-video.mp4
+smoke-poster.jpg

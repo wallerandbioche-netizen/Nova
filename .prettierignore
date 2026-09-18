@@ -4,3 +4,6 @@ coverage
 pnpm-lock.yaml
 .expo
 apps/api/prisma/migrations
+apps/studio/.next
+apps/studio/.storage
+apps/studio/public/demo
