@@ -15,7 +15,7 @@ export async function GET(_request: Request, context: Context): Promise<NextResp
   const project = await projectRepository().find(id);
   if (!project) {
     return NextResponse.json(
-      { error: { code: 'UNKNOWN', message: 'Ce projet n\'existe plus.' } },
+      { error: { code: 'UNKNOWN', message: 'Ce projet n’existe plus.' } },
       { status: 404 },
     );
   }

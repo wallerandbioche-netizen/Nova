@@ -23,8 +23,8 @@ export class AtriumError extends Error {
 }
 
 export const USER_MESSAGES: Record<ErrorCode, string> = {
-  INVALID_URL: "Ce lien ne semble pas être une annonce valide.",
-  SOURCE_UNAVAILABLE: "Nous n'avons pas pu récupérer les photos de cette annonce.",
+  INVALID_URL: 'Ce lien ne semble pas être une annonce valide.',
+  SOURCE_UNAVAILABLE: 'Nous n’avons pas pu récupérer les photos de cette annonce.',
   NOT_ENOUGH_PHOTOS:
     "Cette annonce ne contient pas suffisamment de photos pour créer une vidéo.",
   RENDER_FAILED: 'Une erreur est survenue. Veuillez réessayer.',

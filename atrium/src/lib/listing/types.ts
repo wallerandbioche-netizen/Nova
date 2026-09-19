@@ -7,7 +7,9 @@
 export type ListingInput =
   | { kind: 'url'; url: string }
   | { kind: 'folder'; path: string }
-  | { kind: 'upload'; uploadId: string };
+  | { kind: 'upload'; uploadId: string }
+  /** Demandée explicitement : jamais substituée à une annonce réelle. */
+  | { kind: 'demo' };
 
 export interface RawPhoto {
   /** Position d'origine dans l'annonce, avant tout réordonnancement. */

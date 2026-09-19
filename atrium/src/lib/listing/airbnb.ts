@@ -1,7 +1,6 @@
 import { env } from '@/lib/env';
 import { atriumError } from '@/lib/errors';
 import { logger } from '@/lib/logger';
-import { DemoListingSource } from './demo';
 import { robotsAllows } from './robots';
 import type { FetchContext, ListingInput, ListingSource, RawListing } from './types';
 import { parseAirbnbUrl } from './url';
@@ -62,18 +61,19 @@ export function extractPhotoUrls(html: string, limit = 40): string[] {
 /**
  * Source Airbnb.
  *
- * Trois modes, pilotés par `AIRBNB_FETCH_MODE` :
- *  - `demo`     : l'URL est validée, les photos viennent du jeu local. Défaut.
- *  - `live`     : récupération de la page publique, robots.txt vérifié au
- *                 préalable et user-agent déclaré. Aucune protection n'est
- *                 contournée : une page de vérification interrompt la
- *                 récupération avec une erreur explicite.
- *  - `disabled` : toute URL d'annonce est refusée.
+ * Les photos de l'annonce sont récupérées depuis sa page publique, après
+ * vérification de `robots.txt` et avec un user-agent déclaré. Aucune
+ * protection anti-robot n'est contournée : une page de vérification, un refus
+ * ou une absence de photo interrompent la récupération avec une erreur.
+ *
+ * Cette source ne se rabat jamais sur autre chose. Un lien qu'on ne peut pas
+ * lire doit le dire ; substituer d'autres photos serait mentir sur le contenu
+ * de la vidéo. `AIRBNB_FETCH_MODE=disabled` refuse toute URL d'annonce, pour
+ * un déploiement qui ne veut fonctionner que par import de photos.
  */
 export class AirbnbListingSource implements ListingSource {
   readonly id = 'airbnb';
   readonly label = 'Annonce Airbnb';
-  private readonly demo = new DemoListingSource();
 
   supports(input: ListingInput): boolean {
     if (input.kind !== 'url') return false;
@@ -94,11 +94,6 @@ export class AirbnbListingSource implements ListingSource {
         'SOURCE_UNAVAILABLE',
         'Récupération des annonces désactivée par configuration',
       );
-    }
-
-    if (env.airbnbFetchMode === 'demo') {
-      const listing = await this.demo.fetchListing(input, ctx);
-      return { ...listing, sourceId: this.id, sourceUrl: parsed.canonicalUrl };
     }
 
     return this.fetchLive(parsed.canonicalUrl, ctx);

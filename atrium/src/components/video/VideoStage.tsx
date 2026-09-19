@@ -93,6 +93,14 @@ export function VideoStage({ project, onFormatChange }: VideoStageProps) {
           {video.sceneCount} plans · {video.duration.toFixed(0)} secondes ·{' '}
           {(video.sizeBytes / 1024 / 1024).toFixed(1)} Mo
         </p>
+
+        {project.listing?.isDemo && (
+          // Une vidéo de démonstration ne doit jamais pouvoir être prise pour
+          // celle d'un vrai logement.
+          <p className="max-w-xs text-caption text-faint">
+            Exemple de démonstration. Ces photos ne sont celles d’aucune annonce.
+          </p>
+        )}
       </motion.div>
     </div>
   );

@@ -22,9 +22,14 @@ npm run dev
 
 Puis ouvrez <http://localhost:3000>.
 
-Aucune configuration n'est nécessaire : par défaut, l'application tourne
-entièrement hors ligne. Les photos de démonstration sont générées localement à
-la première utilisation, et l'analyse se fait sans appel réseau.
+Aucune configuration n'est nécessaire. Collez un lien d'annonce pour créer une
+vidéo à partir de ses photos, ou importez les vôtres.
+
+Pour voir le produit fonctionner sans annonce — ou si votre réseau ne permet
+pas d'atteindre le site —, le lien « voir un exemple » de l'accueil monte une
+séquence à partir d'un jeu de photos dessiné localement. Ces images servent à
+juger le moteur (cadrage, mouvements, transitions) sur des formats variés ;
+elles ne représentent aucun logement, et la vidéo produite le signale.
 
 Pour vérifier que l'environnement peut produire une vidéo :
 
@@ -148,14 +153,21 @@ légende.
 `UploadedPhotosSource`. Changer de source ne touche ni au pipeline, ni à
 l'interface.
 
-**Sur Airbnb.** Rien ne garantit qu'une récupération directe soit permise. Le
-mode par défaut (`AIRBNB_FETCH_MODE=demo`) valide le lien et illustre la
-séquence avec le jeu local : l'application est utilisable de bout en bout sans
-rien solliciter. Le mode `live` vérifie `robots.txt` avant toute requête,
-s'identifie honnêtement, et s'arrête avec une erreur explicite si le site
-renvoie une page de vérification. **Aucune protection anti-robot, aucun CAPTCHA
-et aucun mécanisme d'accès ne sont contournés.** L'import de photos est le
-chemin qui fonctionne toujours.
+**Sur Airbnb.** Un lien d'annonce déclenche la récupération de ses vraies
+photos, depuis sa page publique, après vérification de `robots.txt` et avec un
+user-agent déclaré. **Aucune protection anti-robot, aucun CAPTCHA et aucun
+mécanisme d'accès ne sont contournés** : un refus, une page de vérification ou
+une absence de photo produisent une erreur, et l'écran d'erreur propose
+d'importer vos photos — qui donnent exactement le même résultat.
+
+**Aucune photo n'est jamais substituée à une autre.** La démonstration est une
+source distincte, qui ne répond qu'à une demande explicite (`demo:` dans le
+champ, ou le lien « voir un exemple »), et la vidéo produite est signalée comme
+telle à l'écran. Un lien qu'on ne peut pas lire doit le dire ; l'illustrer avec
+d'autres images reviendrait à mentir sur le contenu de la vidéo.
+
+`AIRBNB_FETCH_MODE=disabled` refuse toute URL, pour un déploiement qui ne veut
+fonctionner que par import.
 
 ---
 

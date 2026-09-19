@@ -1,6 +1,7 @@
 import { env } from '@/lib/env';
 import { atriumError } from '@/lib/errors';
 import { AirbnbListingSource } from './airbnb';
+import { DemoListingSource } from './demo';
 import { LocalFolderListingSource } from './folder';
 import { UploadedPhotosSource } from './upload';
 import type { ListingInput, ListingSource } from './types';
@@ -13,7 +14,11 @@ export { parseAirbnbUrl, looksLikeAirbnbUrl } from './url';
  * et à l'inscrire ici : ni le pipeline ni l'interface n'en dépendent.
  */
 function registry(): ListingSource[] {
-  const sources: ListingSource[] = [new AirbnbListingSource(), new UploadedPhotosSource()];
+  const sources: ListingSource[] = [
+    new AirbnbListingSource(),
+    new UploadedPhotosSource(),
+    new DemoListingSource(),
+  ];
   if (env.allowLocalFolderSource) sources.push(new LocalFolderListingSource());
   return sources;
 }
@@ -32,6 +37,8 @@ export function resolveSource(input: ListingInput): ListingSource {
 /** Transforme la saisie brute de l'utilisateur en entrée de source typée. */
 export function parseUserInput(raw: string): ListingInput {
   const value = raw.trim();
+  // La démonstration se demande ; elle ne se déclenche jamais toute seule.
+  if (value === 'demo:' || value === 'demo') return { kind: 'demo' };
   if (value.startsWith('folder:')) {
     if (!env.allowLocalFolderSource) {
       throw atriumError('INVALID_URL', 'Source dossier local désactivée');

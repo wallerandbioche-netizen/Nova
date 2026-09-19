@@ -26,7 +26,7 @@ function oneOf<T extends string>(name: string, allowed: readonly T[], fallback: 
 }
 
 export type VisionProvider = 'auto' | 'anthropic' | 'heuristic';
-export type AirbnbFetchMode = 'demo' | 'live' | 'disabled';
+export type AirbnbFetchMode = 'live' | 'disabled';
 
 /**
  * Configuration résolue une fois par processus. Aucune valeur n'est requise :
@@ -42,11 +42,7 @@ export const env = {
   anthropicVisionModel: str('ANTHROPIC_VISION_MODEL', 'claude-sonnet-5'),
   visionBatchSize: int('VISION_BATCH_SIZE', 6, 1, 12),
 
-  airbnbFetchMode: oneOf<AirbnbFetchMode>(
-    'AIRBNB_FETCH_MODE',
-    ['demo', 'live', 'disabled'],
-    'demo',
-  ),
+  airbnbFetchMode: oneOf<AirbnbFetchMode>('AIRBNB_FETCH_MODE', ['live', 'disabled'], 'live'),
   airbnbUserAgent: str(
     'AIRBNB_USER_AGENT',
     'AtriumBot/0.1 (+https://example.com/atrium; contact@example.com)',

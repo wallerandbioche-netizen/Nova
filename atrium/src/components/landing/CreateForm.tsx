@@ -2,78 +2,50 @@
 
 import { AnimatePresence, motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
-import { useRef, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/Button';
 import { looksLikeAirbnbUrl } from '@/lib/listing/url';
 import { cn } from '@/lib/cn';
-import type { ApiErrorResponse, CreateProjectResponse, UploadResponse } from '@/types/api';
+import { GENERIC_ERROR, startProject } from './createProject';
+import { ImportPhotos } from './ImportPhotos';
 
-const GENERIC_ERROR = 'Une erreur est survenue. Veuillez réessayer.';
-
-async function readError(response: Response): Promise<string> {
-  const body = (await response.json().catch(() => null)) as ApiErrorResponse | null;
-  return body?.error?.message ?? GENERIC_ERROR;
+/** Saisies de développement acceptées en plus d'un lien d'annonce. */
+function isDeveloperInput(value: string): boolean {
+  return value === 'demo:' || value === 'demo' || value.startsWith('folder:');
 }
 
 export function CreateForm() {
   const router = useRouter();
-  const fileInput = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState<null | 'link' | 'upload'>(null);
+  const [busy, setBusy] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  async function start(body: Record<string, unknown>): Promise<void> {
-    const response = await fetch('/api/projects', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (!response.ok) throw new Error(await readError(response));
-    const { id } = (await response.json()) as CreateProjectResponse;
-    router.push(`/p/${id}`);
+  async function launch(body: Record<string, unknown>): Promise<void> {
+    setError(null);
+    setBusy(true);
+    setSubmitting(true);
+    try {
+      router.push(`/p/${await startProject(body)}`);
+    } catch (failure) {
+      setError(failure instanceof Error ? failure.message : GENERIC_ERROR);
+      setBusy(false);
+      setSubmitting(false);
+    }
   }
 
   async function onSubmit(event: FormEvent): Promise<void> {
     event.preventDefault();
-    if (pending) return;
+    if (busy) return;
 
     const source = value.trim();
     // Un lien manifestement invalide est signalé sans aller-retour serveur :
     // l'utilisateur regarde encore son champ.
-    if (source === '' || (!looksLikeAirbnbUrl(source) && !source.startsWith('folder:'))) {
+    if (source === '' || (!looksLikeAirbnbUrl(source) && !isDeveloperInput(source))) {
       setError('Ce lien ne semble pas être une annonce valide.');
       return;
     }
-
-    setError(null);
-    setPending('link');
-    try {
-      await start({ source });
-    } catch (failure) {
-      setError(failure instanceof Error ? failure.message : GENERIC_ERROR);
-      setPending(null);
-    }
-  }
-
-  async function onFiles(event: ChangeEvent<HTMLInputElement>): Promise<void> {
-    const files = [...(event.target.files ?? [])];
-    event.target.value = '';
-    if (files.length === 0) return;
-
-    setError(null);
-    setPending('upload');
-    try {
-      const form = new FormData();
-      for (const file of files) form.append('photos', file);
-
-      const response = await fetch('/api/uploads', { method: 'POST', body: form });
-      if (!response.ok) throw new Error(await readError(response));
-      const { uploadId } = (await response.json()) as UploadResponse;
-      await start({ uploadId });
-    } catch (failure) {
-      setError(failure instanceof Error ? failure.message : GENERIC_ERROR);
-      setPending(null);
-    }
+    await launch({ source });
   }
 
   return (
@@ -103,7 +75,7 @@ export function CreateForm() {
               setValue(event.target.value);
               if (error) setError(null);
             }}
-            disabled={pending !== null}
+            disabled={busy}
             className={cn(
               'h-13 w-full min-w-0 rounded-full border bg-surface px-5 text-[1rem]',
               'tracking-[-0.011em] outline-none placeholder:text-faint',
@@ -112,13 +84,13 @@ export function CreateForm() {
               error ? 'border-danger/40' : 'border-line focus:border-ink/30',
             )}
           />
-          <Button type="submit" size="lg" disabled={pending !== null} className="w-full sm:w-auto">
-            {pending === 'link' ? 'Analyse en cours' : 'Créer la vidéo'}
+          <Button type="submit" size="lg" disabled={busy} className="w-full sm:w-auto">
+            {submitting ? 'Analyse en cours' : 'Créer la vidéo'}
           </Button>
         </div>
       </form>
 
-      <div className="mt-4 flex min-h-6 flex-wrap items-center justify-center gap-x-3 gap-y-1 text-caption">
+      <div className="mt-4 flex min-h-6 items-center justify-center text-caption">
         <AnimatePresence mode="wait" initial={false}>
           {error ? (
             <motion.p
@@ -147,26 +119,21 @@ export function CreateForm() {
         </AnimatePresence>
       </div>
 
-      <div className="mt-5 text-center">
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        <ImportPhotos disabled={busy} onError={setError} onBusyChange={setBusy} />
+        <span className="text-caption text-line-strong" aria-hidden="true">
+          ·
+        </span>
         <button
           type="button"
-          onClick={() => fileInput.current?.click()}
-          disabled={pending !== null}
+          disabled={busy}
+          onClick={() => void launch({ source: 'demo:' })}
           className="text-caption text-muted underline decoration-line-strong underline-offset-4
                      transition-colors duration-quick hover:text-ink hover:decoration-ink/40
                      disabled:opacity-40"
         >
-          {pending === 'upload' ? 'Import en cours…' : 'ou importez vos photos'}
+          voir un exemple
         </button>
-        <input
-          ref={fileInput}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/avif"
-          multiple
-          className="sr-only"
-          onChange={onFiles}
-          tabIndex={-1}
-        />
       </div>
     </div>
   );
