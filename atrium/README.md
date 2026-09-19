@@ -14,6 +14,16 @@ caméra et des fondus.
 
 ## Démarrer
 
+**Le plus simple** : double-cliquez sur `demarrer.command` (macOS, Linux) ou
+`demarrer.bat` (Windows), à la racine de ce dossier. Le script installe ce
+qu'il faut à la première utilisation, démarre l'application et ouvre votre
+navigateur. Seul prérequis : [Node.js](https://nodejs.org) 20 ou plus.
+
+Sur macOS, un fichier téléchargé depuis internet est bloqué au premier
+lancement : faites un clic droit sur `demarrer.command`, puis « Ouvrir ».
+
+**En ligne de commande** :
+
 ```bash
 cd atrium
 npm install
