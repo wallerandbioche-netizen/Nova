@@ -4,7 +4,11 @@ node_modules
 out
 dist
 *.tsbuildinfo
-next-env.d.ts.timestamp
+
+# Régénérés par `next dev` / `next build` à chaque exécution.
+next-env.d.ts
+AGENTS.md
+CLAUDE.md
 .env
 .env.local
 .data
