@@ -1,8 +1,8 @@
 node_modules
-.next
-.turbo
-out
-dist
+/.next
+/.turbo
+/out
+/dist
 *.tsbuildinfo
 
 # Régénérés par `next dev` / `next build` à chaque exécution.
@@ -11,6 +11,6 @@ AGENTS.md
 CLAUDE.md
 .env
 .env.local
-.data
-samples/
-coverage
+/.data
+/samples/
+/coverage
