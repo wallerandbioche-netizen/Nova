@@ -1,0 +1,12 @@
+node_modules
+.next
+.turbo
+out
+dist
+*.tsbuildinfo
+next-env.d.ts.timestamp
+.env
+.env.local
+.data
+samples/
+coverage

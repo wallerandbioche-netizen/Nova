@@ -1,0 +1,238 @@
+@import 'tailwindcss';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ATRIUM — DESIGN SYSTEM
+   Un seul principe : rien ne doit attirer l'attention avant le contenu.
+   Deux encres, quatre gris, un accent. Pas de dégradé, pas d'ombre portée
+   appuyée, pas de bordure épaisse. Le mouvement remplace la décoration.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Couleurs ───────────────────────────────────────────────────────────── */
+  --color-canvas: #fcfcfd;
+  --color-surface: #ffffff;
+  --color-veil: #f4f4f5;
+  --color-line: #e7e7ea;
+  --color-line-strong: #d8d8dd;
+  --color-ink: #0b0b0c;
+  --color-ink-soft: #2a2a30;
+  --color-muted: #6b6b73;
+  --color-faint: #9a9aa2;
+  --color-accent: #2e5bff;
+  --color-accent-soft: #eef2ff;
+  --color-danger: #b4341f;
+
+  /* ── Typographie ────────────────────────────────────────────────────────── */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter',
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', ui-monospace, 'JetBrains Mono', Menlo, monospace;
+
+  --text-display: clamp(2.875rem, 8.5vw, 5.5rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.045em;
+  --text-display--font-weight: 600;
+
+  --text-title: clamp(1.875rem, 4.2vw, 2.75rem);
+  --text-title--line-height: 1.06;
+  --text-title--letter-spacing: -0.032em;
+  --text-title--font-weight: 600;
+
+  --text-heading: 1.3125rem;
+  --text-heading--line-height: 1.28;
+  --text-heading--letter-spacing: -0.02em;
+  --text-heading--font-weight: 560;
+
+  --text-lead: clamp(1.0625rem, 1.5vw, 1.1875rem);
+  --text-lead--line-height: 1.55;
+  --text-lead--letter-spacing: -0.012em;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+  --text-caption--letter-spacing: 0em;
+
+  /* ── Rayons ─────────────────────────────────────────────────────────────── */
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-2xl: 36px;
+
+  /* ── Élévation : des contours, pas des ombres ───────────────────────────── */
+  --shadow-hair: 0 1px 2px rgb(11 11 12 / 0.04);
+  --shadow-lift: 0 2px 6px rgb(11 11 12 / 0.05), 0 12px 32px -18px rgb(11 11 12 / 0.22);
+  --shadow-film: 0 30px 90px -50px rgb(11 11 12 / 0.55);
+
+  /* ── Mouvement ──────────────────────────────────────────────────────────── */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-tap: 110ms;
+  --duration-quick: 180ms;
+  --duration-calm: 320ms;
+  --duration-slow: 620ms;
+}
+
+/* ── Mode sombre : mêmes rôles, valeurs inversées ─────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-canvas: #08080a;
+    --color-surface: #0f0f12;
+    --color-veil: #141418;
+    --color-line: #232329;
+    --color-line-strong: #32323a;
+    --color-ink: #f6f6f7;
+    --color-ink-soft: #d7d7dc;
+    --color-muted: #8f8f99;
+    --color-faint: #63636c;
+    --color-accent: #7f9bff;
+    --color-accent-soft: #161a2e;
+  }
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'cv11' 1;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-accent) 18%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+
+  input::placeholder {
+    color: var(--color-faint);
+  }
+
+  /* Les champs ne doivent jamais zoomer sur iOS. */
+  @media (max-width: 480px) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
+}
+
+/* ── Primitives d'animation ───────────────────────────────────────────────── */
+@keyframes atrium-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes atrium-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes atrium-sheen {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+@keyframes atrium-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+}
+
+@utility rise {
+  animation: atrium-rise var(--duration-slow) var(--ease-out-soft) both;
+}
+
+@utility fade-in {
+  animation: atrium-fade var(--duration-calm) var(--ease-out-soft) both;
+}
+
+/* Toute animation devient instantanée si l'utilisateur le demande. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Démonstration de la page d'accueil ───────────────────────────────────── */
+@keyframes atrium-cycle {
+  0% {
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 1;
+  }
+  36% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes atrium-kenburns {
+  0% {
+    transform: scale(1.06) translate3d(-1.2%, 0.6%, 0);
+  }
+  36% {
+    transform: scale(1.14) translate3d(1.2%, -0.6%, 0);
+  }
+  100% {
+    transform: scale(1.14) translate3d(1.2%, -0.6%, 0);
+  }
+}

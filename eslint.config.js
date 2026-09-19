@@ -10,6 +10,8 @@ export default tseslint.config(
       '**/.expo/**',
       '**/coverage/**',
       '**/prisma/generated/**',
+      // Atrium vit hors du workspace pnpm et a sa propre configuration ESLint.
+      'atrium/**',
       '**/*.config.js',
       '**/*.config.cjs',
     ],
