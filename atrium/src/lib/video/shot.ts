@@ -163,13 +163,17 @@ export function buildShotFilter(
  * Extrait la zone utile de la photo et la porte à la résolution de travail.
  * Le rééchantillonnage passe par sharp (Lanczos), nettement meilleur et plus
  * rapide que de le confier à ffmpeg image par image.
+ *
+ * `exposure` rapproche le plan de la luminosité de la série ; à 1, la photo
+ * traverse le traitement sans être touchée.
  */
 export async function prepareShotImage(
   sourcePath: string,
   plan: ShotPlan,
   outputPath: string,
+  exposure = 1,
 ): Promise<void> {
-  await sharp(sourcePath, { failOn: 'none' })
+  const pipeline = sharp(sourcePath, { failOn: 'none' })
     .rotate()
     .removeAlpha()
     .extract({
@@ -178,7 +182,9 @@ export async function prepareShotImage(
       width: plan.extract.width,
       height: plan.extract.height,
     })
-    .resize(plan.work.width, plan.work.height, { kernel: 'lanczos3', fit: 'fill' })
-    .jpeg({ quality: 95, chromaSubsampling: '4:4:4' })
-    .toFile(outputPath);
+    .resize(plan.work.width, plan.work.height, { kernel: 'lanczos3', fit: 'fill' });
+
+  if (exposure !== 1) pipeline.modulate({ brightness: exposure });
+
+  await pipeline.jpeg({ quality: 95, chromaSubsampling: '4:4:4' }).toFile(outputPath);
 }

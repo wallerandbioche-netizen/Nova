@@ -38,6 +38,8 @@ export interface RenderScene {
   /** Transition vers la scène suivante ; `null` sur la dernière. */
   transitionType: TransitionType | null;
   transitionDuration: number;
+  /** Multiplicateur de luminosité harmonisant le plan avec la série. */
+  exposure: number;
 }
 
 export interface RenderRequest {
@@ -105,7 +107,7 @@ export class FfmpegRenderer implements VideoRenderer {
       const workImage = path.join(workDir, `shot_${slug}.jpg`);
       const segment = path.join(workDir, `shot_${slug}.mp4`);
 
-      await prepareShotImage(scene.imagePath, plan, workImage);
+      await prepareShotImage(scene.imagePath, plan, workImage, scene.exposure);
       await runFfmpeg(
         [
           '-y',

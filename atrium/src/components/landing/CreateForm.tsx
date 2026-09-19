@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/Button';
 import { looksLikeAirbnbUrl } from '@/lib/listing/url';
 import { cn } from '@/lib/cn';
 import { GENERIC_ERROR, startProject } from './createProject';
-import { ImportPhotos } from './ImportPhotos';
 
 /** Saisies de développement acceptées en plus d'un lien d'annonce. */
 function isDeveloperInput(value: string): boolean {
@@ -113,17 +112,13 @@ export function CreateForm() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.22 }}
             >
-              Aucune musique. Aucune voix. Juste votre espace.
+              Les photos de l’annonce sont récupérées depuis sa page publique.
             </motion.p>
           )}
         </AnimatePresence>
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-        <ImportPhotos disabled={busy} onError={setError} onBusyChange={setBusy} />
-        <span className="text-caption text-line-strong" aria-hidden="true">
-          ·
-        </span>
+      <div className="mt-4 flex justify-center">
         <button
           type="button"
           disabled={busy}

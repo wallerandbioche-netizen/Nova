@@ -1,11 +1,12 @@
-import { CreateForm } from '@/components/landing/CreateForm';
 import { Header } from '@/components/landing/Header';
+import { LinkOption } from '@/components/landing/LinkOption';
+import { PhotoDropzone } from '@/components/landing/PhotoDropzone';
 import { Showcase } from '@/components/landing/Showcase';
 import { Reveal } from '@/components/ui/Reveal';
 import Link from 'next/link';
 
 const STEPS = [
-  ['Un lien', 'Vous collez l’adresse de votre annonce.'],
+  ['Vos photos', 'Vous déposez les photos de votre logement. Rien d’autre à remplir.'],
   ['Une lecture', 'Les espaces, les meilleures vues et l’ordre sont déduits des photos.'],
   ['Une vidéo', 'Mouvements de caméra, transitions, montage. Rien à régler.'],
 ];
@@ -16,10 +17,10 @@ export default function HomePage() {
       <Header />
 
       <main className="flex-1">
-        <section className="mx-auto flex max-w-6xl flex-col items-center px-5 pb-20 pt-20 text-center sm:px-8 sm:pb-28 sm:pt-32">
+        <section className="mx-auto flex max-w-6xl flex-col items-center px-5 pb-20 pt-20 text-center sm:px-8 sm:pb-28 sm:pt-28">
           <Reveal>
             <h1 className="text-display text-balance">
-              Votre espace,
+              Vos photos,
               <br />
               en mouvement.
             </h1>
@@ -27,18 +28,22 @@ export default function HomePage() {
 
           <Reveal delay={0.08}>
             <p className="mx-auto mt-7 max-w-lg text-lead text-balance text-muted">
-              Transformez les photos de votre logement en une vidéo cinématique en quelques
-              secondes.
+              Déposez les photos de votre logement. Atrium retient les meilleures, les met en ordre
+              et en fait une vidéo cinématique.
             </p>
           </Reveal>
 
           <Reveal delay={0.16} className="mt-11 flex w-full justify-center">
-            <CreateForm />
+            <PhotoDropzone />
+          </Reveal>
+
+          <Reveal delay={0.24} className="mt-8 flex w-full max-w-xl justify-center">
+            <LinkOption />
           </Reveal>
         </section>
 
         <section className="px-5 pb-24 sm:px-8 sm:pb-32">
-          <Reveal delay={0.24}>
+          <Reveal delay={0.3}>
             <Showcase />
           </Reveal>
         </section>

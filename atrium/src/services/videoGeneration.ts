@@ -3,6 +3,7 @@ import path from 'node:path';
 import { env } from '@/lib/env';
 import { newId } from '@/lib/id';
 import { storage } from '@/lib/storage/local';
+import { exposurePlan } from '@/lib/video/grade';
 import { videoRenderer, type RenderScene } from '@/lib/video/renderer';
 import { FORMAT_DIMENSIONS, type Image, type Scene, type Video, type VideoFormat } from '@/types/domain';
 import { absolutePath } from './ingest';
@@ -32,10 +33,15 @@ export async function generateVideo({
   const store = storage();
   const byId = new Map(images.map((image) => [image.id, image]));
 
-  const renderScenes: RenderScene[] = scenes
-    .slice()
-    .sort((a, b) => a.order - b.order)
-    .map((scene) => {
+  const ordered = scenes.slice().sort((a, b) => a.order - b.order);
+
+  // L'exposition s'harmonise à l'échelle de la séquence, qui est sa propre
+  // référence : une série déjà homogène traverse l'étape sans être touchée.
+  const exposures = exposurePlan(
+    ordered.map((scene) => byId.get(scene.imageId)?.analysis?.brightness ?? 0.5),
+  );
+
+  const renderScenes: RenderScene[] = ordered.map((scene, index) => {
       const image = byId.get(scene.imageId);
       if (!image) throw new Error(`Photo ${scene.imageId} absente du projet`);
       return {
@@ -47,6 +53,7 @@ export async function generateVideo({
         duration: scene.duration,
         transitionType: scene.transitionType,
         transitionDuration: scene.transitionDuration,
+        exposure: exposures[index] ?? 1,
       };
     });
 

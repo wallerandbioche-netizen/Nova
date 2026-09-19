@@ -1,10 +1,10 @@
 # Atrium
 
-Transforme les photos d'une annonce en une courte vidéo immobilière.
+Transforme un dossier de photos en une courte vidéo immobilière.
 
-Vous collez un lien, l'application lit les photos, comprend les espaces, choisit
-les meilleures vues, les met dans un ordre qui raconte quelque chose, anime
-chacune d'elles et rend un MP4.
+Vous déposez les photos de votre logement, l'application les lit, comprend les
+espaces, retient les meilleures vues, les met dans un ordre qui raconte quelque
+chose, anime chacune d'elles et rend un MP4.
 
 **La vidéo ne contient que vos photographies.** Ni musique, ni voix, ni texte,
 ni logo, ni sous-titre, ni élément graphique — seulement des mouvements de
@@ -22,8 +22,9 @@ npm run dev
 
 Puis ouvrez <http://localhost:3000>.
 
-Aucune configuration n'est nécessaire. Collez un lien d'annonce pour créer une
-vidéo à partir de ses photos, ou importez les vôtres.
+Aucune configuration n'est nécessaire. Déposez vos photos sur la page
+d'accueil — c'est tout le parcours. Partir d'un lien d'annonce reste possible,
+replié sous le dépôt.
 
 Pour voir le produit fonctionner sans annonce — ou si votre réseau ne permet
 pas d'atteindre le site —, le lien « voir un exemple » de l'accueil monte une
@@ -51,7 +52,7 @@ npm run doctor
 | `npm run samples` | (Re)génère le jeu de photos de démonstration |
 | `npm run render:local -- <dossier> --format 9:16` | Rend une vidéo depuis un dossier de photos, sans interface |
 
-### Éprouver le moteur sur vos propres photos
+### Rendre une vidéo sans passer par l'interface
 
 ```bash
 npm run render:local -- ~/Photos/appartement --format 16:9
@@ -146,12 +147,42 @@ qui répond quand aucune clé n'est configurée. Il reste nettement moins fin qu
 le premier sur le classement des espaces, en particulier sur des photos sans
 légende.
 
-### Sources d'annonces
+### Préparation des photos dans le navigateur
+
+Les photos sont réduites à 2800 pixels et réencodées avant d'être envoyées. Un
+lot de photos de téléphone passe ainsi de plus de cent mégaoctets à quelques-uns,
+sans rien coûter à la qualité : le serveur applique de toute façon cette limite,
+et le rendu travaille sur une définition bien supérieure à celle de la sortie.
+
+`createImageBitmap` est appelé avec `imageOrientation: 'from-image'`, ce qui
+applique l'orientation EXIF aux pixels — sans quoi une photo prise à la
+verticale arriverait couchée une fois ses métadonnées perdues au réencodage.
+
+L'envoi passe par `XMLHttpRequest` : c'est le seul moyen d'obtenir un événement
+de progression d'envoi, et une barre qui n'avance pas sur un lot de vingt
+photos donne l'impression que rien ne se passe.
+
+### Harmonisation de l'exposition
+
+Des photos prises au fil des heures alternent pièces claires et pièces sombres.
+Enchaînées, elles donnent une vidéo qui clignote — c'est ce qui trahit le plus
+nettement un montage amateur.
+
+La série est sa propre référence : aucune exposition idéale n'est visée, un
+logement clair reste clair. Chaque plan est seulement rapproché de la médiane,
+à 60 % de l'écart, dans une amplitude de ±8 %. Une série déjà homogène — écart
+inter-déciles inférieur à 0,08 — traverse l'étape sans être touchée, et une
+seule photo aberrante ne suffit pas à déclencher le traitement de toutes les
+autres.
+
+`npm run render:local` affiche la correction appliquée à chaque plan.
+
+### Sources de photos
 
 `ListingSource` abstrait l'origine des photos. Quatre implémentations :
-`AirbnbListingSource`, `DemoListingSource`, `LocalFolderListingSource`,
-`UploadedPhotosSource`. Changer de source ne touche ni au pipeline, ni à
-l'interface.
+`UploadedPhotosSource` (le parcours principal), `AirbnbListingSource`,
+`LocalFolderListingSource` et `DemoListingSource`. Changer de source ne touche
+ni au pipeline, ni à l'interface.
 
 **Sur Airbnb.** Un lien d'annonce déclenche la récupération de ses vraies
 photos, depuis sa page publique, après vérification de `robots.txt` et avec un
@@ -210,7 +241,7 @@ atrium/
 ## Pipeline
 
 ```
-URL ou photos
+Photos déposées (ou lien d'annonce)
    ↓  récupération            ListingSource
    ↓  normalisation           sharp : orientation, définition, encodage
    ↓  empreinte               dHash 64 bits
@@ -220,6 +251,7 @@ URL ou photos
    ↓  sélection               plafonds par espace, 5 à 12 photos
    ↓  storyboard              ordre, durées, mouvements, transitions
    ↓  cadrage                 cadre de départ et d'arrivée par plan
+   ↓  exposition              harmonisation entre les plans
    ↓  rendu                   un segment par plan
    ↓  montage                 fondus enchaînés, fermeture au noir
    ↓  encodage                H.264, MP4, faststart

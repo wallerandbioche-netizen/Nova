@@ -11,6 +11,7 @@ import { newId } from '../src/lib/id';
 import { storage } from '../src/lib/storage/local';
 import { analyzeImages, curateImages } from '../src/services/imageAnalysis';
 import { captionsByPosition, ingestListing } from '../src/services/ingest';
+import { exposurePlan } from '../src/lib/video/grade';
 import { buildStoryboard, storyboardDuration } from '../src/services/storyboard';
 import { generateVideo } from '../src/services/videoGeneration';
 import { ROOM_LABELS, VIDEO_FORMATS, type VideoFormat } from '../src/types/domain';
@@ -52,10 +53,19 @@ process.stdout.write('\n');
 curateImages(images);
 const scenes = buildStoryboard({ projectId, images, format });
 
-console.log(`\nSéquence  ${scenes.length} plans · ${storyboardDuration(scenes).toFixed(1)} s\n`);
+const exposures = exposurePlan(
+  scenes.map((scene) => images.find((i) => i.id === scene.imageId)?.analysis?.brightness ?? 0.5),
+);
+const harmonised = exposures.some((factor) => factor !== 1);
+
+console.log(`\nSéquence  ${scenes.length} plans · ${storyboardDuration(scenes).toFixed(1)} s`);
+console.log(
+  `Exposition ${harmonised ? 'harmonisée entre les plans' : 'déjà homogène, laissée intacte'}\n`,
+);
 for (const scene of scenes) {
   const image = images.find((candidate) => candidate.id === scene.imageId)!;
   const analysis = image.analysis!;
+  const exposure = exposures[scene.order] ?? 1;
   console.log(
     [
       String(scene.order + 1).padStart(2, ' '),
@@ -63,6 +73,7 @@ for (const scene of scenes) {
       ROOM_LABELS[analysis.roomType].padEnd(16),
       `q ${analysis.qualityScore.toFixed(2)}`,
       `c ${analysis.compositionScore.toFixed(2)}`,
+      `exp ${exposure === 1 ? '  —' : `×${exposure.toFixed(2)}`}`,
       `${scene.duration.toFixed(1)}s`.padStart(5),
       scene.motionType.padEnd(15),
       scene.transitionType ?? '—',
