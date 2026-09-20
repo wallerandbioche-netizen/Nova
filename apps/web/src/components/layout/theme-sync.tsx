@@ -21,9 +21,15 @@ export function ThemeSync() {
 
     apply();
     if (settings.theme !== 'auto') return;
+
+    // Older Safari only exposes the deprecated listener API.
     const media = window.matchMedia('(prefers-color-scheme: dark)');
-    media.addEventListener('change', apply);
-    return () => media.removeEventListener('change', apply);
+    if (typeof media.addEventListener === 'function') {
+      media.addEventListener('change', apply);
+      return () => media.removeEventListener('change', apply);
+    }
+    media.addListener(apply);
+    return () => media.removeListener(apply);
   }, [settings.theme]);
 
   return null;

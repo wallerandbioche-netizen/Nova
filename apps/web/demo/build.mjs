@@ -34,7 +34,8 @@ const result = await esbuild.build({
   bundle: true,
   minify: true,
   format: 'iife',
-  target: ['es2020'],
+  // Kept low so the demo also runs on older mobile browsers.
+  target: ['es2017', 'safari13', 'chrome79', 'firefox78'],
   jsx: 'automatic',
   outfile: resolve(outDir, 'app.js'),
   metafile: true,
