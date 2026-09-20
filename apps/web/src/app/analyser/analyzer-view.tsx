@@ -27,6 +27,7 @@ import { Tabs } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/toast';
 import { useHistory } from '@/hooks/use-history';
 import { useSettings } from '@/hooks/use-settings';
+import { drawingColor } from '@/lib/charts/theme';
 import { ASSETS, generateCandles } from '@/lib/market-data';
 import { RISK_PROFILE_LABEL } from '@/lib/utils/labels';
 import { createId } from '@/lib/utils/id';
@@ -91,6 +92,7 @@ export function AnalyzerView({
   );
 
   const asset = ASSETS.find((item) => item.id === assetId) ?? ASSETS[0]!;
+  const theme = settings.theme === 'dark' ? 'dark' : 'light';
   const matchesAnalysis =
     analysis !== null && analysis.asset.id === assetId && analysis.timeframe === timeframe;
 
@@ -211,21 +213,12 @@ export function AnalyzerView({
                   : tool === 'resistance'
                     ? 'Résistance'
                     : undefined,
-          color:
-            tool === 'stop'
-              ? 'var(--color-short)'
-              : tool === 'entry'
-                ? 'var(--color-brand)'
-                : tool === 'support'
-                  ? 'var(--color-long)'
-                  : tool === 'resistance'
-                    ? 'var(--color-short)'
-                    : 'var(--color-brand)',
+          color: drawingColor(tool, theme),
         },
       ]);
       setPending([]);
     },
-    [tool, pending],
+    [tool, pending, theme],
   );
 
   const chart = (
@@ -237,7 +230,7 @@ export function AnalyzerView({
       levels={matchesAnalysis ? analysis.supportResistance : []}
       swings={matchesAnalysis ? analysis.marketStructure.swings : []}
       drawings={drawings}
-      theme={settings.theme === 'dark' ? 'dark' : 'light'}
+      theme={theme}
       height={fullscreen ? Math.max(520, (mounted ? window.innerHeight : 800) - 190) : 460}
       onChartClick={handleChartClick}
       crosshairArmed={tool !== 'cursor'}

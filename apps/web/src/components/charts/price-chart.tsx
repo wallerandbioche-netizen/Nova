@@ -325,9 +325,15 @@ export function PriceChart({
 
     chart.timeScale().fitContent();
 
-    const handleClick = (param: { time?: Time; point?: { x: number; y: number } }) => {
+    const handleClick = (param: {
+      time?: Time;
+      point?: { x: number; y: number };
+      paneIndex?: number;
+    }) => {
       const handler = clickHandlerRef.current;
       if (!handler || !param.point || param.time === undefined) return;
+      // Coordinates are pane relative: only the price pane can be converted.
+      if (param.paneIndex !== undefined && param.paneIndex !== 0) return;
       const price = priceSeries.coordinateToPrice(param.point.y);
       if (price == null) return;
       handler({ time: Number(param.time), price: Number(price) });

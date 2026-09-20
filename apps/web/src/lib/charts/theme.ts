@@ -68,3 +68,26 @@ export const DARK_PALETTE: ChartPalette = {
 export function paletteFor(theme: 'light' | 'dark'): ChartPalette {
   return theme === 'dark' ? DARK_PALETTE : LIGHT_PALETTE;
 }
+
+/** Colour of a drawing, resolved for the charting library (no CSS variables). */
+export function drawingColor(
+  tool:
+    'trendline' | 'horizontal' | 'support' | 'resistance' | 'entry' | 'stop' | 'target' | 'zone',
+  theme: 'light' | 'dark',
+): string {
+  const palette = paletteFor(theme);
+  switch (tool) {
+    case 'support':
+      return palette.up;
+    case 'resistance':
+      return palette.down;
+    case 'stop':
+      return palette.stop;
+    case 'target':
+      return palette.target;
+    case 'entry':
+      return palette.entry;
+    default:
+      return palette.ema20;
+  }
+}
