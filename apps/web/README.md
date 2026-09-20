@@ -132,6 +132,12 @@ analyses de démonstration et le journal de départ, toujours étiquetés comme 
 - Les performances passées, simulées ou non, ne préjugent pas des performances futures — et le
   moteur de backtest (`lib/analysis/backtest.ts`) le rappelle dans son rapport.
 
+## Déploiement
+
+Voir [`DEPLOY.md`](./DEPLOY.md) : le site complet demande un hébergeur Node (la route
+`/api/analyze/screenshot` y vit) et une clé d'API pour la lecture d'image. La
+démonstration statique, elle, se pose sur n'importe quel serveur de fichiers.
+
 ## Configuration
 
 Voir `.env.example`. Tout est optionnel ; aucune clé n'est jamais exposée au navigateur, les
