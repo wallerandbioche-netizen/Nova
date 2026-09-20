@@ -2,7 +2,7 @@
   "name": "nova",
   "version": "0.1.0",
   "private": true,
-  "description": "NOVA — votre copilote personnel pour comprendre vos investissements",
+  "description": "NOVA \u2014 votre copilote personnel pour comprendre vos investissements",
   "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=20.11"
@@ -28,7 +28,9 @@
     "demo:reset": "pnpm --filter @nova/api db:seed",
     "infra:up": "docker compose -f infrastructure/docker-compose.yml up -d",
     "infra:down": "docker compose -f infrastructure/docker-compose.yml down",
-    "dev:offline": "EXPO_OFFLINE=1 pnpm dev"
+    "dev:offline": "EXPO_OFFLINE=1 pnpm dev",
+    "dev:web": "pnpm --filter @scantrade/web dev",
+    "build:web": "pnpm --filter @scantrade/web build"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

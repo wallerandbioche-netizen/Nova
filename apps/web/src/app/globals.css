@@ -1,0 +1,178 @@
+@import 'tailwindcss';
+
+/*
+ * SCAN TRADE design tokens.
+ * Values are derived from the interface reference: a light, dense, financial
+ * product — white surfaces on a cool grey canvas, one vivid blue accent,
+ * generous radii and near-invisible shadows.
+ */
+@theme {
+  --color-canvas: #f4f6fa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+  --color-surface-raised: #ffffff;
+
+  --color-line: #e6ebf3;
+  --color-line-strong: #d7e0ec;
+
+  --color-ink: #0b1220;
+  --color-ink-muted: #667a94;
+  --color-ink-subtle: #93a2b8;
+
+  --color-brand: #1f6feb;
+  --color-brand-hover: #1a5fd0;
+  --color-brand-soft: #eaf2fe;
+  --color-brand-ring: #bcd6fd;
+
+  --color-long: #16a34a;
+  --color-long-soft: #e9f8ef;
+  --color-short: #dc2626;
+  --color-short-soft: #fdeceb;
+  --color-warn: #d97706;
+  --color-warn-soft: #fef4e6;
+  --color-neutral-tone: #64748b;
+  --color-neutral-soft: #eef2f7;
+
+  --radius-card: 14px;
+  --radius-control: 10px;
+
+  --font-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-raised: 0 8px 24px rgba(16, 24, 40, 0.08);
+  --shadow-pop: 0 12px 32px rgba(16, 24, 40, 0.12);
+}
+
+/* Dark theme — the Profil screen exposes Clair / Sombre / Auto. */
+@layer base {
+  :root[data-theme='dark'] {
+    --color-canvas: #080d16;
+    --color-surface: #101827;
+    --color-surface-muted: #151f31;
+    --color-surface-raised: #16202f;
+
+    --color-line: #1e2a3d;
+    --color-line-strong: #2a3850;
+
+    --color-ink: #eef3fb;
+    --color-ink-muted: #94a6bf;
+    --color-ink-subtle: #6c7f99;
+
+    --color-brand: #4d92ff;
+    --color-brand-hover: #6ba4ff;
+    --color-brand-soft: #14294a;
+    --color-brand-ring: #24457a;
+
+    --color-long: #2fbd6a;
+    --color-long-soft: #10281c;
+    --color-short: #f0555a;
+    --color-short-soft: #2a1417;
+    --color-warn: #eda52f;
+    --color-warn-soft: #2b2010;
+    --color-neutral-tone: #93a5bd;
+    --color-neutral-soft: #1a2434;
+
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'tnum';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-brand-soft);
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Thin scrollbars keep dense panels readable. */
+@layer utilities {
+  .scroll-slim {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+
+  .scroll-slim::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scroll-slim::-webkit-scrollbar-thumb {
+    background-color: var(--color-line-strong);
+    border-radius: 999px;
+  }
+
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface-muted) 25%,
+      var(--color-neutral-soft) 37%,
+      var(--color-surface-muted) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-shimmer 1.4s ease infinite;
+  }
+
+  .blur-locked {
+    filter: blur(6px);
+    user-select: none;
+    pointer-events: none;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-rise {
+  animation: fade-rise 0.18s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

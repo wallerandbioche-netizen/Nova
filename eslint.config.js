@@ -8,6 +8,8 @@ export default tseslint.config(
       '**/dist/**',
       '**/node_modules/**',
       '**/.expo/**',
+      '**/.next/**',
+      '**/next-env.d.ts',
       '**/coverage/**',
       '**/prisma/generated/**',
       '**/*.config.js',
