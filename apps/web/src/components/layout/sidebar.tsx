@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
+import { useAccount } from '@/hooks/use-account';
 import { useSettings } from '@/hooks/use-settings';
 import { Logo } from './logo';
 import { NAV_GROUPS } from './nav-items';
@@ -12,6 +13,7 @@ import { UpgradeCard } from './upgrade-card';
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
   const [settings] = useSettings();
+  const { unlocked } = useAccount();
 
   return (
     <aside
@@ -61,7 +63,7 @@ export function Sidebar({ className }: { className?: string }) {
       </nav>
 
       <div className="space-y-3 px-3 pb-4">
-        {settings.subscribed ? (
+        {unlocked ? (
           <div className="rounded-[12px] border border-line bg-long-soft p-3">
             <p className="flex items-center gap-2 text-[13px] font-semibold text-long">
               <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />

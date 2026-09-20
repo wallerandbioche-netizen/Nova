@@ -26,6 +26,7 @@ import { ButtonLink } from '@/components/ui/button';
 import { Segmented } from '@/components/ui/segmented';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useHistory } from '@/hooks/use-history';
+import { useAccount } from '@/hooks/use-account';
 import { useSettings } from '@/hooks/use-settings';
 import { generateCandles } from '@/lib/market-data';
 import { RISK_PROFILE_LABEL } from '@/lib/utils/labels';
@@ -43,6 +44,7 @@ const PriceChart = dynamic(
 export function AnalysisView({ analysisId }: { analysisId: string }) {
   const { entries, ready } = useHistory();
   const [settings, updateSettings] = useSettings();
+  const account = useAccount();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -81,7 +83,7 @@ export function AnalysisView({ analysisId }: { analysisId: string }) {
 
   const analysis: MarketAnalysis = entry.analysis;
   const setup = analysis.setup;
-  const unlocked = settings.subscribed;
+  const unlocked = account.unlocked;
 
   return (
     <div className="space-y-4">

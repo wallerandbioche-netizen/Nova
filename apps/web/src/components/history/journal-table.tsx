@@ -17,7 +17,7 @@ import { Stat } from '@/components/ui/stat';
 import { Tabs } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useHistory } from '@/hooks/use-history';
-import { useSettings } from '@/hooks/use-settings';
+import { useAccount } from '@/hooks/use-account';
 import { STATUS_LABEL, type AnalysisStatus } from '@/lib/storage/history';
 import { generateCandles } from '@/lib/market-data';
 import { SETUP_LABEL } from '@/lib/utils/labels';
@@ -45,8 +45,7 @@ const STATUS_TONE: Record<AnalysisStatus, 'brand' | 'long' | 'short'> = {
 /** Journal: every analysis, filterable and searchable, with its outcome. */
 export function JournalTable() {
   const { entries, ready } = useHistory();
-  const [settings] = useSettings();
-  const unlocked = settings.subscribed;
+  const { unlocked } = useAccount();
   const [direction, setDirection] = useState<DirectionFilter>('all');
   const [query, setQuery] = useState('');
   const [timeframe, setTimeframe] = useState<Timeframe | 'all'>('all');

@@ -132,6 +132,17 @@ analyses de démonstration et le journal de départ, toujours étiquetés comme 
 - Les performances passées, simulées ou non, ne préjugent pas des performances futures — et le
   moteur de backtest (`lib/analysis/backtest.ts`) le rappelle dans son rapport.
 
+## Comptes, abonnements et paiements
+
+Le produit tourne sans compte : l'abonnement est alors une bascule locale de démonstration.
+Branchés, une base Postgres, un envoi d'e-mails et Stripe donnent des comptes réels
+(connexion par lien e-mail), des paiements Stripe Checkout, la résiliation en libre-service
+et un journal qui suit l'utilisateur d'un appareil à l'autre. Chaque brique est optionnelle
+et l'interface annonce ce qui est actif. Marche à suivre : [`PAIEMENTS.md`](./PAIEMENTS.md).
+
+L'état fait autorité côté serveur : `/api/me` dérive l'accès de l'abonnement Stripe enregistré,
+et le webhook `/api/billing/webhook` est ce qui l'ouvre — jamais le navigateur.
+
 ## Déploiement
 
 Voir [`DEPLOY.md`](./DEPLOY.md) : le site complet demande un hébergeur Node (la route

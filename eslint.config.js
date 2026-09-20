@@ -50,7 +50,7 @@ export default tseslint.config(
   },
   {
     // Maintenance and build scripts run on Node directly, so they need its globals declared.
-    files: ['scripts/**/*.mjs', '**/demo/*.mjs'],
+    files: ['scripts/**/*.mjs', '**/scripts/*.mjs', '**/demo/*.mjs'],
     languageOptions: {
       globals: {
         process: 'readonly',
@@ -60,6 +60,7 @@ export default tseslint.config(
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
         URL: 'readonly',
+        URLSearchParams: 'readonly',
         Buffer: 'readonly',
       },
     },

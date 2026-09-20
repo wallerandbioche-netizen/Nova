@@ -5,7 +5,7 @@ import { ArrowDownRight, ArrowUpRight, Lock, Minus } from 'lucide-react';
 import type { MarketAnalysis } from '@/types/analysis';
 import { Badge } from '@/components/ui/badge';
 import { ChartThumbnail } from '@/components/charts/chart-thumbnail';
-import { useSettings } from '@/hooks/use-settings';
+import { useAccount } from '@/hooks/use-account';
 import { generateCandles } from '@/lib/market-data';
 import { BIAS_LABEL, SETUP_LABEL } from '@/lib/utils/labels';
 import { relativeTime } from '@/lib/utils/format';
@@ -24,7 +24,7 @@ export function AnalysisCard({
   screenshot?: string;
   className?: string;
 }) {
-  const [settings] = useSettings();
+  const { unlocked } = useAccount();
   const direction = analysis.setup?.direction ?? null;
   const tone = direction === 'long' ? 'long' : direction === 'short' ? 'short' : 'neutral';
   const Icon = direction === 'long' ? ArrowUpRight : direction === 'short' ? ArrowDownRight : Minus;
@@ -65,7 +65,7 @@ export function AnalysisCard({
               </span>
             </p>
             <p className="mt-0.5 text-[12px] text-ink-muted">
-              {settings.subscribed
+              {unlocked
                 ? analysis.setup
                   ? SETUP_LABEL[analysis.setup.kind]
                   : 'Aucun trade'
@@ -83,7 +83,7 @@ export function AnalysisCard({
           </Badge>
         </div>
         <div className="mt-2.5 flex items-center justify-between text-[11.5px] text-ink-subtle">
-          {settings.subscribed ? (
+          {unlocked ? (
             <span>Confluence {analysis.confluence.score.toFixed(1)}/10</span>
           ) : (
             <span className="inline-flex items-center gap-1">

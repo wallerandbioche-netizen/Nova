@@ -14,6 +14,7 @@ import { Segmented } from '@/components/ui/segmented';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/components/ui/toast';
 import { useHistory } from '@/hooks/use-history';
+import { useAccount } from '@/hooks/use-account';
 import { useSettings } from '@/hooks/use-settings';
 import { runLocalAnalysis } from '@/lib/ai/local-analysis';
 import { compressImage } from '@/lib/utils/image';
@@ -46,6 +47,7 @@ interface Refusal {
  */
 export function AnalyzerView() {
   const [settings, updateSettings] = useSettings();
+  const { unlocked } = useAccount();
   const { add } = useHistory();
   const toast = useToast();
 
@@ -301,7 +303,7 @@ export function AnalyzerView() {
           <AiPanel
             analysis={analysis}
             {...(headline ? { headline } : {})}
-            unlocked={settings.subscribed}
+            unlocked={unlocked}
             accountSize={settings.accountSize}
             riskPercent={settings.riskPercent}
             onRiskPersist={(values) => updateSettings(values)}

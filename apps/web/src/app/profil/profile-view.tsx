@@ -13,7 +13,9 @@ import { Select } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/toast';
 import { useHistory } from '@/hooks/use-history';
+import { useAccount } from '@/hooks/use-account';
 import { useSettings } from '@/hooks/use-settings';
+import { AccountCard } from '@/components/account/account-card';
 import { ASSETS } from '@/lib/market-data';
 import { RISK_PROFILES } from '@/lib/analysis/risk';
 import { RISK_PROFILE_LABEL } from '@/lib/utils/labels';
@@ -32,7 +34,8 @@ const RISK_OPTIONS: { value: RiskProfile; label: string }[] = [
 
 export function ProfileView() {
   const [settings, update] = useSettings();
-  const { entries, reset } = useHistory();
+  const { accountsEnabled, unlocked, setDemoUnlocked } = useAccount();
+  const { reset } = useHistory();
   const toast = useToast();
   const profile = RISK_PROFILES[settings.riskProfile];
 
@@ -42,86 +45,55 @@ export function ProfileView() {
 
   return (
     <div className="grid items-start gap-4 lg:grid-cols-2">
-      <Card>
-        <CardHeader title="Compte" description="Identité utilisée dans l’application." />
-        <CardContent className="space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-soft text-[15px] font-semibold text-ink-muted">
-              {settings.displayName.slice(0, 1).toUpperCase()}
-            </span>
-            <div className="min-w-0">
-              <p className="text-[14px] font-semibold text-ink">{settings.displayName}</p>
-              <p className="truncate text-[12.5px] text-ink-muted">{settings.email}</p>
-            </div>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="Nom affiché" htmlFor="display-name">
-              <Input
-                id="display-name"
-                value={settings.displayName}
-                onChange={(event) => update({ displayName: event.target.value })}
-              />
-            </Field>
-            <Field label="E-mail" htmlFor="email">
-              <Input
-                id="email"
-                type="email"
-                value={settings.email}
-                onChange={(event) => update({ email: event.target.value })}
-              />
-            </Field>
-          </div>
-          <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-[12px] border border-line bg-line">
-            <div className="bg-surface px-3 py-2.5">
-              <dt className="text-[11px] text-ink-subtle">Analyses réalisées</dt>
-              <dd className="mt-0.5 text-[15px] font-semibold tabular text-ink">
-                {entries.length}
-              </dd>
-            </div>
-            <div className="bg-surface px-3 py-2.5">
-              <dt className="text-[11px] text-ink-subtle">Aujourd’hui</dt>
-              <dd className="mt-0.5 text-[15px] font-semibold tabular text-ink">
-                {
-                  entries.filter(
-                    (entry) =>
-                      new Date(entry.analysis.createdAt).toDateString() ===
-                      new Date().toDateString(),
-                  ).length
-                }
-              </dd>
-            </div>
-          </dl>
-        </CardContent>
-      </Card>
+      <AccountCard />
+
+      {!accountsEnabled ? (
+        <Card>
+          <CardHeader
+            title="Abonnement (démonstration)"
+            description="Ce déploiement n’a ni comptes ni paiements : la bascule ci-dessous sert uniquement à parcourir l’interface."
+            action={
+              <Badge tone={unlocked ? 'long' : 'muted'}>{unlocked ? 'Actif' : 'Gratuit'}</Badge>
+            }
+          />
+          <CardContent className="space-y-3">
+            <Link
+              href="/abonnement"
+              className="inline-flex h-10 w-full items-center justify-center rounded-[var(--radius-control)] bg-brand px-4 text-sm font-medium text-white transition-colors hover:bg-brand-hover"
+            >
+              Voir les formules
+            </Link>
+            <Switch
+              label="Simuler un abonnement actif"
+              description="Bascule locale : aucun paiement n’est traité."
+              checked={unlocked}
+              onChange={setDemoUnlocked}
+            />
+          </CardContent>
+        </Card>
+      ) : null}
 
       <Card>
         <CardHeader
-          title="Abonnement"
-          description="Formule en cours et accès aux analyses détaillées."
-          action={
-            <Badge tone={settings.subscribed ? 'long' : 'muted'}>
-              {settings.subscribed ? 'Actif' : 'Gratuit'}
-            </Badge>
-          }
+          title="Préférences d’affichage"
+          description="Nom et adresse utilisés dans l’application."
         />
-        <CardContent className="space-y-3">
-          <p className="text-[13px] leading-5 text-ink-muted">
-            {settings.subscribed
-              ? 'Analyses complètes débloquées : plan de trade, raisonnement et calculateur de risque.'
-              : 'Analyses illimitées — verdict directionnel visible, le reste du résultat est flouté.'}
-          </p>
-          <Link
-            href="/abonnement"
-            className="inline-flex h-10 w-full items-center justify-center rounded-[var(--radius-control)] bg-brand px-4 text-sm font-medium text-white transition-colors hover:bg-brand-hover"
-          >
-            {settings.subscribed ? 'Gérer l’abonnement' : 'Débloquer l’analyse complète'}
-          </Link>
-          <Switch
-            label="Simuler un abonnement actif"
-            description="Bascule locale de démonstration : aucun paiement n’est traité."
-            checked={settings.subscribed}
-            onChange={(checked) => update({ subscribed: checked })}
-          />
+        <CardContent className="grid gap-3 sm:grid-cols-2">
+          <Field label="Nom affiché" htmlFor="display-name">
+            <Input
+              id="display-name"
+              value={settings.displayName}
+              onChange={(event) => update({ displayName: event.target.value })}
+            />
+          </Field>
+          <Field label="E-mail de contact" htmlFor="email">
+            <Input
+              id="email"
+              type="email"
+              value={settings.email}
+              onChange={(event) => update({ email: event.target.value })}
+            />
+          </Field>
         </CardContent>
       </Card>
 

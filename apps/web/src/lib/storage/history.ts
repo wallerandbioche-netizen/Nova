@@ -2,6 +2,7 @@
 
 import type { MarketAnalysis } from '@/types/analysis';
 import { createLocalStore } from './local-store';
+import { isUsableAnalysis } from './guards';
 
 export type AnalysisStatus = 'en_cours' | 'confirme' | 'invalide';
 
@@ -22,6 +23,11 @@ const store = createLocalStore<HistoryEntry[]>('scantrade.history', []);
 
 export function readHistory(): HistoryEntry[] {
   return store.read();
+}
+
+/** Keeps only the entries the interface can actually render. */
+export function usableEntries(entries: HistoryEntry[]): HistoryEntry[] {
+  return entries.filter((entry) => isUsableAnalysis(entry.analysis));
 }
 
 export function appendAnalysis(
@@ -46,7 +52,7 @@ export function appendAnalysis(
 }
 
 export function replaceHistory(entries: HistoryEntry[]): void {
-  store.write(entries.slice(0, MAX_ENTRIES));
+  store.write(usableEntries(entries).slice(0, MAX_ENTRIES));
 }
 
 export function clearHistory(): void {

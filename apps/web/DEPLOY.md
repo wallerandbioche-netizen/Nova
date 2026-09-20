@@ -10,6 +10,7 @@ et c'est elle qui garde la clé d'API hors du navigateur.
 | Interface, journal, abonnement | oui                    | oui                         |
 | Moteur d'analyse               | oui                    | oui                         |
 | Lecture de la capture déposée  | non — refus explicite  | oui, avec une clé d'API     |
+| Comptes et paiements réels     | non — bascule locale   | oui, voir PAIEMENTS.md      |
 | Hébergement                    | fichiers statiques     | Node (Vercel, Render, VPS…) |
 
 ## Vercel, en cinq étapes
@@ -23,7 +24,8 @@ et c'est elle qui garde la clé d'API hors du navigateur.
    ```
 
 4. **Environment Variables** : ajoutez `ANTHROPIC_API_KEY` avec votre clé
-   (<https://console.anthropic.com> → API keys). Facultatif : `SCANTRADE_MODEL`.
+   (<https://console.anthropic.com> → API keys). Pour les comptes et les paiements, voir
+   [`PAIEMENTS.md`](./PAIEMENTS.md). Facultatif : `SCANTRADE_MODEL`.
 5. **Production Branch** : dans _Settings → Git_, choisissez la branche qui porte
    l'application (`claude/wonderful-cerf-ueom80`) tant qu'elle n'est pas fusionnée.
 
