@@ -1,0 +1,43 @@
+<title>SCAN TRADE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+/>
+<link rel="stylesheet" href="app.css" />
+<style>
+  /* The app paints its own ground through its tokens; this only makes sure the
+     shell fills the host frame and never scrolls sideways. */
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100%;
+  }
+
+  .demo-boot {
+    display: flex;
+    min-height: 60vh;
+    align-items: center;
+    justify-content: center;
+    font-family:
+      Inter,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
+    font-size: 14px;
+    color: #667a94;
+  }
+</style>
+
+<div id="root">
+  <p class="demo-boot">Chargement de SCAN TRADE…</p>
+</div>
+
+<script src="app.js"></script>
