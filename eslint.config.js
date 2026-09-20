@@ -35,15 +35,22 @@ export default tseslint.config(
   },
   {
     // Scripts and tests may log and use looser typing.
-    files: ['**/*.test.ts', '**/*.test.tsx', '**/scripts/**', '**/prisma/**', '**/seed/**'],
+    files: [
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      '**/scripts/**',
+      '**/demo/*.mjs',
+      '**/prisma/**',
+      '**/seed/**',
+    ],
     rules: {
       'no-console': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   {
-    // Maintenance scripts run on Node directly, so they need its globals declared.
-    files: ['scripts/**/*.mjs'],
+    // Maintenance and build scripts run on Node directly, so they need its globals declared.
+    files: ['scripts/**/*.mjs', '**/demo/*.mjs'],
     languageOptions: {
       globals: {
         process: 'readonly',

@@ -28,6 +28,7 @@ import { useToast } from '@/components/ui/toast';
 import { useHistory } from '@/hooks/use-history';
 import { useSettings } from '@/hooks/use-settings';
 import { drawingColor } from '@/lib/charts/theme';
+import { requestAnalysis } from '@/lib/ai/request-analysis';
 import { ASSETS, generateCandles } from '@/lib/market-data';
 import { RISK_PROFILE_LABEL } from '@/lib/utils/labels';
 import { createId } from '@/lib/utils/id';
@@ -107,17 +108,12 @@ export function AnalyzerView({
     setAnalyzing(true);
     setRefusal(null);
     try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ assetId, timeframe, riskProfile, context: context || undefined }),
+      const payload = await requestAnalysis({
+        assetId,
+        timeframe,
+        riskProfile,
+        ...(context ? { context } : {}),
       });
-      if (!response.ok) throw new Error('analyse indisponible');
-      const payload = (await response.json()) as {
-        analysis: MarketAnalysis;
-        reasoning: { headline: string };
-        candles: Candle[];
-      };
       setAnalysis(payload.analysis);
       setHeadline(payload.reasoning.headline);
       setChartCandles(payload.candles);
@@ -153,6 +149,17 @@ export function AnalyzerView({
       if (context) form.append('context', context);
 
       const response = await fetch('/api/analyze/screenshot', { method: 'POST', body: form });
+      if (response.status === 404) {
+        // No reader service behind this deployment: say so instead of guessing.
+        setAnalysis(null);
+        setRefusal({
+          message: 'Lecture de capture indisponible dans cette version.',
+          missing: [
+            'Cette version est servie sans service de lecture d’image : aucune bougie ne peut être extraite du fichier.',
+          ],
+        });
+        return;
+      }
       const payload = (await response.json()) as
         | {
             readable: true;

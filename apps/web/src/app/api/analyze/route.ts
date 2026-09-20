@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { TIMEFRAMES } from '@/types/market';
-import { analyzeChart } from '@/lib/ai/analyze-chart';
 import { registerReasoningProvider } from '@/lib/ai/register';
-import { ASSETS, generateCandles, getAsset, timeframeLadder } from '@/lib/market-data';
+import { candlesFor, runLocalAnalysis } from '@/lib/ai/local-analysis';
+import { ASSETS } from '@/lib/market-data';
 
 export const runtime = 'nodejs';
 
@@ -29,35 +29,12 @@ export async function POST(request: Request): Promise<Response> {
 
   registerReasoningProvider();
 
-  const { assetId, timeframe, riskProfile, context, asOf } = parsed.data;
-  const ladder = timeframeLadder(timeframe);
-  const shared = { assetId, ...(asOf ? { asOf } : {}) };
+  const { assetId, timeframe, asOf } = parsed.data;
+  const { analysis, reasoning } = await runLocalAnalysis(parsed.data);
 
-  const candles = generateCandles({ ...shared, timeframe, count: 320 });
-  const intermediate = generateCandles({ ...shared, timeframe: ladder.intermediate, count: 240 });
-  const higher = generateCandles({ ...shared, timeframe: ladder.higher, count: 200 });
-
-  const { analysis, reasoning } = await analyzeChart(
-    {
-      asset: getAsset(assetId),
-      timeframe,
-      candles,
-      riskProfile,
-      ...(context ? { context } : {}),
-      higherTimeframeCandles: [
-        { timeframe: ladder.higher, candles: higher },
-        { timeframe: ladder.intermediate, candles: intermediate },
-      ],
-    },
-    {
-      origin: 'market_data',
-      dataSource: {
-        source: 'mock',
-        label: 'Données simulées — pas un flux de marché en direct',
-        candles: candles.length,
-      },
-    },
-  );
-
-  return NextResponse.json({ analysis, reasoning, candles });
+  return NextResponse.json({
+    analysis,
+    reasoning,
+    candles: candlesFor(assetId, timeframe, asOf),
+  });
 }

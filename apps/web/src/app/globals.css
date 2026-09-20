@@ -47,6 +47,41 @@
 
 /* Dark theme — the Profil screen exposes Clair / Sombre / Auto. */
 @layer base {
+  /* System preference, unless the viewer explicitly asked for light. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --color-canvas: #080d16;
+      --color-surface: #101827;
+      --color-surface-muted: #151f31;
+      --color-surface-raised: #16202f;
+
+      --color-line: #1e2a3d;
+      --color-line-strong: #2a3850;
+
+      --color-ink: #eef3fb;
+      --color-ink-muted: #94a6bf;
+      --color-ink-subtle: #6c7f99;
+
+      --color-brand: #4d92ff;
+      --color-brand-hover: #6ba4ff;
+      --color-brand-soft: #14294a;
+      --color-brand-ring: #24457a;
+
+      --color-long: #2fbd6a;
+      --color-long-soft: #10281c;
+      --color-short: #f0555a;
+      --color-short-soft: #2a1417;
+      --color-warn: #eda52f;
+      --color-warn-soft: #2b2010;
+      --color-neutral-tone: #93a5bd;
+      --color-neutral-soft: #1a2434;
+
+      --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.45);
+      --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.5);
+    }
+  }
+
   :root[data-theme='dark'] {
     --color-canvas: #080d16;
     --color-surface: #101827;

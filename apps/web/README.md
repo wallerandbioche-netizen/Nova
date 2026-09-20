@@ -19,10 +19,20 @@ elles apparaissent.
 Autres commandes, depuis la racine du dépôt :
 
 ```bash
-pnpm build:web                       # build de production
-pnpm --filter @scantrade/web test    # tests unitaires du moteur
+pnpm build:web                             # build de production
+pnpm --filter @scantrade/web test          # tests unitaires du moteur
+pnpm --filter @scantrade/web build:demo    # bundle de démonstration statique
 pnpm lint
 ```
+
+### Démonstration statique
+
+`demo/` rassemble les mêmes composants dans un bundle autonome à routage par
+ancre, pour héberger l'interface sur un serveur de fichiers. Le moteur tourne
+alors dans le navigateur : quand aucune route d'API ne répond, `requestAnalysis`
+bascule sur `runLocalAnalysis` et l'analyse reste complète. La lecture de
+capture d'écran, elle, annonce son indisponibilité au lieu de produire un
+résultat.
 
 ## Écrans
 
