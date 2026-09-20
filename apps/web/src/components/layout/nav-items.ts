@@ -1,4 +1,4 @@
-import { BookOpen, CandlestickChart, House, LineChart, User, type LucideIcon } from 'lucide-react';
+import { BookOpen, House, ScanLine, User, type LucideIcon } from 'lucide-react';
 
 export interface NavItem {
   href: string;
@@ -18,8 +18,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'Analyse IA',
     items: [
       { href: '/', label: 'Accueil', icon: House, compact: true },
-      { href: '/analyser', label: 'Analyser', icon: CandlestickChart, compact: true },
-      { href: '/marches', label: 'Marchés', icon: LineChart, compact: true },
+      { href: '/analyser', label: 'Analyser', icon: ScanLine, compact: true },
     ],
   },
   {

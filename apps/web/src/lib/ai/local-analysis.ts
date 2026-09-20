@@ -12,9 +12,9 @@ export interface LocalAnalysisRequest {
 }
 
 /**
- * Runs the full pipeline on simulated market data. Used by the API route and,
- * when no route is reachable (static deployment, offline), directly by the
- * browser — the engine has no server dependency of its own.
+ * Runs the full pipeline on simulated market data. The product analyses chart
+ * captures; this path exists for the demonstration analysis, which states that
+ * it does not come from the uploaded image.
  */
 export function runLocalAnalysis(request: LocalAnalysisRequest): Promise<AnalyzeChartResult> {
   const { assetId, timeframe, riskProfile, context, asOf } = request;
@@ -46,9 +46,4 @@ export function runLocalAnalysis(request: LocalAnalysisRequest): Promise<Analyze
       },
     },
   );
-}
-
-/** Candles the analysis was run on, regenerated deterministically. */
-export function candlesFor(assetId: string, timeframe: Timeframe, asOf?: number) {
-  return generateCandles({ assetId, timeframe, count: 320, ...(asOf ? { asOf } : {}) });
 }

@@ -50,14 +50,35 @@ interface OverlayBand {
 
 const PANE_HEIGHTS = { rsi: 90, macd: 90 };
 
+/**
+ * Stable defaults. A fresh `[]` on each render would change the effect's
+ * dependencies, rebuild the chart and start the cycle again.
+ */
+const NO_LEVELS: LevelZone[] = [];
+const NO_SWINGS: SwingPoint[] = [];
+const NO_DRAWINGS: Drawing[] = [];
+
+function sameBands(current: OverlayBand[], next: OverlayBand[]): boolean {
+  if (current.length !== next.length) return false;
+  return current.every((band, index) => {
+    const other = next[index];
+    return (
+      other !== undefined &&
+      band.id === other.id &&
+      Math.abs(band.top - other.top) < 0.5 &&
+      Math.abs(band.height - other.height) < 0.5
+    );
+  });
+}
+
 export function PriceChart({
   candles,
   precision,
   indicators,
   setup = null,
-  levels = [],
-  swings = [],
-  drawings = [],
+  levels = NO_LEVELS,
+  swings = NO_SWINGS,
+  drawings = NO_DRAWINGS,
   theme = 'light',
   height = 460,
   className,
@@ -386,7 +407,7 @@ export function PriceChart({
           labelColor: 'var(--color-long)',
         });
       }
-      setBands(next);
+      setBands((current) => (sameBands(current, next) ? current : next));
     };
 
     updateBands();

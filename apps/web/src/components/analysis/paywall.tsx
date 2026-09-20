@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { Lock } from 'lucide-react';
+import { Check, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -15,20 +15,25 @@ export function Paywall({
   title = 'Réservé aux abonnés',
   description = 'Le verdict directionnel est offert. Le reste de l’analyse est réservé aux abonnés.',
   preview,
+  features,
   className,
 }: {
   unlocked: boolean;
-  children: ReactNode;
+  /** Rendered as-is once unlocked; the lock never renders it. */
+  children?: ReactNode;
   title?: string;
   description?: string;
   preview?: ReactNode;
+  /** What the subscription unlocks, listed under the call to action. */
+  features?: string[];
   className?: string;
 }) {
   if (unlocked) return <>{children}</>;
 
   return (
     <div className={cn('relative overflow-hidden rounded-[12px] border border-line', className)}>
-      <div aria-hidden className="blur-locked select-none">
+      {/* The preview is capped so the call to action always sits in view. */}
+      <div aria-hidden className="blur-locked max-h-[420px] overflow-hidden select-none">
         {preview ?? <div className="h-44 bg-surface-muted" />}
       </div>
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-surface/70 px-6 text-center backdrop-blur-[2px]">
@@ -41,6 +46,19 @@ export function Paywall({
             {description}
           </p>
         </div>
+        {features?.length ? (
+          <ul className="mx-auto max-w-xs space-y-1 text-left">
+            {features.map((feature) => (
+              <li
+                key={feature}
+                className="flex items-start gap-1.5 text-[12px] leading-4 text-ink-muted"
+              >
+                <Check className="mt-0.5 h-3 w-3 shrink-0 text-brand" aria-hidden />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <Link
           href="/abonnement"
           className="inline-flex h-10 items-center rounded-[var(--radius-control)] bg-brand px-4 text-sm font-medium text-white transition-colors hover:bg-brand-hover"

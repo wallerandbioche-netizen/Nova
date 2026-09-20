@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Lock, Search } from 'lucide-react';
 import type { Timeframe } from '@/types/market';
 import { TIMEFRAMES } from '@/types/market';
 import type { SetupKind } from '@/types/analysis';
@@ -17,6 +17,7 @@ import { Stat } from '@/components/ui/stat';
 import { Tabs } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useHistory } from '@/hooks/use-history';
+import { useSettings } from '@/hooks/use-settings';
 import { STATUS_LABEL, type AnalysisStatus } from '@/lib/storage/history';
 import { generateCandles } from '@/lib/market-data';
 import { SETUP_LABEL } from '@/lib/utils/labels';
@@ -24,6 +25,16 @@ import { formatDateTime, formatPrice, formatRatio } from '@/lib/utils/format';
 
 type DirectionFilter = 'all' | 'long' | 'short' | 'none';
 const PAGE_SIZE = 8;
+
+/** Placeholder standing in for a figure the free plan does not show. */
+function Locked() {
+  return (
+    <span className="inline-flex items-center gap-1 text-ink-subtle" title="Réservé aux abonnés">
+      <Lock className="h-3 w-3" aria-hidden />
+      <span aria-label="Réservé aux abonnés">•••</span>
+    </span>
+  );
+}
 
 const STATUS_TONE: Record<AnalysisStatus, 'brand' | 'long' | 'short'> = {
   en_cours: 'brand',
@@ -34,6 +45,8 @@ const STATUS_TONE: Record<AnalysisStatus, 'brand' | 'long' | 'short'> = {
 /** Journal: every analysis, filterable and searchable, with its outcome. */
 export function JournalTable() {
   const { entries, ready } = useHistory();
+  const [settings] = useSettings();
+  const unlocked = settings.subscribed;
   const [direction, setDirection] = useState<DirectionFilter>('all');
   const [query, setQuery] = useState('');
   const [timeframe, setTimeframe] = useState<Timeframe | 'all'>('all');
@@ -100,8 +113,8 @@ export function JournalTable() {
         />
         <Stat
           label="Confluence moyenne"
-          value={`${averageConfluence.toFixed(1)}/10`}
-          hint="Accord moyen entre les facteurs"
+          value={unlocked ? `${averageConfluence.toFixed(1)}/10` : <Locked />}
+          hint={unlocked ? 'Accord moyen entre les facteurs' : 'Réservé aux abonnés'}
         />
       </div>
 
@@ -189,7 +202,7 @@ export function JournalTable() {
             {visible.length === 0 ? (
               <EmptyRow colSpan={8}>Aucune analyse ne correspond à ces filtres.</EmptyRow>
             ) : (
-              visible.map(({ analysis, status }) => {
+              visible.map(({ analysis, status, screenshot }) => {
                 const setup = analysis.setup;
                 const candles = generateCandles({
                   assetId: analysis.asset.id,
@@ -203,7 +216,16 @@ export function JournalTable() {
                         href={`/analyse/${analysis.id}`}
                         aria-label={`Ouvrir l’analyse ${analysis.asset.symbol}`}
                       >
-                        <ChartThumbnail candles={candles} width={88} height={34} />
+                        {screenshot ? (
+                          /* Stored capture: a data URL the optimizer cannot take. */
+                          <img
+                            src={screenshot}
+                            alt=""
+                            className="h-[34px] w-[88px] rounded object-cover"
+                          />
+                        ) : (
+                          <ChartThumbnail candles={candles} width={88} height={34} />
+                        )}
                       </Link>
                     </Td>
                     <Td>
@@ -220,7 +242,7 @@ export function JournalTable() {
                       </Link>
                     </Td>
                     <Td className="hidden text-[12.5px] text-ink-muted md:table-cell">
-                      {setup ? SETUP_LABEL[setup.kind] : '—'}
+                      {!unlocked ? <Locked /> : setup ? SETUP_LABEL[setup.kind] : '—'}
                     </Td>
                     <Td>
                       <Badge
@@ -230,16 +252,26 @@ export function JournalTable() {
                       </Badge>
                     </Td>
                     <Td className="hidden text-[12.5px] tabular text-ink-muted lg:table-cell">
-                      {setup
-                        ? `${formatPrice((setup.entryZone.low + setup.entryZone.high) / 2, analysis.asset)} / ${formatPrice(setup.stopLoss, analysis.asset)}`
-                        : '—'}
+                      {!unlocked ? (
+                        <Locked />
+                      ) : setup ? (
+                        `${formatPrice((setup.entryZone.low + setup.entryZone.high) / 2, analysis.asset)} / ${formatPrice(setup.stopLoss, analysis.asset)}`
+                      ) : (
+                        '—'
+                      )}
                     </Td>
                     <Td className="hidden text-[12.5px] font-semibold tabular sm:table-cell">
-                      {setup ? formatRatio(setup.riskReward) : '—'}
+                      {!unlocked ? <Locked /> : setup ? formatRatio(setup.riskReward) : '—'}
                     </Td>
                     <Td className="text-[12.5px] font-semibold tabular">
-                      {analysis.confluence.score.toFixed(1)}
-                      <span className="font-normal text-ink-subtle">/10</span>
+                      {unlocked ? (
+                        <>
+                          {analysis.confluence.score.toFixed(1)}
+                          <span className="font-normal text-ink-subtle">/10</span>
+                        </>
+                      ) : (
+                        <Locked />
+                      )}
                     </Td>
                     <Td>
                       <Badge tone={STATUS_TONE[status]}>{STATUS_LABEL[status]}</Badge>

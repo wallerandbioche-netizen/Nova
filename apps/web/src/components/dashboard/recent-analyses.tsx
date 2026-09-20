@@ -34,7 +34,11 @@ export function RecentAnalyses({ limit = 3 }: { limit?: number }) {
       ) : recent.length ? (
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {recent.map((entry) => (
-            <AnalysisCard key={entry.analysis.id} analysis={entry.analysis} />
+            <AnalysisCard
+              key={entry.analysis.id}
+              analysis={entry.analysis}
+              {...(entry.screenshot ? { screenshot: entry.screenshot } : {})}
+            />
           ))}
         </div>
       ) : (
@@ -42,7 +46,7 @@ export function RecentAnalyses({ limit = 3 }: { limit?: number }) {
           <EmptyState
             icon={<History className="h-4 w-4" aria-hidden />}
             title="Aucune analyse pour l’instant"
-            description="Lancez votre première analyse pour remplir votre journal."
+            description="Déposez une capture pour lancer votre première analyse."
           />
         </div>
       )}

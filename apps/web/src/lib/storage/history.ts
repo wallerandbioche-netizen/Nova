@@ -10,9 +10,13 @@ export interface HistoryEntry {
   status: AnalysisStatus;
   /** Realised R multiple once the idea is closed. */
   realisedR?: number;
+  /** The capture the analysis was run on, downscaled, when there is one. */
+  screenshot?: string;
 }
 
 const MAX_ENTRIES = 60;
+/** Only the most recent captures are kept: storage quota is small. */
+const MAX_STORED_SCREENSHOTS = 8;
 
 const store = createLocalStore<HistoryEntry[]>('scantrade.history', []);
 
@@ -23,9 +27,22 @@ export function readHistory(): HistoryEntry[] {
 export function appendAnalysis(
   analysis: MarketAnalysis,
   status: AnalysisStatus = 'en_cours',
+  screenshot?: string,
 ): void {
-  const next = [{ analysis, status }, ...store.read()].slice(0, MAX_ENTRIES);
-  store.write(next);
+  const entry: HistoryEntry = { analysis, status, ...(screenshot ? { screenshot } : {}) };
+  const next = [entry, ...store.read()].slice(0, MAX_ENTRIES);
+
+  // Drop the oldest captures rather than let the store hit its quota.
+  let kept = 0;
+  const trimmed = next.map((item) => {
+    if (!item.screenshot) return item;
+    kept += 1;
+    if (kept <= MAX_STORED_SCREENSHOTS) return item;
+    const { screenshot: _dropped, ...rest } = item;
+    return rest;
+  });
+
+  store.write(trimmed);
 }
 
 export function replaceHistory(entries: HistoryEntry[]): void {

@@ -1,29 +1,33 @@
+'use client';
+
 import Link from 'next/link';
-import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Lock, Minus } from 'lucide-react';
 import type { MarketAnalysis } from '@/types/analysis';
 import { Badge } from '@/components/ui/badge';
 import { ChartThumbnail } from '@/components/charts/chart-thumbnail';
+import { useSettings } from '@/hooks/use-settings';
 import { generateCandles } from '@/lib/market-data';
 import { BIAS_LABEL, SETUP_LABEL } from '@/lib/utils/labels';
-import { formatPrice, relativeTime } from '@/lib/utils/format';
+import { relativeTime } from '@/lib/utils/format';
 import { cn } from '@/lib/utils/cn';
 
-/** Compact analysis card used on the dashboard and in list views. */
+/**
+ * Compact analysis card. The verdict is always readable; the figures behind it
+ * follow the plan the account is on.
+ */
 export function AnalysisCard({
   analysis,
+  screenshot,
   className,
 }: {
   analysis: MarketAnalysis;
+  screenshot?: string;
   className?: string;
 }) {
+  const [settings] = useSettings();
   const direction = analysis.setup?.direction ?? null;
   const tone = direction === 'long' ? 'long' : direction === 'short' ? 'short' : 'neutral';
   const Icon = direction === 'long' ? ArrowUpRight : direction === 'short' ? ArrowDownRight : Minus;
-  const candles = generateCandles({
-    assetId: analysis.asset.id,
-    timeframe: analysis.timeframe,
-    count: 60,
-  });
 
   return (
     <Link
@@ -33,9 +37,24 @@ export function AnalysisCard({
         className,
       )}
     >
-      <div className="bg-surface-muted px-3 pt-3 pb-2">
-        <ChartThumbnail candles={candles} width={320} height={72} className="w-full" />
+      <div className="flex h-[96px] items-center justify-center overflow-hidden bg-surface-muted">
+        {screenshot ? (
+          /* Stored capture: a data URL, which the image optimizer cannot take. */
+          <img src={screenshot} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <ChartThumbnail
+            candles={generateCandles({
+              assetId: analysis.asset.id,
+              timeframe: analysis.timeframe,
+              count: 60,
+            })}
+            width={320}
+            height={72}
+            className="w-full"
+          />
+        )}
       </div>
+
       <div className="px-4 py-3">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
@@ -46,8 +65,13 @@ export function AnalysisCard({
               </span>
             </p>
             <p className="mt-0.5 text-[12px] text-ink-muted">
-              {analysis.setup ? SETUP_LABEL[analysis.setup.kind] : 'Aucun trade'} ·{' '}
-              {formatPrice(analysis.lastPrice, analysis.asset)}
+              {settings.subscribed
+                ? analysis.setup
+                  ? SETUP_LABEL[analysis.setup.kind]
+                  : 'Aucun trade'
+                : analysis.setup
+                  ? 'Configuration identifiée'
+                  : 'Aucun trade'}
             </p>
           </div>
           <Badge tone={tone} icon={<Icon className="h-3 w-3" aria-hidden />}>
@@ -59,7 +83,14 @@ export function AnalysisCard({
           </Badge>
         </div>
         <div className="mt-2.5 flex items-center justify-between text-[11.5px] text-ink-subtle">
-          <span>Confluence {analysis.confluence.score.toFixed(1)}/10</span>
+          {settings.subscribed ? (
+            <span>Confluence {analysis.confluence.score.toFixed(1)}/10</span>
+          ) : (
+            <span className="inline-flex items-center gap-1">
+              <Lock className="h-3 w-3" aria-hidden />
+              Détail réservé aux abonnés
+            </span>
+          )}
           <span>{relativeTime(analysis.createdAt)}</span>
         </div>
       </div>

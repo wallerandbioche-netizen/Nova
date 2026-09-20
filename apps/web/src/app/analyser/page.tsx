@@ -6,19 +6,19 @@ import { AnalyzerView } from './analyzer-view';
 export const metadata: Metadata = {
   title: 'Analyser',
   description:
-    'Analysez un graphique ou une capture : structure, niveaux, confluence, plan de trade et invalidation.',
+    'Déposez une capture de graphique : structure, niveaux, confluence, plan de trade et invalidation.',
 };
 
 export default function AnalyzerPage() {
   return (
     <AppShell>
       <PageHeader
-        title="Analyser"
-        description="Lecture structurée d’un graphique : contexte, niveaux, configuration et gestion du risque."
+        title="Nouvelle analyse"
+        description="Déposez une capture de votre graphique pour lancer l’analyse."
         backHref="/"
         backLabel="Retour à l’accueil"
       />
-      <AnalyzerView initialAssetId="XAUUSD" initialTimeframe="15m" />
+      <AnalyzerView />
     </AppShell>
   );
 }

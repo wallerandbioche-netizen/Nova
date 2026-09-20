@@ -22,7 +22,7 @@ const EMPTY: HistoryEntry[] = [];
 export function useHistory(): {
   entries: HistoryEntry[];
   ready: boolean;
-  add(analysis: MarketAnalysis, status?: AnalysisStatus): void;
+  add(analysis: MarketAnalysis, status?: AnalysisStatus, screenshot?: string): void;
   reset(): void;
 } {
   const entries = useSyncExternalStore(subscribeHistory, readHistory, () => EMPTY);
@@ -50,9 +50,12 @@ export function useHistory(): {
     setReady(true);
   }, []);
 
-  const add = useCallback((analysis: MarketAnalysis, status: AnalysisStatus = 'en_cours') => {
-    appendAnalysis(analysis, status);
-  }, []);
+  const add = useCallback(
+    (analysis: MarketAnalysis, status: AnalysisStatus = 'en_cours', screenshot?: string) => {
+      appendAnalysis(analysis, status, screenshot);
+    },
+    [],
+  );
 
   const reset = useCallback(() => {
     replaceHistory(

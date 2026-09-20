@@ -5,7 +5,7 @@ import { Stat } from '@/components/ui/stat';
 import { useHistory } from '@/hooks/use-history';
 
 /** Journal-derived counters. Everything is computed from stored analyses. */
-export function OverviewStats({ opportunityCount }: { opportunityCount: number }) {
+export function OverviewStats() {
   const { entries } = useHistory();
 
   const today = new Date().toDateString();
@@ -36,9 +36,9 @@ export function OverviewStats({ opportunityCount }: { opportunityCount: number }
         icon={<Layers className="h-3.5 w-3.5" aria-hidden />}
       />
       <Stat
-        label="Opportunités détectées"
-        value={opportunityCount}
-        hint="Instruments passant tous les filtres"
+        label="Configurations retenues"
+        value={entries.filter((entry) => entry.analysis.setup).length}
+        hint="Analyses ayant passé tous les filtres"
         icon={<Gauge className="h-3.5 w-3.5" aria-hidden />}
       />
       <Stat

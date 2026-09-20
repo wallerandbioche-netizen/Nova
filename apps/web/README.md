@@ -1,9 +1,12 @@
 # SCAN TRADE — application web
 
-Analyse de graphiques assistée par IA : structure de marché, niveaux clés, confluence,
-plan de trade et gestion du risque. Le produit est construit autour d'une idée simple —
-**une analyse structurée, pas une génération de signaux** — et il doit pouvoir conclure
-qu'il n'y a rien à faire.
+Analyse de **captures d'écran de graphiques** assistée par IA : structure de marché,
+niveaux clés, confluence, plan de trade et gestion du risque. Le produit est construit
+autour d'une idée simple — **une analyse structurée, pas une génération de signaux** — et
+il doit pouvoir conclure qu'il n'y a rien à faire.
+
+L'entrée est unique : le trader dépose une capture, rien d'autre. Il n'y a ni flux de
+marché en direct, ni graphique à explorer dans l'application.
 
 ## Démarrer
 
@@ -28,30 +31,28 @@ pnpm lint
 ### Démonstration statique
 
 `demo/` rassemble les mêmes composants dans un bundle autonome à routage par
-ancre, pour héberger l'interface sur un serveur de fichiers. Le moteur tourne
-alors dans le navigateur : quand aucune route d'API ne répond, `requestAnalysis`
-bascule sur `runLocalAnalysis` et l'analyse reste complète. La lecture de
-capture d'écran, elle, annonce son indisponibilité au lieu de produire un
-résultat.
+ancre, pour héberger l'interface sur un serveur de fichiers. Sans service de
+lecture d'image derrière, l'analyse de capture annonce son indisponibilité ; une
+**analyse de démonstration**, explicitement étiquetée comme telle, peut alors être
+lancée sur des données simulées pour parcourir l'interface de bout en bout.
 
 ## Écrans
 
-| Route           | Rôle                                                                  |
-| --------------- | --------------------------------------------------------------------- |
-| `/`             | Accueil : raccourcis, compteurs, dernières analyses, opportunités     |
-| `/analyser`     | Analyzer : graphique + panneau d'analyse, ou lecture d'une capture    |
-| `/marches`      | Balayage des instruments suivis et de leur biais courant              |
-| `/journal`      | Historique filtrable des analyses et statistiques                     |
-| `/analyse/[id]` | Résultat complet d'une analyse (verdict, plan, raisonnement, risque)  |
-| `/abonnement`   | Formules ; le plan gratuit laisse le verdict visible, le reste flouté |
-| `/profil`       | Compte, abonnement, apparence, profil de risque et calibrage          |
+| Route           | Rôle                                                                    |
+| --------------- | ----------------------------------------------------------------------- |
+| `/`             | Accueil : raccourcis, compteurs, dernières analyses                     |
+| `/analyser`     | Dépôt d'une capture, niveau de risque, contexte, puis panneau d'analyse |
+| `/journal`      | Historique filtrable des analyses et statistiques                       |
+| `/analyse/[id]` | Résultat complet d'une analyse (verdict, plan, raisonnement, risque)    |
+| `/abonnement`   | Formules ; le plan gratuit laisse le verdict visible, le reste flouté   |
+| `/profil`       | Compte, abonnement, apparence, profil de risque et calibrage            |
 
 ## Architecture
 
 ```
 src/
-  app/            routes App Router + routes d'API (/api/analyze, /api/market-data)
-  components/     layout, ui, charts, analysis, dashboard, markets, history, upload
+  app/            routes App Router + la route d'API /api/analyze/screenshot
+  components/     layout, ui, charts, analysis, dashboard, history, upload
   lib/
     analysis/     moteur déterministe (voir ci-dessous)
     market-data/  abstraction fournisseur + générateur OHLC simulé
@@ -97,18 +98,27 @@ le schéma de sortie, et les champs numériques de l'analyse ne sont pas aliment
 
 ### Lecture d'une capture d'écran
 
-`POST /api/analyze/screenshot` passe l'image à `extractFromScreenshot()`. Sans modèle de vision
-configuré — ou si l'image ne permet pas de lire assez de bougies — la route répond
-`readable: false` et l'interface affiche **« Données visuelles insuffisantes pour une analyse
-fiable »** avec la liste de ce qui manque. Aucune donnée n'est inventée pour combler un trou.
+C'est l'unique porte d'entrée du produit. `POST /api/analyze/screenshot` passe l'image à
+`extractFromScreenshot()`. Sans modèle de vision configuré — ou si l'image ne permet pas de
+lire assez de bougies — la route répond `readable: false` et l'interface affiche **« Données
+visuelles insuffisantes pour une analyse fiable »** avec la liste de ce qui manque. Aucune
+donnée n'est inventée pour combler un trou.
 
-### Données de marché
+La capture est redimensionnée (`lib/utils/image.ts`) puis stockée avec l'analyse : le
+résultat montre l'image d'origine, jamais un graphique reconstitué.
 
-`lib/market-data` expose `getMarketData()` derrière une interface `MarketDataProvider`. Le
-fournisseur livré est **simulé** : générateur OHLC déterministe, identique côté serveur et
-côté client, avec des séries plus courtes découpées dans la même série canonique pour que la
-vignette, la sparkline et le moteur voient exactement le même marché. Brancher un flux réel
-consiste à enregistrer un autre fournisseur, sans toucher au moteur ni à l'interface.
+### Ce que voit le plan gratuit
+
+Le verdict directionnel, le biais, l'indice de confluence et les figures repérées. Tout le
+reste — confluence détaillée, structure, niveaux, unités de temps, indicateurs, plan de
+trade, raisonnement, calculateur de position — est flouté derrière un seul verrou, dans le
+panneau d'analyse comme dans le journal.
+
+### Données simulées
+
+`lib/market-data` expose un générateur OHLC déterministe derrière l'interface
+`MarketDataProvider`. Il ne sert plus à analyser des marchés en direct : il alimente les
+analyses de démonstration et le journal de départ, toujours étiquetés comme simulés.
 
 ## Principes tenus dans le code
 

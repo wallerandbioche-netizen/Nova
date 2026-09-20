@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { ArrowRight, BookOpen, CandlestickChart, User } from 'lucide-react';
+import { ArrowRight, BookOpen, ScanLine, User } from 'lucide-react';
 
 const ACTIONS = [
   {
     href: '/analyser',
-    icon: CandlestickChart,
+    icon: ScanLine,
     title: 'Analyser un graphique',
-    description: 'Déposez une capture ou choisissez un actif, recevez une analyse complète.',
+    description: 'Déposez une capture de votre graphique, recevez une analyse complète.',
   },
   {
     href: '/journal',
