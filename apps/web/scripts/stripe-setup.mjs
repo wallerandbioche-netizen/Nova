@@ -51,8 +51,11 @@ async function findPrice(productId, interval) {
 const product =
   (await findProduct()) ??
   (await stripe('products', {
-    name: 'SCAN TRADE — Abonnement',
-    description: 'Analyses complètes : plan de trade, raisonnement et gestion du risque.',
+    name: 'SCAN TRADE — Analyse complète',
+    // Visible par le client sur la page de paiement, le reçu et la facture.
+    description:
+      'Analyse complète de vos captures de graphiques : zone d’entrée, stop et objectifs chiffrés, rapport risque / rendement, taille de position et raisonnement détaillé. Analyses illimitées et journal de fiabilité.',
+    statement_descriptor: 'SCANTRADE',
     'metadata[app]': MARKER,
   }));
 
@@ -63,7 +66,10 @@ const monthly =
     currency: 'eur',
     unit_amount: String(MONTHLY_CENTS),
     'recurring[interval]': 'month',
-    nickname: 'Mensuelle',
+    // Le libellé d'un tarif reste interne à Stripe : il n'apparaît pas au client.
+    nickname: 'Mensuelle — 29,99 €/mois, sans engagement',
+    lookup_key: 'scan_trade_mensuelle',
+    'metadata[plan]': 'mensuelle',
   }));
 
 const yearly =
@@ -73,7 +79,9 @@ const yearly =
     currency: 'eur',
     unit_amount: String(YEARLY_CENTS),
     'recurring[interval]': 'year',
-    nickname: 'Annuelle',
+    nickname: 'Annuelle — 199,99 €/an, soit 16,67 €/mois (2 mois offerts)',
+    lookup_key: 'scan_trade_annuelle',
+    'metadata[plan]': 'annuelle',
   }));
 
 console.log('\nProduit et tarifs prêts dans Stripe.\n');

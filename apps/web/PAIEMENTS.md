@@ -62,6 +62,34 @@ production.
    variables à copier : **`STRIPE_PRICE_MONTHLY`** et **`STRIPE_PRICE_YEARLY`**. Le relancer
    ne crée pas de doublon.
 
+   <details>
+   <summary>Ou à la main, depuis le tableau de bord Stripe</summary>
+
+   **Catalogue de produits → Ajouter un produit**
+
+   - **Nom** : `SCAN TRADE — Analyse complète`
+   - **Description** (elle s'affiche sur la page de paiement, le reçu et la facture) :
+
+     > Analyse complète de vos captures de graphiques : zone d'entrée, stop et objectifs
+     > chiffrés, rapport risque / rendement, taille de position et raisonnement détaillé.
+     > Analyses illimitées et journal de fiabilité.
+
+   - **Déclaration sur le relevé bancaire** : `SCANTRADE`
+
+   **Premier tarif** — Récurrent, `29,99` EUR, **Mensuel**. Le champ _Description_ d'un tarif
+   reste interne à Stripe : `Mensuelle — 29,99 €/mois, sans engagement`.
+
+   **Ajouter un tarif** — Récurrent, `199,99` EUR, **Annuel**, description
+   `Annuelle — 199,99 €/an, soit 16,67 €/mois (2 mois offerts)`.
+
+   Le prix affiché sur la page Abonnement du site est écrit dans l'application : si vous
+   changez un montant ici, changez-le aussi dans `src/app/abonnement/plans.tsx`.
+
+   Enfin, chaque tarif porte un identifiant `price_…` (bouton **⋯ → Copier l'ID du tarif**) :
+   ce sont eux qui vont dans `STRIPE_PRICE_MONTHLY` et `STRIPE_PRICE_YEARLY`.
+
+   </details>
+
 4. **Developers → Webhooks → Add endpoint** :
    - URL : `https://votre-site.com/api/billing/webhook`
    - Événements : `checkout.session.completed`, `customer.subscription.created`,
