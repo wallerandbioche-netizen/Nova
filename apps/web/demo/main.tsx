@@ -26,6 +26,8 @@ import { AnalyzerView } from '@/app/analyser/analyzer-view';
 import { AnalysisView } from '@/app/analyse/[id]/analysis-view';
 import { Plans } from '@/app/abonnement/plans';
 import { ProfileView } from '@/app/profil/profile-view';
+import { OnboardingFlow } from '@/components/onboarding/onboarding-flow';
+import { AuthView } from '@/components/account/auth-view';
 import Link from './shims/link';
 import { Sparkles } from 'lucide-react';
 
@@ -146,6 +148,26 @@ function DemoApp() {
     window.scrollTo({ top: 0 });
   }, [pathname]);
 
+  // The welcome questionnaire and the sign-in screen own the whole viewport:
+  // they are what a visitor sees before the application itself.
+  if (pathname.startsWith('/bienvenue')) {
+    return (
+      <ToastProvider>
+        <ThemeSync />
+        <OnboardingFlow />
+      </ToastProvider>
+    );
+  }
+
+  if (pathname.startsWith('/connexion')) {
+    return (
+      <ToastProvider>
+        <ThemeSync />
+        <AuthView />
+      </ToastProvider>
+    );
+  }
+
   return (
     <ToastProvider>
       <ThemeSync />
@@ -171,7 +193,24 @@ function adoptHostTheme(): void {
   }
 }
 
+/**
+ * A visitor who has never answered the questionnaire starts there, exactly as
+ * on the deployed site.
+ */
+function routeFirstVisit(): void {
+  try {
+    const raw = window.localStorage.getItem('scantrade.settings.v1');
+    if (raw && (JSON.parse(raw) as { onboarded?: boolean }).onboarded) return;
+    const route = window.location.hash.replace(/^#/, '');
+    if (route.indexOf('/bienvenue') === 0 || route.indexOf('/connexion') === 0) return;
+    window.location.hash = '/bienvenue';
+  } catch {
+    // Storage unavailable: the application opens on the dashboard.
+  }
+}
+
 adoptHostTheme();
+routeFirstVisit();
 
 const container = document.getElementById('root');
 if (container) {

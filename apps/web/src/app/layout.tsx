@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeScript } from '@/components/layout/theme-script';
+import { OnboardingRedirect, OnboardingScript } from '@/components/onboarding/onboarding-gate';
 import { ThemeSync } from '@/components/layout/theme-sync';
 import { ToastProvider } from '@/components/ui/toast';
 
@@ -31,9 +32,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr" data-theme="light" suppressHydrationWarning className={inter.variable}>
       <head>
         <ThemeScript />
+        <OnboardingScript />
       </head>
       <body className="antialiased">
         <ThemeSync />
+        <OnboardingRedirect />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

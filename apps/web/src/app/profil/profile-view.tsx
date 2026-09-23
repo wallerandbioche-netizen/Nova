@@ -210,6 +210,12 @@ export function ProfileView() {
               ]}
             />
           </Field>
+          <Link
+            href="/bienvenue"
+            className="text-[13px] font-medium text-brand hover:underline sm:col-span-3"
+          >
+            Refaire le questionnaire de départ
+          </Link>
         </CardContent>
       </Card>
 

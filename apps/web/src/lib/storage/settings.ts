@@ -6,6 +6,8 @@ import { createLocalStore } from './local-store';
 export type ThemePreference = 'light' | 'dark' | 'auto';
 
 export interface Settings {
+  /** False until the first-visit questionnaire has been answered. */
+  onboarded: boolean;
   displayName: string;
   email: string;
   theme: ThemePreference;
@@ -23,6 +25,7 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
+  onboarded: false,
   displayName: 'Trader',
   email: 'trader@icloud.com',
   theme: 'light',
